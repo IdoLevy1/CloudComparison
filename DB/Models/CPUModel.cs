@@ -13,9 +13,6 @@ namespace DB.Models
         public float Percentage { get; set; }
         public DateTime TimeStamp { get; set; }
 
-        //MongoHelper db = new MongoHelper("DB");
-        //db.InsertItem(CPUModel.GCPTableName, new CPUModel { Percentage = 100, TimeStamp = DateTime.Now });
-        //db.InsertItem(CPUModel.AWSTableName, new CPUModel { Percentage = 100, TimeStamp = DateTime.Now });
         //var items = db.LoadItems<CPUModel>(CPUModel.AzureTableName);
     }
 }
