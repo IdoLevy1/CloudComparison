@@ -27,8 +27,8 @@ namespace Server.Controllers
     [ApiController]
     public class AzureCloudController : ControllerBase
     {
-        [HttpGet("PercentageCPU")]
-        public void Get(
+        [HttpGet("CpuUsage")]
+        public void GetCpuUsage(
             [FromQuery(Name = "subscriptionId")] string SubscriptionId,
             [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
             [FromQuery(Name = "vmname")] string VirtualMachineName,
@@ -44,9 +44,9 @@ namespace Server.Controllers
             try
             {
                 RestResponse response = client.Execute(request);
-                AzureCloud.InsertCPUInfoToDB(response);
+                AzureCloud.InsertCpuUsageInfoToDB(response);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());// change
             }
@@ -62,20 +62,7 @@ namespace Server.Controllers
             [FromQuery(Name = "timespan")] string TimeSpan,
             [FromQuery(Name = "accessToken")] string AccessToken)
         {
-            //var url = AzureCloud.BuildUrl(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, "Percentage%20Memory%20Used");
-
-            var url = $"https://management.azure.com/subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/providers/Microsoft.Compute/virtualMachines/{VirtualMachineName}/providers/microsoft.insights/metrics";
-            url = QueryHelpers.AddQueryString(url, new Dictionary<string, string?>
-            {
-                { "api-version", AzureCloud.APIVersion },
-                { "metricnames", "Available Memory Bytes" },//%20eq%20MemoryUsage
-                { "timespan", TimeSpan },
-                //{ "interval", "PT1M" },
-                //{ "aggregation", "Average"},
-                //{ "top", "1"}
-            });
-
-
+            var url = AzureCloud.BuildUrl(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, "Available Memory Bytes");
             var options = new RestClientOptions(url) { MaxTimeout = -1 };
             var client = new RestClient(options);
             var request = new RestRequest();
@@ -85,6 +72,33 @@ namespace Server.Controllers
             {
                 RestResponse response = client.Execute(request);
                 AzureCloud.InsertMemoryUsageInfoToDB(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());// change
+            }
+
+            //return response.Content;
+        }
+
+        [HttpGet("NetworkUsage")]
+        public void GetNetworkUsage(
+            [FromQuery(Name = "subscriptionId")] string SubscriptionId,
+            [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
+            [FromQuery(Name = "vmname")] string VirtualMachineName,
+            [FromQuery(Name = "timespan")] string TimeSpan,
+            [FromQuery(Name = "accessToken")] string AccessToken)
+        {
+            var url = AzureCloud.BuildUrl(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, "Network In");
+            var options = new RestClientOptions(url) { MaxTimeout = -1 };
+            var client = new RestClient(options);
+            var request = new RestRequest();
+            request.AddHeader("Authorization", AccessToken);
+
+            try
+            {
+                RestResponse response = client.Execute(request);
+                AzureCloud.InsertNetworkUsageInfoToDB(response);
             }
             catch (Exception ex)
             {

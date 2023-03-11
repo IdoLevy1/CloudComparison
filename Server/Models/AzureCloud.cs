@@ -28,32 +28,45 @@ namespace Server.Models
             return url ;
         }
 
-        public static void InsertCPUInfoToDB(RestResponse Response)
+        private static dynamic GetInfoFromResponse(RestResponse Response)
         {
-            dynamic cpuPercentageInfo = JsonConvert.DeserializeObject(Response.Content);
-            var timeStamps = cpuPercentageInfo?.value[0].timeseries[0].data[0];
+            dynamic memoryUsageInfo = JsonConvert.DeserializeObject(Response.Content);
+            return memoryUsageInfo?.value[0].timeseries[0].data[0];
+        }
 
-            CPUModel cpu = new CPUModel
+        public static void InsertCpuUsageInfoToDB(RestResponse Response)
+        {
+            var timeStamps = GetInfoFromResponse(Response);
+            CpuUsageModel cpu = new CpuUsageModel
             {
                 TimeStamp = timeStamps.timeStamp,
                 Percentage = timeStamps.average
             };
-            
-            DB.InsertItem(CPUModel.AzureTableName, cpu);
+            DB.InsertItem(CpuUsageModel.AzureTableName, cpu);
         }
+
+        
 
         public static void InsertMemoryUsageInfoToDB(RestResponse Response)
         {
-            dynamic memoryUsageInfo = JsonConvert.DeserializeObject(Response.Content);
-            var timeStamps = memoryUsageInfo?.value[0].timeseries[0].data[0];
-
+            var timeStamps = GetInfoFromResponse(Response);
             MemoryUsageModel memoryUsage = new MemoryUsageModel
             {
                 TimeStamp = timeStamps.timeStamp,
-                Percentage = timeStamps.average
+                AvailableBytes = timeStamps.average
             };
-
             DB.InsertItem(MemoryUsageModel.AzureTableName, memoryUsage);
+        }
+
+        public static void InsertNetworkUsageInfoToDB(RestResponse Response)
+        {
+            var timeStamps = GetInfoFromResponse(Response);
+            NetworkUsageModel networkUsage = new NetworkUsageModel
+            {
+                TimeStamp = timeStamps.timeStamp,
+                IncomingTraffic = timeStamps.total
+            };
+            DB.InsertItem(NetworkUsageModel.AzureTableName, networkUsage);
         }
     }
 }

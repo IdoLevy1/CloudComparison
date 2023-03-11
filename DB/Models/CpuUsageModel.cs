@@ -2,11 +2,11 @@
 
 namespace DB.Models
 {
-    public class CPUModel
+    public class CpuUsageModel
     {
-        public const string AzureTableName = "AzureCloudDB-CPU";
-        public const string GCPTableName = "GoogleCloudDB-CPU";
-        public const string AWSTableName = "AmazonCloudDB-CPU";
+        public const string AzureTableName = "AzureCloudDB-CpuUsage";
+        public const string GCPTableName = "GoogleCloudDB-CpuUsage";
+        public const string AWSTableName = "AmazonCloudDB-CpuUsage";
 
         [BsonId]
         public Guid Id { get; set; }
