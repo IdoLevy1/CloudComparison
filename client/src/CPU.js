@@ -1,4 +1,5 @@
 import { Line } from 'react-chartjs-2';
+import React, { useState, useEffect } from 'react';
 import{
   Chart as ChartJS,
   LineElement,
@@ -19,11 +20,25 @@ ChartJS.register(
 )
 
 const CPU = () => {
+  const [labels, setLabels] = useState([]);
+  const [cpuPercentages, setCpuPercentages] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('http://localhost:8496/AzureCloud/DBCpu');
+      const json = await response.json();
+      setLabels(json.timeStampList);
+      setCpuPercentages(json.percentageList);
+    };
+
+    fetchData();
+  }, []);
+
     const data = {
-        labels:['11:25', '11:26', '11:27', '11:28', '11:29'],
+        labels: labels,
         datasets:[{
-          label:'CPU Percentage',
-          data:[50, 20, 40, 60, 80, 100],
+          label:'Azure Cloud',
+          data:cpuPercentages,
             backgroundColor: '#2875b8',
             borderColor: '#2875b8',
             pointBorderColor: '#2875b8',
@@ -48,8 +63,8 @@ const CPU = () => {
     <h2>CPU percentage</h2>
   <div style = {
     {
-      width: '400px',
-      height: '300px',
+      width: '600px',
+      height: '400px',
       padding: '20px'
     }
   }>
