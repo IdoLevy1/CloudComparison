@@ -13,8 +13,8 @@ namespace Server.Models
 {
     public class AzureCloud
     {
-        private static MongoHelper DB = new MongoHelper("DB");
-        public static string APIVersion = "2018-01-01";
+        private static readonly MongoHelper DB = new MongoHelper("DB");
+        public const string APIVersion = "2018-01-01";
         public static string BuildUrl(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string MetricNames)
         {
             var url = $"https://management.azure.com/subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/providers/Microsoft.Compute/virtualMachines/{VirtualMachineName}/providers/microsoft.insights/metrics";
