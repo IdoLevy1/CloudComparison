@@ -1,0 +1,78 @@
+body {background-color: rgb(225, 226, 218);}
+
+.App h1{
+  text-align: center;
+   background-color: #46259c; 
+  color: #e6dcdc;
+  padding: 20px;
+  border: 6px solid #2875b8;
+  border-radius: 20px;
+}
+
+.App h2 {
+  font-size: 20px;
+  display: inline-block;
+  position:relative;
+  left:240px;
+  top:30px;
+  background-color: #96a1ef;
+    color: white;
+    border-radius: 9px;
+    /* padding: 5px; */
+}
+
+.App .custom-select {
+  position: relative;
+  font-family: Arial;
+}
+
+.App .custom-select label{
+  display: block;
+  font-family: arial;
+  /* padding-right: 10px; */
+   margin-left: 50px; 
+  margin-top: 50px;
+  color: #282c34;
+  font-weight: bold;
+  font-size: 30px;
+  text-shadow: 1px 1px rgb(183, 183, 189);
+}
+
+.App .custom-select select{
+  font-size: 0.9rem;
+  padding: 2px 5px;
+  margin-left: 135px;
+  margin-top: 10px;
+  border-radius: 25px;
+  border: 2px solid #3cb4df;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
