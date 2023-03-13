@@ -45,7 +45,15 @@ namespace Server.Models
             DB.InsertItem(CpuUsageModel.AzureTableName, cpu);
         }
 
-        
+        public static string GetCpuUsageInfoFromDB()
+        {
+            var items = DB.LoadItems<CpuUsageModel>(CpuUsageModel.AzureTableName);
+            var percentageList = items.Select(data => data.Percentage).ToList();
+            var timeStampList = items.Select(data => data.TimeStamp.ToString("HH:mm")).ToList();
+
+            return JsonConvert.SerializeObject(new { percentageList, timeStampList });
+        }
+
 
         public static void InsertMemoryUsageInfoToDB(RestResponse Response)
         {

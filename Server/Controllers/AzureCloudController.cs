@@ -52,6 +52,7 @@ namespace Server.Controllers
             }
 
             //return response.Content; // change - what should we return?
+            //return JsonConvert.SerializeObject(new string("works"));
         }
 
         [HttpGet("MemoryUsage")]
@@ -79,6 +80,7 @@ namespace Server.Controllers
             }
 
             //return response.Content;
+            
         }
 
         [HttpGet("NetworkUsage")]
@@ -106,6 +108,12 @@ namespace Server.Controllers
             }
 
             //return response.Content;
+        }
+
+        [HttpGet("DBCpu")]
+        public string GetCpuDataFromDB()
+        {
+            return AzureCloud.GetCpuUsageInfoFromDB();
         }
 
 

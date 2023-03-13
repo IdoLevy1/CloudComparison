@@ -10,9 +10,7 @@ namespace DB.Models
 
         [BsonId]
         public Guid Id { get; set; }
-        public float Percentage { get; set; }
+        public double Percentage { get; set; }
         public DateTime TimeStamp { get; set; }
-
-        //var items = db.LoadItems<CPUModel>(CPUModel.AzureTableName);
     }
 }
