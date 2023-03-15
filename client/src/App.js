@@ -1,5 +1,7 @@
 import './App.css';
 import CPU from './CPU';
+import Network from './Network';
+import Memory from './Memory';
 
 function App() {
   return (
@@ -10,6 +12,7 @@ function App() {
           width: '400px'
         }
       }>
+        
         <label>Choose cloud provider:
       <select name='providers'>
         <option value="select provider">Select provider:</option>
@@ -28,10 +31,15 @@ function App() {
       </select>
       </label>
     </div>
-    <div>
-      <CPU />
-    </div>
-
+      <div>
+        <CPU />
+      </div>
+      <div>
+        <Network />
+      </div>
+      <div>
+        <Memory />
+      </div>
     </div>
   );
 }
