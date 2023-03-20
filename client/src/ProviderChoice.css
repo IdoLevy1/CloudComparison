@@ -1,0 +1,20 @@
+.Selection h3 {
+  text-align: center;
+  /* background-color: #46259c; */
+  text-shadow: 1px 1px#b2b8b8;
+  padding-left: 10px;
+  padding-top: 10px;
+  /* border: 6px solid #2875b8; */
+  /* border-radius: 20px; */
+  height: 20px;
+  font-family: Trebuchet MS;
+}
+
+.Selection label {
+  padding-left: 65px;
+  font-size: 20px !important;
+  width: 300px;
+  height: 10px;
+  font-family: Trebuchet MS !important;
+  text-shadow: none !important;
+}
