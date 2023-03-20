@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{43B33EFE-8512-4199-BE96-5EC963D6BE2D}</ProjectGuid>
+    <ProjectGuid>{5157AADB-F405-4A96-8312-F346083EE4B8}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>NetworkStressTest</RootNamespace>
-    <AssemblyName>NetworkStressTest</AssemblyName>
+    <RootNamespace>MemoryStressTest</RootNamespace>
+    <AssemblyName>MemoryStressTest</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Deployment\StressTests\</OutputPath>
+    <OutputPath>..\..\Deployment\StressTests\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
