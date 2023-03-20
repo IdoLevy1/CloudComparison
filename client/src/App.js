@@ -1,19 +1,21 @@
-import './App.css';
-import CPU from './CPU';
-import Network from './Network';
-import Memory from './Memory';
+import "./App.css";
+import CPU from "./CPU";
+import Network from "./Network";
+import Memory from "./Memory";
+import ProviderChoice from "./ProviderChoice";
 
 function App() {
   return (
-    <div className='App'>
+    <div className="App">
       <h1>Cloud Comparison</h1>
-      <div class="custom-select" style = {
-        {
-          width: '400px'
-        }
-      }>
-        
-        <label>Choose cloud provider:
+      <div
+        class="custom-select"
+        style={{
+          width: "400px",
+        }}
+      >
+        <ProviderChoice />
+        {/* <label>Choose cloud provider:
       <select name='providers'>
         <option value="select provider">Select provider:</option>
         <option value="microsoft Azure">Microsoft Azure</option>
@@ -29,8 +31,8 @@ function App() {
         <option value="europe">Europe</option>
         <option value="israel">Israel</option>
       </select>
-      </label>
-    </div>
+      </label> */}
+      </div>
       <div>
         <CPU />
       </div>
