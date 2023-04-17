@@ -50,9 +50,6 @@ namespace Server.Controllers
             {
                 Console.WriteLine(ex.ToString());// change
             }
-
-            //return response.Content; // change - what should we return?
-            //return JsonConvert.SerializeObject(new string("works"));
         }
 
         [HttpGet("MemoryUsage")]
@@ -61,7 +58,8 @@ namespace Server.Controllers
             [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
             [FromQuery(Name = "vmname")] string VirtualMachineName,
             [FromQuery(Name = "timespan")] string TimeSpan,
-            [FromQuery(Name = "accessToken")] string AccessToken)
+            [FromQuery(Name = "accessToken")] string AccessToken,
+            [FromQuery(Name = "MemorySize")] int MemorySizeInGB)
         {
             var url = AzureCloud.BuildUrl(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, "Available Memory Bytes");
             var options = new RestClientOptions(url) { MaxTimeout = -1 };
@@ -72,15 +70,12 @@ namespace Server.Controllers
             try
             {
                 RestResponse response = client.Execute(request);
-                AzureCloud.InsertMemoryUsageInfoToDB(response);
+                AzureCloud.InsertMemoryUsageInfoToDB(response, MemorySizeInGB);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());// change
             }
-
-            //return response.Content;
-            
         }
 
         [HttpGet("NetworkUsage")]
@@ -106,8 +101,6 @@ namespace Server.Controllers
             {
                 Console.WriteLine(ex.ToString());// change
             }
-
-            //return response.Content;
         }
 
         [HttpGet("DBCpu")]
