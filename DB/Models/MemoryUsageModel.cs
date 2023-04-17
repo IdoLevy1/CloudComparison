@@ -10,7 +10,7 @@ namespace DB.Models
 
         [BsonId]
         public Guid Id { get; set; }
-        public int AvailableBytes { get; set; }
+        public int Percentage { get; set; }
         public DateTime TimeStamp { get; set; }
     }
 }

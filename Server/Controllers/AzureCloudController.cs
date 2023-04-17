@@ -106,7 +106,19 @@ namespace Server.Controllers
         [HttpGet("DBCpu")]
         public string GetCpuDataFromDB()
         {
-            return AzureCloud.GetCpuUsageInfoFromDB();
+            return AzureCloud.GetCpuUsageDataFromDB();
+        }
+
+        [HttpGet("DBMemory")]
+        public string GetMemoryDataFromDB()
+        {
+            return AzureCloud.GetMemoryUsageDataFromDB();
+        }
+
+        [HttpGet("DBNetwork")]
+        public string GetNetworkDataFromDB()
+        {
+            return AzureCloud.GetNetworkUsageDataFromDB();
         }
 
 

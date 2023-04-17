@@ -45,7 +45,7 @@ namespace Server.Models
             DB.InsertItem(CpuUsageModel.AzureTableName, cpu);
         }
 
-        public static string GetCpuUsageInfoFromDB()
+        public static string GetCpuUsageDataFromDB()
         {
             var items = DB.LoadItems<CpuUsageModel>(CpuUsageModel.AzureTableName);
             var percentageList = items.Select(data => data.Percentage).ToList();
@@ -53,17 +53,25 @@ namespace Server.Models
 
             return JsonConvert.SerializeObject(new { percentageList, timeStampList });
         }
-
-
+ 
         public static void InsertMemoryUsageInfoToDB(RestResponse Response, int MemorySizeInGB)
         {
             var info = GetInfoFromResponse(Response);
             MemoryUsageModel memoryUsage = new MemoryUsageModel
             {
                 TimeStamp = info.timeStamp,
-                AvailableBytes = (info.average * 100) / (MemorySizeInGB * Math.Pow(2, 30))
+                Percentage = (info.average * 100) / (MemorySizeInGB * Math.Pow(2, 30))
             };
             DB.InsertItem(MemoryUsageModel.AzureTableName, memoryUsage);
+        }
+
+        public static string GetMemoryUsageDataFromDB()
+        {
+            var items = DB.LoadItems<MemoryUsageModel>(MemoryUsageModel.AzureTableName);
+            var percentageList = items.Select(data => data.Percentage).ToList();
+            var timeStampList = items.Select(data => data.TimeStamp.ToString("HH:mm")).ToList();
+
+            return JsonConvert.SerializeObject(new { percentageList, timeStampList });
         }
 
         public static void InsertNetworkUsageInfoToDB(RestResponse Response)
@@ -75,6 +83,15 @@ namespace Server.Models
                 IncomingTraffic = info.total
             };
             DB.InsertItem(NetworkUsageModel.AzureTableName, networkUsage);
+        }
+
+        public static string GetNetworkUsageDataFromDB()
+        {
+            var items = DB.LoadItems<NetworkUsageModel>(NetworkUsageModel.AzureTableName);
+            var trafficList = items.Select(data => data.IncomingTraffic).ToList();
+            var timeStampList = items.Select(data => data.TimeStamp.ToString("HH:mm")).ToList();
+
+            return JsonConvert.SerializeObject(new { trafficList, timeStampList });
         }
     }
 }
