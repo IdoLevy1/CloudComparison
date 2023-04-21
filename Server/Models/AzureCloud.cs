@@ -1,27 +1,23 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
-using System.Xml.Linq;
-using System;
-using Microsoft.AspNetCore.Mvc;
-using static Azure.Core.HttpHeader;
 using RestSharp;
-using Azure;
 using DB.Models;
 using DB;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace Server.Models
 {
     public class AzureCloud
     {
         private static readonly MongoHelper DB = new MongoHelper("DB");
-        public const string APIVersion = "2018-01-01";
-        public static string BuildUrl(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string MetricNames)
+        public const string AzureCloudName = "AzureCloud";
+        public static string BuildUrl(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string MetricName)
         {
             var url = $"https://management.azure.com/subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/providers/Microsoft.Compute/virtualMachines/{VirtualMachineName}/providers/microsoft.insights/metrics";
             url = QueryHelpers.AddQueryString(url, new Dictionary<string, string?>
             {
-                { "api-version", AzureCloud.APIVersion },
-                { "metricnames", MetricNames },
+                { "api-version", "2018-01-01" },
+                { "metricnames", MetricName },
                 { "timespan", TimeSpan }
             });
 
@@ -33,65 +29,74 @@ namespace Server.Models
             dynamic info = JsonConvert.DeserializeObject(Response.Content);
             return info?.value[0].timeseries[0].data[0];
         }
-
-        public static void InsertCpuUsageInfoToDB(RestResponse Response)
+        
+        public static dynamic GetMetricInfo(string SubscriptionId,
+            string ResourceGroupName,
+            string VirtualMachineName,
+            string TimeSpan,
+            string AccessToken,
+            string MetricName)
         {
-            var info = GetInfoFromResponse(Response);
-            CpuUsageModel cpu = new CpuUsageModel
+            var url = BuildUrl(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, MetricName);
+            var options = new RestClientOptions(url) { MaxTimeout = -1 };
+            var client = new RestClient(options);
+            var request = new RestRequest();
+            request.AddHeader("Authorization", AccessToken);
+            RestResponse response = client.Execute(request);
+            var info = GetInfoFromResponse(response);
+            return info;
+        }
+        public static void InsertInfoToDB(
+            string SubscriptionId,
+            string ResourceGroupName,
+            string VirtualMachineName,
+            string TimeSpan,
+            string AccessToken,
+            string MachineType,
+            string Location,
+            int MemorySizeInGB)
+        {
+            string[] parts = TimeSpan.Split('/');
+            VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
             {
-                TimeStamp = info.timeStamp,
-                Percentage = info.average
+                TimeStamp = DateTime.ParseExact(parts[0], "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture), 
+                PercentageCPU = GetCpuUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken),
+                PercentageMemory = GetMemoryUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MemorySizeInGB), 
+                IncomingTraffic  = GetNetworkInUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken),
+                OutcomingTraffic = GetNetworkOutUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken)
             };
-            DB.InsertItem(CpuUsageModel.AzureTableName, cpu);
+
+            DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
         }
 
-        public static string GetCpuUsageDataFromDB()
+        public static string GetInfoFromDB(string MachineType, string Location)
         {
-            var items = DB.LoadItems<CpuUsageModel>(CpuUsageModel.AzureTableName);
-            var percentageList = items.Select(data => data.Percentage).ToList();
-            var timeStampList = items.Select(data => data.TimeStamp.ToString("HH:mm")).ToList();
-
-            return JsonConvert.SerializeObject(new { percentageList, timeStampList });
-        }
- 
-        public static void InsertMemoryUsageInfoToDB(RestResponse Response, int MemorySizeInGB)
-        {
-            var info = GetInfoFromResponse(Response);
-            MemoryUsageModel memoryUsage = new MemoryUsageModel
-            {
-                TimeStamp = info.timeStamp,
-                Percentage = (info.average * 100) / (MemorySizeInGB * Math.Pow(2, 30))
-            };
-            DB.InsertItem(MemoryUsageModel.AzureTableName, memoryUsage);
+            var items = DB.LoadItems<VirtualMachineMetricsModel>(AzureCloudName + MachineType + Location);
+            return JsonConvert.SerializeObject(items);
         }
 
-        public static string GetMemoryUsageDataFromDB()
+        public static double GetCpuUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
-            var items = DB.LoadItems<MemoryUsageModel>(MemoryUsageModel.AzureTableName);
-            var percentageList = items.Select(data => data.Percentage).ToList();
-            var timeStampList = items.Select(data => data.TimeStamp.ToString("HH:mm")).ToList();
-
-            return JsonConvert.SerializeObject(new { percentageList, timeStampList });
+            var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Percentage%20CPU");
+            return info.average;
         }
 
-        public static void InsertNetworkUsageInfoToDB(RestResponse Response)
+        public static double GetMemoryUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken, int MemorySizeInGB)
         {
-            var info = GetInfoFromResponse(Response);
-            NetworkUsageModel networkUsage = new NetworkUsageModel
-            {
-                TimeStamp = info.timeStamp,
-                IncomingTraffic = info.total
-            };
-            DB.InsertItem(NetworkUsageModel.AzureTableName, networkUsage);
+            var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Available Memory Bytes");
+            return (info.average * 100) / (MemorySizeInGB * Math.Pow(2, 30));
         }
 
-        public static string GetNetworkUsageDataFromDB()
+        public static double GetNetworkInUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
-            var items = DB.LoadItems<NetworkUsageModel>(NetworkUsageModel.AzureTableName);
-            var trafficList = items.Select(data => data.IncomingTraffic).ToList();
-            var timeStampList = items.Select(data => data.TimeStamp.ToString("HH:mm")).ToList();
+            var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Network In");
+            return (info.total * 8) / Math.Pow(2, 20); // from bytes/sec to Mbits/sec
+        }
 
-            return JsonConvert.SerializeObject(new { trafficList, timeStampList });
+        public static double GetNetworkOutUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
+        {
+            var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Network Out");
+            return (info.total * 8) / Math.Pow(2, 20); // from bytes/sec to Mbits/sec
         }
     }
 }

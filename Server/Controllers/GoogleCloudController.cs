@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Server.Models;
 
 namespace Server.Controllers
 {
@@ -6,59 +7,63 @@ namespace Server.Controllers
     [ApiController]
     public class GoogleCloudController : ControllerBase
     {
-        [HttpGet("CpuUsage")]
-        public void GetCpuUsage(
-            [FromQuery(Name = "subscriptionId")] string SubscriptionId,
-            [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
-            [FromQuery(Name = "vmname")] string VirtualMachineName,
-            [FromQuery(Name = "timespan")] string TimeSpan,
-            [FromQuery(Name = "accessToken")] string AccessToken)
-        {
-            //put code here
-        }
-
-        [HttpGet("MemoryUsage")]
-        public void GetMemoryUsage(
+        [HttpGet("GetMetricsFromVM")]
+        public void GetInfoFromVM(
             [FromQuery(Name = "subscriptionId")] string SubscriptionId,
             [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
             [FromQuery(Name = "vmname")] string VirtualMachineName,
             [FromQuery(Name = "timespan")] string TimeSpan,
             [FromQuery(Name = "accessToken")] string AccessToken,
-            [FromQuery(Name = "MemorySize")] int MemorySizeInGB)
+            [FromQuery(Name = "machineType")] string MachineType,
+            [FromQuery(Name = "location")] string Location,
+            [FromQuery(Name = "memorySize")] int MemorySizeInGB)
         {
-            //put code here
+
         }
 
-        [HttpGet("NetworkUsage")]
-        public void GetNetworkUsage(
-            [FromQuery(Name = "subscriptionId")] string SubscriptionId,
-            [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
-            [FromQuery(Name = "vmname")] string VirtualMachineName,
-            [FromQuery(Name = "timespan")] string TimeSpan,
-            [FromQuery(Name = "accessToken")] string AccessToken)
+        [HttpGet("GetMetricsFromDB")]
+        public string GetInfoFromDB(
+            [FromQuery(Name = "machineType")] string MachineType,
+            [FromQuery(Name = "location")] string Location)
         {
-            //put code here
+            return string.Empty;
         }
 
-        [HttpGet("DBCpu")]
-        public string GetCpuDataFromDB()
-        {
-            //return GoogleCloud.GetCpuUsageDataFromDB();
-            return string.Empty;//delete
-        }
-
-        [HttpGet("DBMemory")]
-        public string GetMemoryDataFromDB()
-        {
-            //return GoogleCloud.GetMemoryUsageDataFromDB();
-            return string.Empty;//delete
-        }
-
-        [HttpGet("DBNetwork")]
-        public string GetNetworkDataFromDB()
-        {
-            //return GoogleCloud.GetNetworkUsageDataFromDB();
-            return string.Empty;//delete
-        }
+        //    public static object ReadTimeSeriesFields(string projectId,
+        //string metricType = "compute.googleapis.com/instance/cpu/utilization")
+        //    {
+        //        MetricServiceClient metricServiceClient = MetricServiceClient.Create();
+        //        // Initialize request argument(s).
+        //        string filter = $"metric.type=\"{metricType}\"";
+        //        ListTimeSeriesRequest request = new ListTimeSeriesRequest
+        //        {
+        //            ProjectName = new ProjectName(projectId),
+        //            Filter = filter,
+        //            Interval = new TimeInterval(),
+        //            View = ListTimeSeriesRequest.Types.TimeSeriesView.Headers,
+        //        };
+        //        // Create timestamp for current time formatted in seconds.
+        //        long timeStamp = (long)(DateTime.UtcNow - s_unixEpoch).TotalSeconds;
+        //        Timestamp startTimeStamp = new Timestamp();
+        //        // Set startTime to limit results to the last 20 minutes.
+        //        startTimeStamp.Seconds = timeStamp - (60 * 20);
+        //        Timestamp endTimeStamp = new Timestamp();
+        //        // Set endTime to current time.
+        //        endTimeStamp.Seconds = timeStamp;
+        //        TimeInterval interval = new TimeInterval();
+        //        interval.StartTime = startTimeStamp;
+        //        interval.EndTime = endTimeStamp;
+        //        request.Interval = interval;
+        //        // Make the request.
+        //        PagedEnumerable<ListTimeSeriesResponse, TimeSeries> response =
+        //            metricServiceClient.ListTimeSeries(request);
+        //        // Iterate over all response items, lazily performing RPCs as required.
+        //        Console.Write("Found data points for the following instances:");
+        //        foreach (var item in response)
+        //        {
+        //            Console.WriteLine(JObject.Parse($"{item}").ToString());
+        //        }
+        //        return 0;
+        //    }
     }
 }

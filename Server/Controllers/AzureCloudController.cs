@@ -1,25 +1,5 @@
-﻿using Azure.Core;
-using Azure.Identity;
-using DB;
-using DB.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Options;
-using MongoDB.Bson;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using RestSharp;
+﻿using Microsoft.AspNetCore.Mvc;
 using Server.Models;
-using System;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Text.Json.Nodes;
-using System.Xml.Linq;
-using static System.Net.WebRequestMethods;
 
 namespace Server.Controllers
 {
@@ -27,127 +7,26 @@ namespace Server.Controllers
     [ApiController]
     public class AzureCloudController : ControllerBase
     {
-        [HttpGet("CpuUsage")]
-        public void GetCpuUsage(
-            [FromQuery(Name = "subscriptionId")] string SubscriptionId,
-            [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
-            [FromQuery(Name = "vmname")] string VirtualMachineName,
-            [FromQuery(Name = "timespan")] string TimeSpan,
-            [FromQuery(Name = "accessToken")] string AccessToken)
-        {
-            var url = AzureCloud.BuildUrl(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, "Percentage%20CPU");
-            var options = new RestClientOptions(url) { MaxTimeout = -1 };
-            var client = new RestClient(options);
-            var request = new RestRequest();
-            request.AddHeader("Authorization", AccessToken);
-
-            try
-            {
-                RestResponse response = client.Execute(request);
-                AzureCloud.InsertCpuUsageInfoToDB(response);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());// change
-            }
-        }
-
-        [HttpGet("MemoryUsage")]
-        public void GetMemoryUsage(
+        [HttpGet("GetMetricsFromVM")]
+        public void GetInfoFromVM(
             [FromQuery(Name = "subscriptionId")] string SubscriptionId,
             [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
             [FromQuery(Name = "vmname")] string VirtualMachineName,
             [FromQuery(Name = "timespan")] string TimeSpan,
             [FromQuery(Name = "accessToken")] string AccessToken,
-            [FromQuery(Name = "MemorySize")] int MemorySizeInGB)
+            [FromQuery(Name = "machineType")] string MachineType,
+            [FromQuery(Name = "location")] string Location,
+            [FromQuery(Name = "memorySize")] int MemorySizeInGB)
         {
-            var url = AzureCloud.BuildUrl(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, "Available Memory Bytes");
-            var options = new RestClientOptions(url) { MaxTimeout = -1 };
-            var client = new RestClient(options);
-            var request = new RestRequest();
-            request.AddHeader("Authorization", AccessToken);
-
-            try
-            {
-                RestResponse response = client.Execute(request);
-                AzureCloud.InsertMemoryUsageInfoToDB(response, MemorySizeInGB);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());// change
-            }
+            AzureCloud.InsertInfoToDB(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MachineType, Location, MemorySizeInGB);
         }
 
-        [HttpGet("NetworkUsage")]
-        public void GetNetworkUsage(
-            [FromQuery(Name = "subscriptionId")] string SubscriptionId,
-            [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
-            [FromQuery(Name = "vmname")] string VirtualMachineName,
-            [FromQuery(Name = "timespan")] string TimeSpan,
-            [FromQuery(Name = "accessToken")] string AccessToken)
+        [HttpGet("GetMetricsFromDB")]
+        public string GetInfoFromDB(
+            [FromQuery(Name = "machineType")] string MachineType,
+            [FromQuery(Name = "location")] string Location)
         {
-            var url = AzureCloud.BuildUrl(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, "Network In");
-            var options = new RestClientOptions(url) { MaxTimeout = -1 };
-            var client = new RestClient(options);
-            var request = new RestRequest();
-            request.AddHeader("Authorization", AccessToken);
-
-            try
-            {
-                RestResponse response = client.Execute(request);
-                AzureCloud.InsertNetworkUsageInfoToDB(response);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());// change
-            }
-        }
-
-        [HttpGet("DBCpu")]
-        public string GetCpuDataFromDB()
-        {
-            return AzureCloud.GetCpuUsageDataFromDB();
-        }
-
-        [HttpGet("DBMemory")]
-        public string GetMemoryDataFromDB()
-        {
-            return AzureCloud.GetMemoryUsageDataFromDB();
-        }
-
-        [HttpGet("DBNetwork")]
-        public string GetNetworkDataFromDB()
-        {
-            return AzureCloud.GetNetworkUsageDataFromDB();
-        }
-
-
-        [HttpGet("AccessToken")]
-        public async void Post(
-            [FromQuery(Name = "subscriptionId")] string subscriptionId,
-            [FromQuery(Name = "resourceGroupName")] string resourceGroupName,
-            [FromQuery(Name = "vmname")] string vmname)
-        {
-            string tenantId = "784e25d3-aacb-40f0-adae-a1537ab168e5"; //directory id
-
-            Console.WriteLine("");
-            string tokenEndpoint = $"https://login.microsoftonline.com/{tenantId}/oauth2/v2.0/token";
-            string clientId = "a74eab4354ab427fbefabc6a9e4efecc";
-            string clientSecret = "ChenLandau20";
-
-            var client = new HttpClient();
-
-            var requestBody = new FormUrlEncodedContent(new[]
-            {
-            new KeyValuePair<string, string>("grant_type", "Bearer"),
-            new KeyValuePair<string, string>("client_id", clientId),
-            new KeyValuePair<string, string>("client_secret", clientSecret),
-        });
-
-            var response = await client.PostAsync(tokenEndpoint, requestBody);
-
-            string responseBody = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(responseBody);
+            return AzureCloud.GetInfoFromDB(MachineType, Location); 
         }
     }
 }
