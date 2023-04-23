@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace MemoryStressTest
 {
@@ -14,24 +11,25 @@ namespace MemoryStressTest
 
             long totalMemory = GC.GetTotalMemory(true);
             Console.WriteLine("Total memory used before stress test: {0}", totalMemory);
+            long numBytes = 2;
 
-            // Allocate a large amount of memory
-            int numBytes = 1024 * 1024 * 500; // 500 MB
-            byte[] buffer = new byte[numBytes];
-
-            // Fill the memory with random data
-            Random rand = new Random();
-            for (int i = 0; i < buffer.Length; i++)
+            while (true)
             {
-                buffer[i] = (byte)rand.Next(256);
+                try
+                {
+                    byte[] buffer = new byte[numBytes];
+                    Thread.Sleep(10000); //memory allocation every 10 sec
+
+                }
+                catch //memory allocation failed
+                {
+                    numBytes = 2;
+                    totalMemory = GC.GetTotalMemory(true); //max memory allocation
+                    Console.WriteLine("Total memory used after stress test: {0}", totalMemory);
+                }
+                numBytes = numBytes * 2;
+                Console.WriteLine("numBytes: {0}", numBytes);
             }
-
-            // Print the total memory used after stress test
-            totalMemory = GC.GetTotalMemory(true);
-            Console.WriteLine("Total memory used after stress test: {0}", totalMemory);
-
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
         }
     }
 }
