@@ -23,46 +23,24 @@ namespace Server.Controllers
     {
         [HttpGet("GetMetricsFromVM")]
         public void GetInfoFromVM(
-            [FromQuery(Name = "subscriptionId")] string SubscriptionId,
-            [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
-            [FromQuery(Name = "vmname")] string VirtualMachineName,
-            [FromQuery(Name = "timespan")] string TimeSpan,
-            [FromQuery(Name = "accessToken")] string AccessToken,
+             [FromQuery(Name = "subscriptionId")] string SubscriptionId,
+             [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
+             [FromQuery(Name = "vmname")] string VirtualMachineName,
+             [FromQuery(Name = "timespan")] string TimeSpan,
+             [FromQuery(Name = "accessToken")] string AccessToken,
+             [FromQuery(Name = "machineType")] string MachineType,
+             [FromQuery(Name = "location")] string Location,
+             [FromQuery(Name = "memorySize")] int MemorySizeInGB)
+        {
+
+        }
+
+        [HttpGet("GetMetricsFromDB")]
+        public string GetInfoFromDB(
             [FromQuery(Name = "machineType")] string MachineType,
-            [FromQuery(Name = "location")] string Location,
-            [FromQuery(Name = "memorySize")] int MemorySizeInGB)
+            [FromQuery(Name = "location")] string Location)
         {
-
-        [HttpGet("NetworkUsage")]
-        public void GetNetworkUsage(
-            [FromQuery(Name = "subscriptionId")] string SubscriptionId,
-            [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
-            [FromQuery(Name = "vmname")] string VirtualMachineName,
-            [FromQuery(Name = "timespan")] string TimeSpan,
-            [FromQuery(Name = "accessToken")] string AccessToken)
-        {
-            //put code here
-        }
-
-        [HttpGet("DBCpu")]
-        public string GetCpuDataFromDB()
-        {
-            //return AmazonCloud.GetCpuUsageDataFromDB();
-            return string.Empty;//delete
-        }
-
-        [HttpGet("DBMemory")]
-        public string GetMemoryDataFromDB()
-        {
-            //return AmazonCloud.GetMemoryUsageDataFromDB();
-            return string.Empty;//delete
-        }
-
-        [HttpGet("DBNetwork")]
-        public string GetNetworkDataFromDB()
-        {
-            //return AmazonCloud.GetNetworkUsageDataFromDB();
-            return string.Empty;//delete
+            return string.Empty;
         }
     }
 }
