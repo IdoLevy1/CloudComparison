@@ -19,27 +19,18 @@ ChartJS.register(
   Tooltip
 );
 
-const Memory = () => {
-  const [labels, setLabels] = useState([]);
-  const [cpuPercentages, setCpuPercentages] = useState([]);
+const Memory = (props) => {
+  const { labels, memoryPercentages } = props;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("http://localhost:8496/AzureCloud/DBCpu");
-      const json = await response.json();
-      setLabels(json.timeStampList);
-      setCpuPercentages(json.percentageList);
-    };
-
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   const data = {
     labels: labels,
     datasets: [
       {
         label: "Azure Cloud",
-        data: cpuPercentages,
+        data: memoryPercentages,
         backgroundColor: "#2875b8",
         borderColor: "#2875b8",
         pointBorderColor: "#2875b8",
