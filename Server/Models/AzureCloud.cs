@@ -26,8 +26,15 @@ namespace Server.Models
 
         private static dynamic GetInfoFromResponse(RestResponse Response)
         {
-            dynamic info = JsonConvert.DeserializeObject(Response.Content);
-            return info?.value[0].timeseries[0].data[0];
+            if(Response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                dynamic info = JsonConvert.DeserializeObject(Response.Content);
+                return info?.value[0].timeseries[0].data[0];
+            }
+            else
+            {
+                throw new Exception("Can't get info from VM");
+            }
         }
         
         public static dynamic GetMetricInfo(string SubscriptionId,
@@ -59,12 +66,17 @@ namespace Server.Models
             string[] parts = TimeSpan.Split('/');
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
             {
-                TimeStamp = DateTime.ParseExact(parts[0], "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
-                PercentageCPU = GetCpuUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken),
-                PercentageMemory = GetMemoryUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MemorySizeInGB),
-                IncomingTraffic = GetNetworkInUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken),
-                OutcomingTraffic = GetNetworkOutUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken)
+                TimeStamp = DateTime.ParseExact(parts[0], "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)
             };
+            var tasks = new List<Task>
+            {
+                Task.Run(() => metrics.PercentageCPU = GetCpuUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken)),
+                Task.Run(() => metrics.PercentageMemory = GetMemoryUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MemorySizeInGB)),
+                Task.Run(() => metrics.IncomingTraffic = GetNetworkInUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken)),
+                Task.Run(() => metrics.OutcomingTraffic = GetNetworkOutUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken))
+            };
+            Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete
+
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
         }
 
