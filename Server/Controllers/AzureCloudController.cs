@@ -8,7 +8,7 @@ namespace Server.Controllers
     public class AzureCloudController : ControllerBase
     {
         [HttpGet("GetMetricsFromVM")]
-        public void GetInfoFromVM(
+        public ActionResult GetInfoFromVM(
             [FromQuery(Name = "subscriptionId")] string SubscriptionId,
             [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
             [FromQuery(Name = "vmname")] string VirtualMachineName,
@@ -18,15 +18,30 @@ namespace Server.Controllers
             [FromQuery(Name = "location")] string Location,
             [FromQuery(Name = "memorySize")] int MemorySizeInGB)
         {
-            AzureCloud.InsertInfoToDB(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MachineType, Location, MemorySizeInGB);
+            try
+            {
+                AzureCloud.InsertInfoToDB(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MachineType, Location, MemorySizeInGB);
+                return Ok("Success");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetMetricsFromDB")]
-        public string GetInfoFromDB(
+        public ActionResult GetInfoFromDB(
             [FromQuery(Name = "machineType")] string MachineType,
             [FromQuery(Name = "location")] string Location)
         {
-            return AzureCloud.GetInfoFromDB(MachineType, Location); 
+            try
+            {
+                return Ok(AzureCloud.GetInfoFromDB(MachineType, Location));
+            }
+            catch(Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

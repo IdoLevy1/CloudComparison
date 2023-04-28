@@ -54,18 +54,17 @@ namespace Server.Models
             string AccessToken,
             string MachineType,
             string Location,
-            int MemorySizeInGB)
+            double MemorySizeInGB)
         {
             string[] parts = TimeSpan.Split('/');
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
             {
-                TimeStamp = DateTime.ParseExact(parts[0], "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture), 
+                TimeStamp = DateTime.ParseExact(parts[0], "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
                 PercentageCPU = GetCpuUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken),
-                PercentageMemory = GetMemoryUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MemorySizeInGB), 
-                IncomingTraffic  = GetNetworkInUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken),
+                PercentageMemory = GetMemoryUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MemorySizeInGB),
+                IncomingTraffic = GetNetworkInUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken),
                 OutcomingTraffic = GetNetworkOutUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken)
             };
-
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
         }
 
@@ -81,10 +80,10 @@ namespace Server.Models
             return info.average;
         }
 
-        public static double GetMemoryUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken, int MemorySizeInGB)
+        public static double GetMemoryUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken, double MemorySizeInGB)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Available Memory Bytes");
-            return (info.average * 100) / (MemorySizeInGB * Math.Pow(2, 30));
+            return (info.average * 100) / (double)(MemorySizeInGB * Math.Pow(2, 30));
         }
 
         public static double GetNetworkInUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
