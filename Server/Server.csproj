@@ -12,6 +12,9 @@
     <PackageReference Include="Azure.Core" Version="1.29.0" />
     <PackageReference Include="Azure.Identity" Version="1.8.2" />
     <PackageReference Include="Azure.ResourceManager" Version="1.4.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.60.0" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.60.0.3014" />
+    <PackageReference Include="Google.Apis.Monitoring.v3" Version="1.60.0.3028" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="RestSharp" Version="108.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
