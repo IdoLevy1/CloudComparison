@@ -10,7 +10,7 @@ namespace DB
         public MongoHelper(string databaseName)
         {
             var client = new MongoClient();
-            db = client.GetDatabase(databaseName);  
+            db = client.GetDatabase(databaseName); 
         }
 
         public void InsertItem<T>(string table, T item)
