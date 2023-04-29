@@ -1,20 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System;
-using System.Diagnostics;
 using System.Net.Http;
-using System.Diagnostics;
+using System.Threading;
 
 namespace NetworkStressTest
 {
     internal class Program
     {
 
-        static async Task Main()
+        static void Main()
+        {
+
+            while (true)
+            {
+                NetworkStressTest();
+                Thread.Sleep(10000); //memory allocation every 10 sec
+            }
+
+            
+        }
+        public static async void NetworkStressTest()
         {
             Console.WriteLine("Starting network stress test...");
 
@@ -35,8 +41,6 @@ namespace NetworkStressTest
             Console.WriteLine("Total time taken: {0} milliseconds", stopwatch.ElapsedMilliseconds);
             Console.WriteLine("Average time per request: {0} milliseconds", stopwatch.ElapsedMilliseconds / numRequests);
 
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
         }
     }
 }
