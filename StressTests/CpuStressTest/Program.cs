@@ -1,39 +1,36 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 
-
-namespace NetworkStressTest
+namespace CpuStressTest
 {
-    internal class Program
+    class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            for (int i = 0; i < 5; i++)
+            int numCores = Environment.ProcessorCount;
+            int desiredCpuUsagePercentage = 70; 
+
+            Console.WriteLine($"Stressing CPU stress test with {numCores} cores...");
+
+            for (int i = 0; i < numCores; i++)
             {
-                cpuStressTest();
+                new Thread(() => StressThread(desiredCpuUsagePercentage)).Start();
             }
         }
 
-        public static void cpuStressTest()
+        static void StressThread(int desiredCpuUsagePercentage)
         {
-            int numThreads = Environment.ProcessorCount;
-            Console.WriteLine($"Number of processor cores: {numThreads}");
-            int duration = 60;
-            Console.WriteLine("Starting stress test...");
             Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start(); 
-            for (int i = 0; i < numThreads; i++)
+
+            while (true)
             {
-                int threadNum = i;
-                System.Threading.ThreadPool.QueueUserWorkItem(state =>
-                {
-                    while (stopwatch.Elapsed.TotalSeconds < duration) { }
-                    Console.WriteLine($"Thread {threadNum + 1} completed.");
-                });
-            } while (stopwatch.Elapsed.TotalSeconds < duration) { }
-            stopwatch.Stop();
-            Console.WriteLine($"Stress test completed in {stopwatch.Elapsed.TotalSeconds} seconds.");
-            Console.ReadLine();
+                stopwatch.Start();
+                while (stopwatch.ElapsedMilliseconds < (10 * desiredCpuUsagePercentage));
+                stopwatch.Reset();
+                Thread.Sleep(10 * (100 - desiredCpuUsagePercentage));
+            }
         }
     }
 }
+

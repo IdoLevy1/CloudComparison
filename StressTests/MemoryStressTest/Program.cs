@@ -1,37 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace MemoryStressTest
 {
-    internal class Program
+    class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting memory stress test...");
+            Console.WriteLine("Starting Memory stress test");
 
-            long totalMemory = GC.GetTotalMemory(true);
-            Console.WriteLine("Total memory used before stress test: {0}", totalMemory);
+            int numCores = Environment.ProcessorCount;
+            double memoryInGB = double.Parse(args[0]);
+            long bytesPerThread = (long)((memoryInGB * Math.Pow(2, 30)) / (4 * numCores)); // total 0.25 of memory
 
-            // Allocate a large amount of memory
-            int numBytes = 1024 * 1024 * 500; // 500 MB
-            byte[] buffer = new byte[numBytes];
-
-            // Fill the memory with random data
-            Random rand = new Random();
-            for (int i = 0; i < buffer.Length; i++)
+            for (int i = 0; i < numCores; i++)
             {
-                buffer[i] = (byte)rand.Next(256);
+                Thread t = new Thread(async () =>
+                {
+                    byte[] buffer = new byte[bytesPerThread];
+                    while (true)
+                    {
+                        for (int j = 0; j < buffer.Length; j++)
+                        {
+                            buffer[j]++;
+                            //Thread.Sleep(100);
+                        }
+                    }
+                });
+                t.Start();
             }
-
-            // Print the total memory used after stress test
-            totalMemory = GC.GetTotalMemory(true);
-            Console.WriteLine("Total memory used after stress test: {0}", totalMemory);
-
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
         }
     }
 }
