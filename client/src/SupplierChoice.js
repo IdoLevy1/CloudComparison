@@ -17,7 +17,7 @@ const SupplierChoice = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const component = <GraphsInfo suppliers={selectedSuppliers} />;
+    const component = <GraphsInfo supplier={selectedSuppliers} />;
     setSupplierComponent(component);
   };
 
@@ -29,8 +29,8 @@ const SupplierChoice = () => {
           <input
             type="checkbox"
             name="supplier"
-            value="Azure"
-            checked={selectedSuppliers.includes("Azure")}
+            value="AzureCloud"
+            checked={selectedSuppliers.includes("AzureCloud")}
             onChange={handleCheckboxChange}
           />
           Microsoft Azure
@@ -39,8 +39,8 @@ const SupplierChoice = () => {
           <input
             type="checkbox"
             name="supplier"
-            value="AWS"
-            checked={selectedSuppliers.includes("AWS")}
+            value="AmazonCloud"
+            checked={selectedSuppliers.includes("AmazonCloud")}
             onChange={handleCheckboxChange}
           />
           Amazon AWS
@@ -49,14 +49,15 @@ const SupplierChoice = () => {
           <input
             type="checkbox"
             name="supplier"
-            value="Google"
-            checked={selectedSuppliers.includes("Google")}
+            value="GoogleCloud"
+            checked={selectedSuppliers.includes("GoogleCloud")}
             onChange={handleCheckboxChange}
           />
           Google Cloud
         </label>
         <button type="submit">Choose Suppliers</button>
       </form>
+      <h11>{selectedSuppliers}</h11>
       {supplierComponent}
     </div>
   );

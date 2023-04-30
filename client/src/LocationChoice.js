@@ -22,17 +22,17 @@ const ProviderChoice = () => {
         <h3>Select machine location</h3>
         <label>
           <input
-            type="radio"
+            type="checkbox"
             name="location"
-            value="USA"
-            checked={location === "USA"}
+            value="US"
+            checked={location === "US"}
             onChange={onOptionChange}
           />
-          USA
+          US
         </label>
         <label>
           <input
-            type="radio"
+            type="checkbox"
             name="location"
             value="europe"
             checked={location === "europe"}
@@ -42,7 +42,7 @@ const ProviderChoice = () => {
         </label>
         <label>
           <input
-            type="radio"
+            type="checkbox"
             name="location"
             value="asia"
             checked={location === "asia"}
@@ -50,7 +50,7 @@ const ProviderChoice = () => {
           />
           Asia
         </label>
-        <button type="submit">Choose Type</button>
+        <button type="submit">Choose Location</button>
       </form>
       {locationComponent}
     </div>

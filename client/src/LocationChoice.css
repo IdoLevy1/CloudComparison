@@ -4,27 +4,34 @@
   /* display: inline-block;
   vertical-align: text-top;
   margin: 0 auto; */
-  display: grid;
+  /* display: grid; */
+  /* vertical-align: middle; */
+  /* position: relative;
+  bottom: 1px; */
 }
 
 .locationChoice h3 {
-  /* text-align: center; */
+  text-align: left;
   /* background-color: #46259c; */
   text-shadow: 1px 1px#b2b8b8;
-  padding-left: 0px;
-  padding-top: 12px;
-  padding-bottom: 10px;
+  padding-left: 30px;
+  padding-top: 10px;
+  /* padding-bottom: 10px; */
   /* border: 6px solid #2875b8; */
   /* border-radius: 20px; */
-  height: 20px;
+  height: 30px;
   font-family: Trebuchet MS;
 }
 
-.locationChoice label {
-  padding-left: 40px;
+.locationChoice form label {
+  padding-left: 100px;
   font-size: 20px !important;
   width: 300px;
-  height: 50px !important;
+  height: 50px;
   font-family: Trebuchet MS !important;
   text-shadow: none !important;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
 }

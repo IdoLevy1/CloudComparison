@@ -12,6 +12,10 @@ const TypeChoice = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!type) {
+      alert("Please select a machine type");
+      return;
+    }
     const component = <GraphsInfo type={type} />;
     setCPUComponent(component);
   };
@@ -22,7 +26,7 @@ const TypeChoice = () => {
         <h3>Select machine type</h3>
         <label>
           <input
-            type="radio"
+            type="checkbox"
             name="type"
             value="64GB-12CPU"
             checked={type === "64GB-12CPU"}
@@ -32,7 +36,7 @@ const TypeChoice = () => {
         </label>
         <label>
           <input
-            type="radio"
+            type="checkbox"
             name="type"
             value="32GB-1CPU"
             checked={type === "32GB-1CPU"}
@@ -42,7 +46,7 @@ const TypeChoice = () => {
         </label>
         <label>
           <input
-            type="radio"
+            type="checkbox"
             name="type"
             value="128GB-4CPU"
             checked={type === "128GB-4CPU"}
