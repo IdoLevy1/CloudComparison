@@ -1,5 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Mvc;
 using Server.Models;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Util;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace Server.Controllers
 {
@@ -28,6 +36,14 @@ namespace Server.Controllers
         {
             return string.Empty;
         }
+
+        //public static async Task<string> GetAccessToken(string serviceAccountKeyPath, string scopes)
+        //{
+        //    var credential = await GoogleCredential.FromFileAsync(serviceAccountKeyPath).CreateScopedAsync(scopes);
+        //    var accessToken = await credential.GetAccessTokenForRequestAsync();
+
+        //    return accessToken;
+        //}
 
         //    public static object ReadTimeSeriesFields(string projectId,
         //string metricType = "compute.googleapis.com/instance/cpu/utilization")

@@ -39,10 +39,9 @@ namespace Server.Models
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
         }
 
-        public static string GetInfoFromDB(string MachineType, string Location)
+        public static List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
         {
-            var items = DB.LoadItems<VirtualMachineMetricsModel>(AzureCloudName + MachineType + Location);
-            return JsonConvert.SerializeObject(items);
+            return DB.LoadItems<VirtualMachineMetricsModel>(AzureCloudName + MachineType + Location);
         }
 
         private static string BuildUrl(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string MetricName)
