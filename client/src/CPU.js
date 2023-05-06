@@ -1,14 +1,25 @@
+<<<<<<< HEAD
 import { Line } from 'react-chartjs-2';
 import React, { useState, useEffect } from 'react';
 import{
+=======
+import { Line } from "react-chartjs-2";
+import React, { useState, useEffect } from "react";
+import {
+>>>>>>> feature/feature-Add-react-app-client
   Chart as ChartJS,
   LineElement,
   CategoryScale,
   LinearScale,
   PointElement,
   Legend,
+<<<<<<< HEAD
   Tooltip
 }from 'chart.js'
+=======
+  Tooltip,
+} from "chart.js";
+>>>>>>> feature/feature-Add-react-app-client
 
 ChartJS.register(
   LineElement,
@@ -17,6 +28,7 @@ ChartJS.register(
   PointElement,
   Legend,
   Tooltip
+<<<<<<< HEAD
 )
 
 const CPU = () => {
@@ -77,3 +89,53 @@ const CPU = () => {
 }
  
 export default CPU;
+=======
+);
+
+const CPU = (props) => {
+  const { labels, cpuPercentages } = props;
+
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        label: "Azure Cloud",
+        data: cpuPercentages,
+        backgroundColor: "#2875b8",
+        borderColor: "#2875b8",
+        pointBorderColor: "#2875b8",
+        fill: true,
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const options = {
+    plugins: {
+      legend: true,
+    },
+    scales: {
+      y: {
+        min: 0,
+        max: 100,
+      },
+    },
+  };
+  return (
+    <div className="CPU">
+      <h2>CPU percentage</h2>
+      <div
+        style={{
+          width: "600px",
+          height: "400px",
+          padding: "20px",
+        }}
+      >
+        <Line data={data} options={options}></Line>
+      </div>
+    </div>
+  );
+};
+
+export default CPU;
+>>>>>>> feature/feature-Add-react-app-client
