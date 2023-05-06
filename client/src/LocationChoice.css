@@ -1,0 +1,30 @@
+.locationChoice {
+  /* width: 50%; */
+  /* float: right; */
+  /* display: inline-block;
+  vertical-align: text-top;
+  margin: 0 auto; */
+  display: grid;
+}
+
+.locationChoice h3 {
+  /* text-align: center; */
+  /* background-color: #46259c; */
+  text-shadow: 1px 1px#b2b8b8;
+  padding-left: 0px;
+  padding-top: 12px;
+  padding-bottom: 10px;
+  /* border: 6px solid #2875b8; */
+  /* border-radius: 20px; */
+  height: 20px;
+  font-family: Trebuchet MS;
+}
+
+.locationChoice label {
+  padding-left: 40px;
+  font-size: 20px !important;
+  width: 300px;
+  height: 50px !important;
+  font-family: Trebuchet MS !important;
+  text-shadow: none !important;
+}
