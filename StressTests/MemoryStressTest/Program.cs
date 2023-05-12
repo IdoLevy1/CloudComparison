@@ -11,23 +11,34 @@ namespace MemoryStressTest
 
             int numCores = Environment.ProcessorCount;
             double memoryInGB = double.Parse(args[0]);
-            long bytesPerThread = (long)((memoryInGB * Math.Pow(2, 30)) / (4 * numCores)); // total 0.25 of memory
+            long bytesPerThread = (long)((memoryInGB * Math.Pow(2, 30)) / (2 * numCores)); // total 0.5 of memory
 
             for (int i = 0; i < numCores; i++)
             {
-                Thread t = new Thread(async () =>
+                new Thread(() => StressThread(bytesPerThread)).Start();
+            }
+        }
+
+        static void StressThread(long bytesPerThread)
+        {
+            while (true)
+            {
+                try
                 {
                     byte[] buffer = new byte[bytesPerThread];
                     while (true)
                     {
+                        Thread.Sleep(8000);
                         for (int j = 0; j < buffer.Length; j++)
                         {
                             buffer[j]++;
-                            //Thread.Sleep(100);
                         }
                     }
-                });
-                t.Start();
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
             }
         }
     }

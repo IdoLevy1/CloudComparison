@@ -9,7 +9,7 @@ namespace CpuStressTest
         static void Main()
         {
             int numCores = Environment.ProcessorCount;
-            int desiredCpuUsagePercentage = 70; 
+            int desiredCpuUsagePercentage = 40; 
 
             Console.WriteLine($"Stressing CPU stress test with {numCores} cores...");
 
@@ -25,10 +25,17 @@ namespace CpuStressTest
 
             while (true)
             {
-                stopwatch.Start();
-                while (stopwatch.ElapsedMilliseconds < (10 * desiredCpuUsagePercentage));
-                stopwatch.Reset();
-                Thread.Sleep(10 * (100 - desiredCpuUsagePercentage));
+                try
+                {
+                    stopwatch.Start();
+                    while (stopwatch.ElapsedMilliseconds < (10 * desiredCpuUsagePercentage)) ;
+                    stopwatch.Reset();
+                    Thread.Sleep(10 * (100 - desiredCpuUsagePercentage));
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
             }
         }
     }
