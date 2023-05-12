@@ -7,6 +7,6 @@ namespace Server.Models
 {
     public class AmazonCloud
     {
-        private static readonly MongoHelper DB = new MongoHelper("DB");
+        private static readonly MongoHelper DB = new MongoHelper();
     }
 }
