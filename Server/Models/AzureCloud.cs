@@ -11,6 +11,7 @@ namespace Server.Models
     {
         private const string AzureCloudName = "AzureCloud";
         private static readonly MongoHelper DB = new MongoHelper("DB");
+        private static readonly Random Random = new Random();
 
         public static void InsertInfoToDB(
             string SubscriptionId,
@@ -35,6 +36,25 @@ namespace Server.Models
                 Task.Run(() => metrics.OutcomingTraffic = GetNetworkOutUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken))
             };
             Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete
+
+            DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
+        }
+
+        public static void InsertDummyInfoToDB(
+            string TimeSpan,
+            string MachineType,
+            string Location,
+            double MemorySizeInGB)
+        {
+            string[] parts = TimeSpan.Split('/');
+            VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
+            {
+                TimeStamp = DateTime.ParseExact(parts[0], "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
+                PercentageCPU = Random.NextDouble() * 10 + 70, //change random range
+                PercentageMemory = Random.NextDouble() * 10 + 30, //change random range
+                IncomingTraffic = Random.NextDouble() * 10 + 350, //change random range
+                OutcomingTraffic = Random.NextDouble() * 10 + 40 //change random range
+            };
 
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
         }
