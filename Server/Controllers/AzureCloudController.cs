@@ -20,7 +20,16 @@ namespace Server.Controllers
         {
             try
             {
-                AzureCloud.InsertInfoToDB(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MachineType, Location, MemorySizeInGB);
+                // Due to low budget we are running only VM with RAM size up to 4GB, if we send bigger size we should insert dummy data
+                if (MemorySizeInGB > 4) 
+                {
+                    AzureCloud.InsertDummyInfoToDB(TimeSpan, MachineType, Location, MemorySizeInGB);
+                }
+                else
+                {
+                    AzureCloud.InsertInfoToDB(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MachineType, Location, MemorySizeInGB);
+                }
+
                 return Ok("Success");
             }
             catch (Exception ex)
