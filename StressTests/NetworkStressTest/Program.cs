@@ -13,7 +13,14 @@ namespace NetworkStressTest
 
             while (true)
             {
-                await client.GetAsync("https://example.com");
+                try
+                {
+                    await client.GetAsync("https://example.com");
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
             }
         }
     }
