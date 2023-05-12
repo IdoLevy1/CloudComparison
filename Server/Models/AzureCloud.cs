@@ -10,7 +10,7 @@ namespace Server.Models
     public class AzureCloud
     {
         private const string AzureCloudName = "AzureCloud";
-        private static readonly MongoHelper DB = new MongoHelper("DB");
+        private static readonly MongoHelper DB = new MongoHelper();
         private static readonly Random Random = new Random();
 
         public static void InsertInfoToDB(

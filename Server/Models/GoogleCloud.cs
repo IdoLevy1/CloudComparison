@@ -12,7 +12,7 @@ namespace Server.Models
     public class GoogleCloud
     {
         private const string GoogleCloudName = "GoogleCloud";
-        private static readonly MongoHelper DB = new MongoHelper("DB");
+        private static readonly MongoHelper DB = new MongoHelper();
 
 
         //public static void GetCpuUsageInfo(string projectId, string zoneName, string instanceName, string timeSpan, string accessToken)

@@ -7,10 +7,10 @@ namespace DB
     {
         private readonly IMongoDatabase db;
 
-        public MongoHelper(string databaseName)
+        public MongoHelper()
         {
-            var client = new MongoClient();
-            db = client.GetDatabase(databaseName); 
+            var client = new MongoClient("mongodb+srv://chen201296:Ac57RY9AvJxq2U91@clouds.mnwjvlg.mongodb.net/");
+            db = client.GetDatabase("CloudsComparison"); 
         }
 
         public void InsertItem<T>(string table, T item)
