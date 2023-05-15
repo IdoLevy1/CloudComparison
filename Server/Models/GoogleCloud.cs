@@ -1,11 +1,9 @@
-﻿using Azure;
-using DB;
-using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Compute.v1;
-using Data = Google.Apis.Compute.v1.Data;
+﻿using DB;
+using DB.Models;
+using Google.Api.Gax;
+using Google.Cloud.Monitoring.V3;
+using Google.Protobuf.WellKnownTypes;
+using System.Globalization;
 
 namespace Server.Models
 {
@@ -13,44 +11,100 @@ namespace Server.Models
     {
         private const string GoogleCloudName = "GoogleCloud";
         private static readonly MongoHelper DB = new MongoHelper();
+        private static readonly Random Random = new Random();
 
+        public static VirtualMachineMetricsModel InsertInfoToDB(
+            string ProjectId,
+            string InstanceId,
+            string StartTime,
+            string EndTime,
+            string JsonFileLocation,
+            string MachineType,
+            string Location)
+        {
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", JsonFileLocation);
+            var metricClient = MetricServiceClient.Create();
+            var interval = new TimeInterval { EndTime = ParseFromString(EndTime), StartTime = ParseFromString(StartTime) };
 
-        //public static void GetCpuUsageInfo(string projectId, string zoneName, string instanceName, string timeSpan, string accessToken)
-        //{
-        //    ComputeService computeService = new ComputeService(new BaseClientService.Initializer
-        //    {
-        //        HttpClientInitializer = GetCredential(),
-        //        ApplicationName = "Google-ComputeSample/0.1",
-        //    });
+            VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
+            {
+                TimeStamp = DateTime.ParseExact(StartTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)
+            };
+            var tasks = new List<Task>
+            {
+                Task.Run(() => metrics.PercentageCPU = GetCpuUsageInfo(ProjectId, InstanceId, metricClient, interval)),
+                Task.Run(() => metrics.PercentageMemory = GetMemoryUsageInfo(ProjectId, InstanceId, metricClient, interval)),
+                Task.Run(() => metrics.IncomingTraffic = GetNetworkInUsageInfo(ProjectId, InstanceId, metricClient, interval)),
+                Task.Run(() => metrics.OutcomingTraffic = GetNetworkOutUsageInfo(ProjectId, InstanceId, metricClient, interval))
+            };
+            Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete
 
-        //    // Project ID for this request.
-        //    string project = "leafy-bond-384014";  // TODO: Update placeholder value.
+            DB.InsertItem(GoogleCloudName + MachineType + Location, metrics);
+            return metrics;
+        }
 
-        //    // The name of the zone for this request.
-        //    string zone = "us-west4-b";  // TODO: Update placeholder value.
+        public static VirtualMachineMetricsModel InsertDummyInfoToDB(string StartTime, string MachineType, string Location)
+        {
+            VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
+            {
+                TimeStamp = DateTime.ParseExact(StartTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
+                PercentageCPU = Random.NextDouble() * 10 + 70, //change random range
+                PercentageMemory = Random.NextDouble() * 10 + 30, //change random range
+                IncomingTraffic = Random.NextDouble() * 10 + 350, //change random range
+                OutcomingTraffic = Random.NextDouble() * 10 + 40 //change random range
+            };
 
-        //    // TODO: Assign values to desired properties of `requestBody`:
-        //    Data.Instance requestBody = new Data.Instance();
+            DB.InsertItem(GoogleCloudName + MachineType + Location, metrics);
+            return metrics;
+        }
 
-        //    InstancesResource.InsertRequest request = computeService.Instances.Insert(requestBody, project, zone);
+        public static List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
+        {
+            return DB.LoadItems<VirtualMachineMetricsModel>(GoogleCloudName + MachineType + Location);
+        }
 
-        //    // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-        //    Data.Operation response = request.Execute();
-        //    // Data.Operation response = await request.ExecuteAsync();
+        private static Timestamp ParseFromString(string DateTimeString)
+        {
+            DateTime dateTime = DateTime.ParseExact(DateTimeString, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+            return Timestamp.FromDateTime(dateTime);
+        }
 
-        //    // TODO: Change code below to process the `response` object:
-        //    Console.WriteLine(JsonConvert.SerializeObject(response));
-        //}
+        private static PagedEnumerable<ListTimeSeriesResponse, TimeSeries> GetMetricInfo(
+            string ProjectId,
+            string InstanceId,
+            MetricServiceClient MetricClient,
+            TimeInterval Interval,
+            string MetricType)
+        {
+            var filter = $"metric.type=\"{MetricType}\" resource.type=\"gce_instance\" resource.labels.instance_id=\"{InstanceId}\"";
+            var request = new ListTimeSeriesRequest { Name = $"projects/{ProjectId}", Filter = filter, Interval = Interval };
+            return MetricClient.ListTimeSeries(request);
+        }
 
-        //public static GoogleCredential GetCredential()
-        //{
-        //    GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-        //    if (credential.IsCreateScopedRequired)
-        //    {
-        //        credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-        //    }
-        //    return credential;
-        //}
-        
+        public static double GetCpuUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
+        {
+            var response = GetMetricInfo(ProjectId, InstanceId, MetricClient, Interval, "compute.googleapis.com/instance/cpu/utilization");
+            return response.FirstOrDefault().Points.LastOrDefault().Value.DoubleValue * 100;
+        }
+
+        private static double GetMemoryUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
+        {
+            var response = GetMetricInfo(ProjectId, InstanceId, MetricClient, Interval, "agent.googleapis.com/memory/percent_used");
+            return response.FirstOrDefault().Points.LastOrDefault().Value.DoubleValue;
+        }
+
+        private static double GetNetworkInUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
+        {
+            var response = GetMetricInfo(ProjectId, InstanceId, MetricClient, Interval, "compute.googleapis.com/instance/network/received_bytes_count");
+            var networkIn = response.FirstOrDefault().Points.LastOrDefault().Value.Int64Value;
+            return (networkIn * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
+        }
+
+        private static double GetNetworkOutUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
+        {
+            var response = GetMetricInfo(ProjectId, InstanceId, MetricClient, Interval, "compute.googleapis.com/instance/network/sent_bytes_count");
+            var networkOut = response.FirstOrDefault().Points.LastOrDefault().Value.Int64Value;
+            return (networkOut * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
+        }
     }
 }
