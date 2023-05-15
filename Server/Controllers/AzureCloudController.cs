@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DB.Models;
+using Microsoft.AspNetCore.Mvc;
 using Server.Models;
 
 namespace Server.Controllers
@@ -9,28 +10,29 @@ namespace Server.Controllers
     {
         [HttpGet("GetMetricsFromVM")]
         public ActionResult GetInfoFromVM(
-            [FromQuery(Name = "subscriptionId")] string SubscriptionId,
-            [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
-            [FromQuery(Name = "vmname")] string VirtualMachineName,
-            [FromQuery(Name = "timespan")] string TimeSpan,
-            [FromQuery(Name = "accessToken")] string AccessToken,
-            [FromQuery(Name = "machineType")] string MachineType,
-            [FromQuery(Name = "location")] string Location,
-            [FromQuery(Name = "memorySize")] int MemorySizeInGB)
+            [FromQuery(Name = "SubscriptionId")] string SubscriptionId,
+            [FromQuery(Name = "ResourceGroupName")] string ResourceGroupName,
+            [FromQuery(Name = "VirtualMachineName")] string VirtualMachineName,
+            [FromQuery(Name = "Timespan")] string TimeSpan,
+            [FromQuery(Name = "AccessToken")] string AccessToken,
+            [FromQuery(Name = "MachineType")] string MachineType,
+            [FromQuery(Name = "Location")] string Location,
+            [FromQuery(Name = "MemorySize")] double MemorySizeInGB)
         {
             try
             {
+                VirtualMachineMetricsModel metrics;
                 // Due to low budget we are running only VM with RAM size up to 4GB, if we send bigger size we should insert dummy data
                 if (MemorySizeInGB > 4) 
                 {
-                    AzureCloud.InsertDummyInfoToDB(TimeSpan, MachineType, Location, MemorySizeInGB);
+                    metrics = AzureCloud.InsertDummyInfoToDB(TimeSpan, MachineType, Location);
                 }
                 else
                 {
-                    AzureCloud.InsertInfoToDB(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MachineType, Location, MemorySizeInGB);
+                    metrics = AzureCloud.InsertInfoToDB(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MachineType, Location, MemorySizeInGB);
                 }
 
-                return Ok("Success");
+                return Ok(metrics);
             }
             catch (Exception ex)
             {
@@ -40,8 +42,8 @@ namespace Server.Controllers
 
         [HttpGet("GetMetricsFromDB")]
         public ActionResult GetInfoFromDB(
-            [FromQuery(Name = "machineType")] string MachineType,
-            [FromQuery(Name = "location")] string Location)
+            [FromQuery(Name = "MachineType")] string MachineType,
+            [FromQuery(Name = "Location")] string Location)
         {
             try
             {

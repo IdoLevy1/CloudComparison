@@ -16,6 +16,7 @@ namespace NetworkStressTest
                 try
                 {
                     await client.GetAsync("https://example.com");
+                    await client.GetAsync("https://speed.hetzner.de/100MB.bin");
                 }
                 catch (Exception)
                 {

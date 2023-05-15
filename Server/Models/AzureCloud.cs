@@ -13,7 +13,7 @@ namespace Server.Models
         private static readonly MongoHelper DB = new MongoHelper();
         private static readonly Random Random = new Random();
 
-        public static void InsertInfoToDB(
+        public static VirtualMachineMetricsModel InsertInfoToDB(
             string SubscriptionId,
             string ResourceGroupName,
             string VirtualMachineName,
@@ -38,13 +38,10 @@ namespace Server.Models
             Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete
 
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
+            return metrics;
         }
 
-        public static void InsertDummyInfoToDB(
-            string TimeSpan,
-            string MachineType,
-            string Location,
-            double MemorySizeInGB)
+        public static VirtualMachineMetricsModel InsertDummyInfoToDB(string TimeSpan, string MachineType, string Location)
         {
             string[] parts = TimeSpan.Split('/');
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
@@ -57,6 +54,7 @@ namespace Server.Models
             };
 
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
+            return metrics;
         }
 
         public static List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
@@ -90,7 +88,8 @@ namespace Server.Models
             }
         }
         
-        private static dynamic GetMetricInfo(string SubscriptionId,
+        private static dynamic GetMetricInfo(
+            string SubscriptionId,
             string ResourceGroupName,
             string VirtualMachineName,
             string TimeSpan,
@@ -122,13 +121,13 @@ namespace Server.Models
         private static double GetNetworkInUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Network In");
-            return (info.total * 8) / Math.Pow(2, 20); // from bytes/sec to Mbits/sec
+            return (info.total * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
         }
 
         private static double GetNetworkOutUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Network Out");
-            return (info.total * 8) / Math.Pow(2, 20); // from bytes/sec to Mbits/sec
+            return (info.total * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
         }
     }
 }
