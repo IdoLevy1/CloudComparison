@@ -23,7 +23,8 @@ ChartJS.register(
   Tooltip,
   Title
 );
-const Graphs = ({ azureMachineData, googleMachineData }) => {
+// { azureMachineData, googleMachineData }
+const Graphs = () => {
   const { state } = useLocation();
   const type = state.type;
   const location = state.location;
@@ -35,103 +36,99 @@ const Graphs = ({ azureMachineData, googleMachineData }) => {
   const [endDate, setEndDate] = useState("");
   const [fetchedCpuData, setFetchedCpuData] = useState([]);
 
-  const filteredGoogleMachineData = googleMachineData.filter(
-    (machine) => machine.machineType === type && machine.location === location
-  );
+  // const filteredGoogleMachineData = googleMachineData.filter(
+  //   (machine) => machine.machineType === type && machine.location === location
+  // );
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
-  const fetchData = async () => {
-    const fetchedCpuData = [];
+  // const fetchData = async () => {
+  //   const fetchedCpuData = [];
+  //   for (const supplier of suppliers) {
+  //     const supplierWithCloud = supplier + " Cloud";
+  //     let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromDB?MachineType=${type}&Location=${location}`;
 
-    for (const supplier of suppliers) {
-      let url = `http://localhost:8496/${supplier}/GetMetricsFromDB?MachineType=${type}&Location=${location}`;
+  //     try {
+  //       const response = await fetch(url);
+  //       const json = await response.json();
+  //       const supplierCpuData = {
+  //         label: supplier,
+  //         machineType: type,
+  //         location: location,
+  //         timestamp: json.Timestamp,
+  //         data: json.PercentageCPU,
+  //         backgroundColor: "#aa75b8",
+  //         borderColor: "#aa75b8",
+  //         pointBorderColor: "#aa75b8",
+  //         fill: true,
+  //         tension: 0.4,
+  //       };
 
-      // isRealTime
-      //   ? setRealtimeData(url, supplier)
-      //   : setHistoryData(url, supplier);
+  //       fetchedCpuData.push(supplierCpuData);
+  //       if (supplier === "Google" && filteredGoogleMachineData.length === 1) {
+  //         // Add filteredGoogleMachineData as-is to cpuData
+  //         const googleData = {
+  //           label: supplier,
+  //           machineType: type,
+  //           location: location,
+  //           timestamp: filteredGoogleMachineData[0].TimeStamp,
+  //           data: filteredGoogleMachineData[0].PercentageCPU,
+  //           backgroundColor: "#aa75b8",
+  //           borderColor: "#aa75b8",
+  //           pointBorderColor: "#aa75b8",
+  //           fill: true,
+  //           tension: 0.4,
+  //         };
+  //         fetchedCpuData.push(googleData);
+  //       }
+  //     } catch (error) {
+  //       console.error(`Failed to fetch data for ${supplier}:`, error);
+  //     }
+  //   }
+  //   setFetchedCpuData(fetchedCpuData);
+  // };
 
-      try {
-        const response = await fetch(url);
-        const json = await response.json();
-        const supplierCpuData = {
-          label: supplier,
-          machineType: type,
-          location: location,
-          timestamp: json.Timestamp,
-          data: json.PercentageCPU,
-          backgroundColor: "#aa75b8",
-          borderColor: "#aa75b8",
-          pointBorderColor: "#aa75b8",
-          fill: true,
-          tension: 0.4,
-        };
+  // useEffect(() => {
+  //   if (isRealTime) {
+  //     const currentTime = new Date();
+  //     const thirtyMinutesAgo = new Date(currentTime.getTime() - 30 * 60000); // 30 minutes in milliseconds
 
-        fetchedCpuData.push(supplierCpuData);
-        if (supplier === "Google" && filteredGoogleMachineData.length === 1) {
-          // Add filteredGoogleMachineData as-is to cpuData
-          const googleData = {
-            label: supplier,
-            machineType: type,
-            location: location,
-            timestamp: filteredGoogleMachineData[0].TimeStamp,
-            data: filteredGoogleMachineData[0].PercentageCPU,
-            backgroundColor: "#aa75b8",
-            borderColor: "#aa75b8",
-            pointBorderColor: "#aa75b8",
-            fill: true,
-            tension: 0.4,
-          };
-          fetchedCpuData.push(googleData);
-        }
-      } catch (error) {
-        console.error(`Failed to fetch data for ${supplier}:`, error);
-      }
-    }
-    setFetchedCpuData(fetchedCpuData);
-  };
+  //     const filteredData = fetchedCpuData.map((data) => {
+  //       const filteredChartData = data.data
+  //         .filter((chartData) => {
+  //           const timestamp = new Date(chartData.timestamp);
+  //           return timestamp >= thirtyMinutesAgo && timestamp <= currentTime;
+  //         })
+  //         .map((chartData) => ({
+  //           ...chartData,
+  //           timestamp: chartData.timestamp.toISOString(),
+  //         }));
+  //       return { ...data, data: filteredChartData };
+  //     });
 
-  useEffect(() => {
-    if (isRealTime) {
-      const currentTime = new Date();
-      const thirtyMinutesAgo = new Date(currentTime.getTime() - 30 * 60000); // 30 minutes in milliseconds
+  //     setCpuData(filteredData);
+  //   } else {
+  //     setCpuData(fetchedCpuData);
+  //   }
+  // }, [isRealTime, fetchedCpuData]);
 
-      const filteredData = fetchedCpuData.map((data) => {
-        const filteredChartData = data.data
-          .filter((chartData) => {
-            const timestamp = new Date(chartData.timestamp);
-            return timestamp >= thirtyMinutesAgo && timestamp <= currentTime;
-          })
-          .map((chartData) => ({
-            ...chartData,
-            timestamp: chartData.timestamp.toISOString(),
-          }));
-        return { ...data, data: filteredChartData };
-      });
+  // useEffect(() => {
+  //   if (!isRealTime && startDate && endDate) {
+  //     const filteredData = fetchedCpuData.map((data) => {
+  //       const filteredChartData = data.data.filter((chartData) => {
+  //         const timestamp = new Date(chartData.TimeStamp);
+  //         return timestamp >= startDate && timestamp <= endDate;
+  //       });
+  //       return { ...data, data: filteredChartData };
+  //     });
 
-      setCpuData(filteredData);
-    } else {
-      setCpuData(fetchedCpuData);
-    }
-  }, [isRealTime, fetchedCpuData]);
-
-  useEffect(() => {
-    if (!isRealTime && startDate && endDate) {
-      const filteredData = fetchedCpuData.map((data) => {
-        const filteredChartData = data.data.filter((chartData) => {
-          const timestamp = new Date(chartData.TimeStamp);
-          return timestamp >= startDate && timestamp <= endDate;
-        });
-        return { ...data, data: filteredChartData };
-      });
-
-      setCpuData(filteredData);
-    } else {
-      setCpuData(fetchedCpuData);
-    }
-  }, [isRealTime, startDate, endDate, fetchedCpuData]);
+  //     setCpuData(filteredData);
+  //   } else {
+  //     setCpuData(fetchedCpuData);
+  //   }
+  // }, [isRealTime, startDate, endDate, fetchedCpuData]);
 
   const cpuGraphData = {
     // labels: ["11:00", "11:01", "11:02", "11:03", "11:04"],

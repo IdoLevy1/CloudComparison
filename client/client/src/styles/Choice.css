@@ -1,22 +1,21 @@
-.choice{
-    height: 55%;
-    align-items: center;
-    text-align: center;
-    margin-top: 50px;
-    /* display: flex; */
-    /* flex-direction: column; */
-    justify-content: center;
-
+.choice {
+  height: 55%;
+  align-items: center;
+  text-align: center;
+  margin-top: 50px;
+  /* display: flex; */
+  /* flex-direction: column; */
+  justify-content: center;
 }
 .choice .title {
-    font-size: 30px;
-    height: 60px;
-    font-weight: 0;
-    color: rgb(0, 0, 0);
-    font-family: cursive;
+  font-size: 30px;
+  height: 60px;
+  font-weight: 0;
+  color: rgb(0, 0, 0);
+  font-family: cursive;
 }
 .choice p {
-    /* display: flex; */
-    width: 1200px;
-  }
-  
+  /* display: flex; */
+  width: 1200px;
+  padding-left: 30px;
+}
