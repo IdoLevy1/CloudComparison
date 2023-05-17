@@ -11,11 +11,12 @@
     height: 100%;
     display: flex;
     align-items: center;
-    padding-left: 150px;
+    padding-left: 70px;
   }
   
   .navbar .leftSide img {
     width: 70px;
+    /* float: left; */
   }
   
   .navbar .rightSide {

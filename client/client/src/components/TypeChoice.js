@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
 const TypeChoice = (props) => {
-    const { selectedType, onTypeChange } = props;
-    const types = ["64GB-12CPU", "32GB-1CPU", "128GB-4CPU"];
+  const { selectedType, onTypeChange } = props;
+  const types = ["2cpu-4GB", "4cpu-16GB", "8cpu-32GB"];
 
-//   const onOptionChange = (e) => {
-//     setType(e.target.value);
-//   };
+  //   const onOptionChange = (e) => {
+  //     setType(e.target.value);
+  //   };
 
   // const handleSubmit = (event) => {
   //   event.preventDefault();
@@ -20,21 +20,21 @@ const TypeChoice = (props) => {
 
   return (
     <div className="typeChoice">
-      <h3>Select machine type</h3>
+      <h3>Select machine type:</h3>
       {types.map((type) => (
-          <div key={type}>
-            <label>
-              <input
-                type="checkbox"
-                name="type"
-                value={type}
-                checked={selectedType === type}
-                onChange={onTypeChange}
-              />
-              {type}
-            </label>
-          </div>
-          ))}
+        <div key={type}>
+          <label>
+            <input
+              type="checkbox"
+              name="type"
+              value={type}
+              checked={selectedType === type}
+              onChange={onTypeChange}
+            />
+            {type}
+          </label>
+        </div>
+      ))}
     </div>
   );
 };

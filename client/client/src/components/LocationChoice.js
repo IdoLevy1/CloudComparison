@@ -3,11 +3,11 @@ import "../styles/LocationChoice.css";
 
 const TypeChoice = (props) => {
   const { selectedLocation, onLocationChange } = props;
-  const locations = ["USA", "Europe", "Asia"];
+  const locations = ["Virginia", "UK", "Japan"];
 
-//   const onOptionChange = (e) => {
-//     setLocation(e.target.value);
-//   };
+  //   const onOptionChange = (e) => {
+  //     setLocation(e.target.value);
+  //   };
 
   // const handleSubmit = (event) => {
   //   event.preventDefault();
@@ -21,21 +21,21 @@ const TypeChoice = (props) => {
 
   return (
     <div className="locationChoice">
-      <h3>Select machine location</h3>
+      <h3>Select machine location:</h3>
       {locations.map((location) => (
-          <div key={location}>
-            <label>
-              <input
-                type="checkbox"
-                name="type"
-                value={location}
-                checked={selectedLocation === location}
-                onChange={onLocationChange}
-              />
-              {location}
-            </label>
-          </div>
-          ))}
+        <div key={location}>
+          <label>
+            <input
+              type="checkbox"
+              name="type"
+              value={location}
+              checked={selectedLocation === location}
+              onChange={onLocationChange}
+            />
+            {location}
+          </label>
+        </div>
+      ))}
     </div>
   );
 };

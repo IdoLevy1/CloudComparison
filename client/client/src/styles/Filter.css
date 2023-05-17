@@ -10,10 +10,25 @@
     margin-bottom: 20px; /* Add some bottom margin */
   }
   
+  .checkbox-grid h3 {
+    font-size: 28px;
+  font-weight: bold;
+  /* text-transform: uppercase; */
+  /* letter-spacing: 0.1rem; */
+  color: #333;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #333;
+  color: #3a0d76;
+  /* padding-bottom: 0.5rem; */
+  }
+
   .checkbox-grid label {
     display: block;
-    margin-bottom: 10px;
-    font-size: 16px; /* Increase font size */
+    margin-bottom: 20px;
+    font-size: 25px; /* Increase font size */
+    color:#333;
+    font-weight: bold;
+    color: #5313a6;
   }
   
   .checkbox-grid input[type="checkbox"] {
