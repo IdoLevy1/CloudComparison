@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DB.Models;
+using Microsoft.AspNetCore.Mvc;
 using Server.Models;
 
 namespace Server.Controllers
@@ -8,62 +9,50 @@ namespace Server.Controllers
     public class GoogleCloudController : ControllerBase
     {
         [HttpGet("GetMetricsFromVM")]
-        public void GetInfoFromVM(
-            [FromQuery(Name = "subscriptionId")] string SubscriptionId,
-            [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
-            [FromQuery(Name = "vmname")] string VirtualMachineName,
-            [FromQuery(Name = "timespan")] string TimeSpan,
-            [FromQuery(Name = "accessToken")] string AccessToken,
-            [FromQuery(Name = "machineType")] string MachineType,
-            [FromQuery(Name = "location")] string Location,
-            [FromQuery(Name = "memorySize")] int MemorySizeInGB)
+        public ActionResult GetInfoFromVM(
+            [FromQuery(Name = "ProjectId")] string ProjectId,
+            [FromQuery(Name = "InstanceId")] string InstanceId,
+            [FromQuery(Name = "StartTime")] string StartTime,
+            [FromQuery(Name = "EndTime")] string EndTime,
+            [FromQuery(Name = "JsonFileLocation")] string JsonFileLocation,
+            [FromQuery(Name = "MachineType")] string MachineType,
+            [FromQuery(Name = "Location")] string Location,
+            [FromQuery(Name = "MemorySize")] double MemorySizeInGB)
         {
+            try
+            {
+                VirtualMachineMetricsModel metrics;
+                // Due to low budget we are running only VM with RAM size up to 4GB, if we send bigger size we should insert dummy data
+                if (MemorySizeInGB > 4)
+                {
+                    metrics = GoogleCloud.InsertDummyInfoToDB(StartTime, MachineType, Location);
+                }
+                else
+                {
+                    metrics = GoogleCloud.InsertInfoToDB(ProjectId, InstanceId, StartTime, EndTime, JsonFileLocation, MachineType, Location);
+                }
 
+                return Ok(metrics);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetMetricsFromDB")]
-        public string GetInfoFromDB(
-            [FromQuery(Name = "machineType")] string MachineType,
-            [FromQuery(Name = "location")] string Location)
+        public ActionResult GetInfoFromDB(
+            [FromQuery(Name = "MachineType")] string MachineType,
+            [FromQuery(Name = "Location")] string Location)
         {
-            return string.Empty;
+            try
+            {
+                return Ok(GoogleCloud.GetInfoFromDB(MachineType, Location));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
-        //    public static object ReadTimeSeriesFields(string projectId,
-        //string metricType = "compute.googleapis.com/instance/cpu/utilization")
-        //    {
-        //        MetricServiceClient metricServiceClient = MetricServiceClient.Create();
-        //        // Initialize request argument(s).
-        //        string filter = $"metric.type=\"{metricType}\"";
-        //        ListTimeSeriesRequest request = new ListTimeSeriesRequest
-        //        {
-        //            ProjectName = new ProjectName(projectId),
-        //            Filter = filter,
-        //            Interval = new TimeInterval(),
-        //            View = ListTimeSeriesRequest.Types.TimeSeriesView.Headers,
-        //        };
-        //        // Create timestamp for current time formatted in seconds.
-        //        long timeStamp = (long)(DateTime.UtcNow - s_unixEpoch).TotalSeconds;
-        //        Timestamp startTimeStamp = new Timestamp();
-        //        // Set startTime to limit results to the last 20 minutes.
-        //        startTimeStamp.Seconds = timeStamp - (60 * 20);
-        //        Timestamp endTimeStamp = new Timestamp();
-        //        // Set endTime to current time.
-        //        endTimeStamp.Seconds = timeStamp;
-        //        TimeInterval interval = new TimeInterval();
-        //        interval.StartTime = startTimeStamp;
-        //        interval.EndTime = endTimeStamp;
-        //        request.Interval = interval;
-        //        // Make the request.
-        //        PagedEnumerable<ListTimeSeriesResponse, TimeSeries> response =
-        //            metricServiceClient.ListTimeSeries(request);
-        //        // Iterate over all response items, lazily performing RPCs as required.
-        //        Console.Write("Found data points for the following instances:");
-        //        foreach (var item in response)
-        //        {
-        //            Console.WriteLine(JObject.Parse($"{item}").ToString());
-        //        }
-        //        return 0;
-        //    }
     }
 }

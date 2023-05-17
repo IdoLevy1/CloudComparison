@@ -3,32 +3,42 @@ using System.Threading;
 
 namespace MemoryStressTest
 {
-    internal class Program
+    class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting memory stress test...");
+            Console.WriteLine("Starting Memory stress test");
 
-            long totalMemory = GC.GetTotalMemory(true);
-            Console.WriteLine("Total memory used before stress test: {0}", totalMemory);
-            long numBytes = 2;
+            int numCores = Environment.ProcessorCount;
+            double memoryInGB = double.Parse(args[0]);
+            long bytesPerThread = (long)((memoryInGB * Math.Pow(2, 30)) / (2 * numCores)); // total 0.5 of memory
 
+            for (int i = 0; i < numCores; i++)
+            {
+                new Thread(() => StressThread(bytesPerThread)).Start();
+            }
+        }
+
+        static void StressThread(long bytesPerThread)
+        {
             while (true)
             {
                 try
                 {
-                    byte[] buffer = new byte[numBytes];
-                    Thread.Sleep(10000); //memory allocation every 10 sec
-
+                    byte[] buffer = new byte[bytesPerThread];
+                    while (true)
+                    {
+                        Thread.Sleep(8000);
+                        for (int j = 0; j < buffer.Length; j++)
+                        {
+                            buffer[j]++;
+                        }
+                    }
                 }
-                catch //memory allocation failed
+                catch (Exception)
                 {
-                    numBytes = 2;
-                    totalMemory = GC.GetTotalMemory(true); //max memory allocation
-                    Console.WriteLine("Total memory used after stress test: {0}", totalMemory);
+                    continue;
                 }
-                numBytes = numBytes * 2;
-                Console.WriteLine("numBytes: {0}", numBytes);
             }
         }
     }

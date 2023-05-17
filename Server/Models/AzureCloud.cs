@@ -10,9 +10,10 @@ namespace Server.Models
     public class AzureCloud
     {
         private const string AzureCloudName = "AzureCloud";
-        private static readonly MongoHelper DB = new MongoHelper("DB");
+        private static readonly MongoHelper DB = new MongoHelper();
+        private static readonly Random Random = new Random();
 
-        public static void InsertInfoToDB(
+        public static VirtualMachineMetricsModel InsertInfoToDB(
             string SubscriptionId,
             string ResourceGroupName,
             string VirtualMachineName,
@@ -37,12 +38,28 @@ namespace Server.Models
             Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete
 
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
+            return metrics;
         }
 
-        public static string GetInfoFromDB(string MachineType, string Location)
+        public static VirtualMachineMetricsModel InsertDummyInfoToDB(string TimeSpan, string MachineType, string Location)
         {
-            var items = DB.LoadItems<VirtualMachineMetricsModel>(AzureCloudName + MachineType + Location);
-            return JsonConvert.SerializeObject(items);
+            string[] parts = TimeSpan.Split('/');
+            VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
+            {
+                TimeStamp = DateTime.ParseExact(parts[0], "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
+                PercentageCPU = Random.NextDouble() * 10 + 70, //change random range
+                PercentageMemory = Random.NextDouble() * 10 + 30, //change random range
+                IncomingTraffic = Random.NextDouble() * 10 + 350, //change random range
+                OutcomingTraffic = Random.NextDouble() * 10 + 40 //change random range
+            };
+
+            DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
+            return metrics;
+        }
+
+        public static List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
+        {
+            return DB.LoadItems<VirtualMachineMetricsModel>(AzureCloudName + MachineType + Location);
         }
 
         private static string BuildUrl(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string MetricName)
@@ -71,7 +88,8 @@ namespace Server.Models
             }
         }
         
-        private static dynamic GetMetricInfo(string SubscriptionId,
+        private static dynamic GetMetricInfo(
+            string SubscriptionId,
             string ResourceGroupName,
             string VirtualMachineName,
             string TimeSpan,
@@ -103,13 +121,13 @@ namespace Server.Models
         private static double GetNetworkInUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Network In");
-            return (info.total * 8) / Math.Pow(2, 20); // from bytes/sec to Mbits/sec
+            return (info.total * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
         }
 
         private static double GetNetworkOutUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Network Out");
-            return (info.total * 8) / Math.Pow(2, 20); // from bytes/sec to Mbits/sec
+            return (info.total * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
         }
     }
 }
