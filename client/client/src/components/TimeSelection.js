@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "../styles/TimeSelection.css";
 
 const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
   const [startDate, setStartDate] = useState("");
@@ -9,18 +12,28 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
     onSelectChange(value);
   };
 
-  const handleStartDateChange = (event) => {
-    const value = event.target.value;
-    const formattedStartDate = formatDateTime(value);
-    setStartDate(formattedStartDate);
-    onDateChange(formattedStartDate, endDate);
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+    if (endDate && date) {
+      onDateChange(date, endDate);
+    }
+    console.log(startDate);
   };
 
-  const handleEndDateChange = (event) => {
-    const value = event.target.value;
-    const formattedEndDate = formatDateTime(value);
-    setEndDate(formattedEndDate);
-    onDateChange(startDate, formattedEndDate);
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+    if (startDate && date) {
+      onDateChange(startDate, date);
+    }
+    console.log(endDate);
+  };
+
+  const handleSubmit = () => {
+    console.log(startDate);
+    console.log(endDate);
+    if (startDate && endDate) {
+      onDateChange(startDate, endDate);
+    }
   };
 
   const formatDateTime = (dateTime) => {
@@ -43,23 +56,38 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
   return (
     <div className="selection-container">
       <select onChange={handleSelectChange} className="selection">
-        <option value="real-time">Real-time</option>
         <option value="history">History</option>
+        <option value="real-time">Real-time</option>
       </select>
       {isRealTime ? null : (
         <div className="date-picker-container">
           <label>Start Date:</label>
-          <input
-            type="datetime-local"
-            value={startDate}
-            onChange={handleStartDateChange}
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            showTimeSelect
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            timeCaption="Time"
+            dateFormat="yyyy-MM-dd HH:mm"
+            minDate={new Date(2023, 4, 15)} // May is month 4 (zero-based)
+            maxDate={new Date(2023, 5, 30)} // June is month 5 (zero-based)
+            className="date-picker"
           />
           <label>End Date:</label>
-          <input
-            type="datetime-local"
-            value={endDate}
-            onChange={handleEndDateChange}
+          <DatePicker
+            selected={endDate}
+            onChange={(date) => setEndDate(date)}
+            showTimeSelect
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            timeCaption="Time"
+            dateFormat="yyyy-MM-dd HH:mm"
+            minDate={new Date(2023, 4, 15)} // May is month 4 (zero-based)
+            maxDate={new Date(2023, 5, 30)} // June is month 5 (zero-based)
+            className="date-picker"
           />
+          <button onClick={handleSubmit}>Submit</button>
         </div>
       )}
     </div>

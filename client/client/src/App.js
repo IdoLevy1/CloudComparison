@@ -14,7 +14,6 @@ function App() {
     <div className="App">
       {/* <h1>HI</h1> */}
       <div className="content">
-        {/* <InsertToDB /> */}
         <Router>
           <Navbar />
           <Routes>

@@ -1,14 +1,14 @@
-.graphs h2{
-    text-align: center;
-    font-size: 70px;
-    height: 60px;
-    -webkit-text-stroke: 1px rgb(114, 110, 110);
-    /* text-shadow: 5px black; */
-    color: #27273c;
-    font-family: Comic Sans, Comic Sans MS, cursive;
+.graphs h2 {
+  text-align: center;
+  font-size: 70px;
+  height: 60px;
+  -webkit-text-stroke: 1px rgb(114, 110, 110);
+  /* text-shadow: 5px black; */
+  color: #27273c;
+  font-family: Comic Sans, Comic Sans MS, cursive;
 }
 
-.selection-container {
+/* .selection-container {
   display: flex;
   justify-content: center;
   margin-top: 20px;
@@ -18,4 +18,4 @@
   padding: 10px;
   font-size: 16px;
   border-radius: 5px;
-}
+} */

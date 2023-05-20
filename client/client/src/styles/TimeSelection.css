@@ -1,0 +1,26 @@
+.selection-container {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-top: 20px;
+}
+
+.selection {
+  /* Add your custom styles here */
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  color: #333;
+  padding: 5px 10px;
+  font-size: 14px;
+  /* ... */
+}
+
+.date-picker {
+  /* Add your custom styles here */
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  color: #333;
+  padding: 5px 10px;
+  font-size: 14px;
+  /* ... */
+}

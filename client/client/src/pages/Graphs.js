@@ -23,121 +23,129 @@ ChartJS.register(
   Tooltip,
   Title
 );
-// { azureMachineData, googleMachineData }
+
 const Graphs = () => {
   const { state } = useLocation();
+
   const type = state.type;
   const location = state.location;
   const suppliers = state.suppliers;
-  const [isRealTime, setIsRealTime] = useState(true);
+  const [isRealTime, setIsRealTime] = useState(false);
   const [cpuData, setCpuData] = useState([]);
   const [labels, setLabels] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [fetchedCpuData, setFetchedCpuData] = useState([]);
+  const [fetchedCpuData, setFetchedCpuData] = useState({});
+  const [filteredLabels, setFilteredLabels] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  // const [googleMachineData, setGoogleMachineData] = useState([]);
 
-  // const filteredGoogleMachineData = googleMachineData.filter(
-  //   (machine) => machine.machineType === type && machine.location === location
-  // );
+  // console.log(type);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  // const fetchData = async () => {
-  //   const fetchedCpuData = [];
-  //   for (const supplier of suppliers) {
-  //     const supplierWithCloud = supplier + " Cloud";
-  //     let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromDB?MachineType=${type}&Location=${location}`;
+  const fetchData = async () => {
+    const fetchedCpuData = {};
 
-  //     try {
-  //       const response = await fetch(url);
-  //       const json = await response.json();
-  //       const supplierCpuData = {
-  //         label: supplier,
-  //         machineType: type,
-  //         location: location,
-  //         timestamp: json.Timestamp,
-  //         data: json.PercentageCPU,
-  //         backgroundColor: "#aa75b8",
-  //         borderColor: "#aa75b8",
-  //         pointBorderColor: "#aa75b8",
-  //         fill: true,
-  //         tension: 0.4,
-  //       };
+    for (const supplier of suppliers) {
+      if (supplier === "Google") {
+        const supplierWithCloud = supplier + "Cloud";
+        let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromDB?MachineType=${type}&Location=${location}`;
 
-  //       fetchedCpuData.push(supplierCpuData);
-  //       if (supplier === "Google" && filteredGoogleMachineData.length === 1) {
-  //         // Add filteredGoogleMachineData as-is to cpuData
-  //         const googleData = {
-  //           label: supplier,
-  //           machineType: type,
-  //           location: location,
-  //           timestamp: filteredGoogleMachineData[0].TimeStamp,
-  //           data: filteredGoogleMachineData[0].PercentageCPU,
-  //           backgroundColor: "#aa75b8",
-  //           borderColor: "#aa75b8",
-  //           pointBorderColor: "#aa75b8",
-  //           fill: true,
-  //           tension: 0.4,
-  //         };
-  //         fetchedCpuData.push(googleData);
-  //       }
-  //     } catch (error) {
-  //       console.error(`Failed to fetch data for ${supplier}:`, error);
-  //     }
-  //   }
-  //   setFetchedCpuData(fetchedCpuData);
-  // };
+        try {
+          const response = await fetch(url);
+          const json = await response.json();
+          const cpuPercentage = [];
+          const timeStamp = [];
+          // console.log(json.timeStamp);
+          for (const obj of json) {
+            cpuPercentage.push(obj.percentageCPU);
+            timeStamp.push(obj.timeStamp);
+          }
+          fetchedCpuData[supplier] = {
+            // label: supplier,
+            machineType: type,
+            location: location,
+            timeStamp: timeStamp,
+            data: cpuPercentage,
+            // backgroundColor: "#aa75b8",
+            // borderColor: "#aa75b8",
+            // pointBorderColor: "#aa75b8",
+            // fill: true,
+            // tension: 0.4,
+          };
+          setFetchedCpuData(fetchedCpuData);
+        } catch (error) {
+          console.error(`Failed to fetch data for ${supplier}:`, error);
+        }
+      }
+      // setFetchedCpuData(fetchedCpuData);
+      console.log(fetchedCpuData);
+    }
+  };
 
-  // useEffect(() => {
-  //   if (isRealTime) {
-  //     const currentTime = new Date();
-  //     const thirtyMinutesAgo = new Date(currentTime.getTime() - 30 * 60000); // 30 minutes in milliseconds
+  useEffect(() => {
+    if (!isRealTime && startDate && endDate) {
+      const labels = [];
+      const data = [];
 
-  //     const filteredData = fetchedCpuData.map((data) => {
-  //       const filteredChartData = data.data
-  //         .filter((chartData) => {
-  //           const timestamp = new Date(chartData.timestamp);
-  //           return timestamp >= thirtyMinutesAgo && timestamp <= currentTime;
-  //         })
-  //         .map((chartData) => ({
-  //           ...chartData,
-  //           timestamp: chartData.timestamp.toISOString(),
-  //         }));
-  //       return { ...data, data: filteredChartData };
-  //     });
+      Object.entries(fetchedCpuData).forEach(([supplier, supplierData]) => {
+        const { timeStamp, data: supplierDataArray } = supplierData;
 
-  //     setCpuData(filteredData);
-  //   } else {
-  //     setCpuData(fetchedCpuData);
-  //   }
-  // }, [isRealTime, fetchedCpuData]);
+        const filteredTimeStamps = timeStamp.filter((timestamp) => {
+          const timestampDate =
+            new Date(timestamp).toISOString().split(".")[0] + "Z";
+          return timestampDate >= startDate && timestampDate <= endDate;
+        });
+        const filteredDataValues = filteredTimeStamps.map((timestamp) => {
+          const index = timeStamp.indexOf(timestamp);
+          return supplierDataArray[index];
+        });
 
-  // useEffect(() => {
-  //   if (!isRealTime && startDate && endDate) {
-  //     const filteredData = fetchedCpuData.map((data) => {
-  //       const filteredChartData = data.data.filter((chartData) => {
-  //         const timestamp = new Date(chartData.TimeStamp);
-  //         return timestamp >= startDate && timestamp <= endDate;
-  //       });
-  //       return { ...data, data: filteredChartData };
-  //     });
+        labels.push(...filteredTimeStamps);
+        data.push(...filteredDataValues);
+      });
+      const formattedLabels = labels.map((timestamp) => {
+        const date = new Date(timestamp);
+        return date
+          .toLocaleString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: false,
+          })
+          .replace(",", "");
+      });
+      setFilteredLabels(formattedLabels);
+      setFilteredData(data);
+      console.log(formattedLabels);
+    }
+  }, [isRealTime, startDate, endDate, fetchedCpuData]);
 
-  //     setCpuData(filteredData);
-  //   } else {
-  //     setCpuData(fetchedCpuData);
-  //   }
-  // }, [isRealTime, startDate, endDate, fetchedCpuData]);
-
+  // const timestamps = Object.values(fetchedCpuData)
+  //   .map((supplierData) => supplierData.timestamp)
+  //   .flat();
   const cpuGraphData = {
-    // labels: ["11:00", "11:01", "11:02", "11:03", "11:04"],
-    labels: labels,
-    datasets: cpuData,
+    labels: filteredLabels,
+    datasets: Object.entries(fetchedCpuData).map(([supplier, supplierData]) => {
+      return {
+        label: supplier,
+        data: filteredData,
+        // Additional dataset options if needed
+        backgroundColor: "#aa75b8",
+        borderColor: "#aa75b8",
+        pointBorderColor: "#aa75b8",
+        fill: true,
+        tension: 0.4,
+      };
+    }),
   };
 
   const options = {
-    // responsive: true,
     plugins: {
       legend: true,
       title: {
@@ -153,7 +161,14 @@ const Graphs = () => {
         padding: { top: 15, left: 0, right: 0, bottom: 15 },
       },
     },
-
+    layout: {
+      padding: {
+        left: 50, // Adjust the left padding as needed
+        right: 50, // Adjust the right padding as needed
+        top: 0,
+        bottom: 0,
+      },
+    },
     scales: {
       x: {
         grid: {
@@ -166,6 +181,7 @@ const Graphs = () => {
             weight: "bold",
           },
           color: "black",
+          maxTicksLimit: 8,
         },
       },
       y: {
@@ -179,9 +195,12 @@ const Graphs = () => {
             weight: "bold",
           },
           color: "black",
+          stepSize: 30,
         },
+
         min: 0,
-        max: 100,
+        max: 180,
+        stepSize: 20,
       },
     },
   };
@@ -195,13 +214,15 @@ const Graphs = () => {
   };
 
   const handleDateChange = (start, end) => {
-    setStartDate(start);
-    setEndDate(end);
+    setStartDate(start.toISOString().split(".")[0] + "Z");
+    setEndDate(end.toISOString().split(".")[0] + "Z");
     console.log(startDate);
+    console.log(endDate);
   };
 
   return (
     <div className="graphs">
+      {/* <InsertToDB /> */}
       <h2>Results</h2>
       <TimeSelection
         onSelectChange={handleSelectChange}
@@ -220,9 +241,10 @@ const Graphs = () => {
           border: "1px solid black",
           borderRadius: "5px",
           padding: "20px",
+          paddingLeft: "5px",
           marginTop: "40px",
-          width: "600px",
-          height: "300px",
+          width: "1000px",
+          height: "500px",
         }}
       >
         <Line data={cpuGraphData} options={options} />
