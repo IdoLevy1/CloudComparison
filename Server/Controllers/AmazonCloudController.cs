@@ -21,10 +21,6 @@ namespace Server.Controllers
             [FromQuery(Name = "MemorySize")] double MemorySize)
         {
 
-            /*string accessKey = "AKIAY66XGYQBLKL26C4H";
-            string secretKey = "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";
-            string instanceId = "i-0ce2175aa4a732f97";*/
-            //2zDQELx@sKE8(Wx5grPiwsJ!A!i37lz*
             try
             {
                 AmazonCloud.InsertInfoToDB(AccessKey, SecretKey, InstanceId, StartTime, EndTime, MachineType, Location, MemorySize);
