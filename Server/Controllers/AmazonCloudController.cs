@@ -20,7 +20,6 @@ namespace Server.Controllers
             [FromQuery(Name = "Location")] string Location,
             [FromQuery(Name = "MemorySize")] double MemorySize)
         {
-
             try
             {
                 AmazonCloud.InsertInfoToDB(AccessKey, SecretKey, InstanceId, StartTime, EndTime, MachineType, Location, MemorySize);
