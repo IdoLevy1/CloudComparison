@@ -9,7 +9,7 @@ namespace CpuStressTest
         static void Main()
         {
             int numCores = Environment.ProcessorCount;
-            int desiredCpuUsagePercentage = 40; 
+            int desiredCpuUsagePercentage = 20; 
 
             Console.WriteLine($"Stressing CPU stress test with {numCores} cores...");
 
