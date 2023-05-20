@@ -1,19 +1,6 @@
-﻿using Amazon;
-using Amazon.CloudWatch;
-using Amazon.CloudWatch.Model;
-using Amazon.EC2.Model;
-using Amazon.ElasticBeanstalk.Model;
-using Amazon.Runtime;
-using Amazon.Util;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.Mvc;
-using RestSharp;
+﻿using Microsoft.AspNetCore.Mvc;
 using Server.Models;
-using System.Globalization;
-using System.Runtime.Intrinsics.Arm;
-using System.Runtime.Intrinsics.X86;
-using System.Security.Cryptography.Xml;
-using System.Security.Cryptography;
+using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 
 namespace Server.Controllers
 {
@@ -21,26 +8,50 @@ namespace Server.Controllers
     [ApiController]
     public class AmazonCloudController : ControllerBase
     {
+
         [HttpGet("GetMetricsFromVM")]
-        public void GetInfoFromVM(
-             [FromQuery(Name = "subscriptionId")] string SubscriptionId,
-             [FromQuery(Name = "resourceGroupName")] string ResourceGroupName,
-             [FromQuery(Name = "vmname")] string VirtualMachineName,
-             [FromQuery(Name = "timespan")] string TimeSpan,
-             [FromQuery(Name = "accessToken")] string AccessToken,
+        public ActionResult GetInfoFromVM(
+            [FromQuery(Name = "AccessKey")] string AccessKey,
+            [FromQuery(Name = "SecretKey")] string SecretKey,
+            [FromQuery(Name = "InstanceId")] string InstanceId,
+            [FromQuery(Name = "StartTime")] string StartTime,
+            [FromQuery(Name = "EndTime")] string EndTime,
+            [FromQuery(Name = "MachineType")] string MachineType,
+            [FromQuery(Name = "Location")] string Location,
+            [FromQuery(Name = "MemorySize")] double MemorySize)
+        {
+
+            /*string accessKey = "AKIAY66XGYQBLKL26C4H";
+            string secretKey = "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";
+            string instanceId = "i-0ce2175aa4a732f97";*/
+            //2zDQELx@sKE8(Wx5grPiwsJ!A!i37lz*
+            try
+            {
+                AmazonCloud.InsertInfoToDB(AccessKey, SecretKey, InstanceId, StartTime, EndTime, MachineType, Location, MemorySize);
+
+                return Ok("Success");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /* [HttpGet("GetMetricsFromDB")]
+         public ActionResult GetInfoFromDB(
              [FromQuery(Name = "machineType")] string MachineType,
-             [FromQuery(Name = "location")] string Location,
-             [FromQuery(Name = "memorySize")] int MemorySizeInGB)
-        {
+             [FromQuery(Name = "location")] string Location)
+         {
+             try
+             {
+                 return Ok(AmazonCloud.GetInfoFromDB(MachineType, Location));
+             }
+             catch (Exception ex)
+             {
+                 return BadRequest(ex.Message);
+             }
+         }*/
 
-        }
-
-        [HttpGet("GetMetricsFromDB")]
-        public string GetInfoFromDB(
-            [FromQuery(Name = "machineType")] string MachineType,
-            [FromQuery(Name = "location")] string Location)
-        {
-            return string.Empty;
-        }
     }
 }
+
