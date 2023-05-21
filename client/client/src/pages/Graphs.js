@@ -30,17 +30,19 @@ const Graphs = () => {
   const type = state.type;
   const location = state.location;
   const suppliers = state.suppliers;
+
   const [isRealTime, setIsRealTime] = useState(false);
-  const [cpuData, setCpuData] = useState([]);
-  const [labels, setLabels] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [fetchedCpuData, setFetchedCpuData] = useState({});
   const [filteredLabels, setFilteredLabels] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  // const [googleMachineData, setGoogleMachineData] = useState([]);
-
-  // console.log(type);
+  const [fetchedCpuData, setFetchedCpuData] = useState({});
+  const [filteredCpuData, setFilteredCpuData] = useState([]);
+  const [fetchedMemoryData, setFetchedMemoryData] = useState({});
+  const [filteredMemoryData, setFilteredMemoryData] = useState([]);
+  const [fetchedInTrafficData, setFetchedInTrafficData] = useState({});
+  const [filteredInTrafficData, setFilteredInTrafficData] = useState([]);
+  const [fetchedOutTrafficData, setFetchedOutTrafficData] = useState({});
+  const [filteredOutTrafficData, setFilteredOutTrafficData] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -58,25 +60,50 @@ const Graphs = () => {
           const response = await fetch(url);
           const json = await response.json();
           const cpuPercentage = [];
+          const memoryPercentage = [];
+          const inTraffic = [];
+          const outTraffic = [];
           const timeStamp = [];
           // console.log(json.timeStamp);
           for (const obj of json) {
             cpuPercentage.push(obj.percentageCPU);
+            memoryPercentage.push(obj.percentageMemory);
+            inTraffic.push(obj.incomingTraffic);
+            outTraffic.push(obj.outcomingTraffic);
             timeStamp.push(obj.timeStamp);
           }
+
           fetchedCpuData[supplier] = {
-            // label: supplier,
             machineType: type,
             location: location,
             timeStamp: timeStamp,
             data: cpuPercentage,
-            // backgroundColor: "#aa75b8",
-            // borderColor: "#aa75b8",
-            // pointBorderColor: "#aa75b8",
-            // fill: true,
-            // tension: 0.4,
           };
           setFetchedCpuData(fetchedCpuData);
+
+          fetchedMemoryData[supplier] = {
+            machineType: type,
+            location: location,
+            timeStamp: timeStamp,
+            data: memoryPercentage,
+          };
+          setFetchedMemoryData(fetchedMemoryData);
+
+          fetchedInTrafficData[supplier] = {
+            machineType: type,
+            location: location,
+            timeStamp: timeStamp,
+            data: inTraffic,
+          };
+          setFetchedInTrafficData(fetchedInTrafficData);
+
+          fetchedOutTrafficData[supplier] = {
+            machineType: type,
+            location: location,
+            timeStamp: timeStamp,
+            data: outTraffic,
+          };
+          setFetchedOutTrafficData(fetchedOutTrafficData);
         } catch (error) {
           console.error(`Failed to fetch data for ${supplier}:`, error);
         }
@@ -89,7 +116,10 @@ const Graphs = () => {
   useEffect(() => {
     if (!isRealTime && startDate && endDate) {
       const labels = [];
-      const data = [];
+      const cpuData = [];
+      const memoryData = [];
+      const inTrafficData = [];
+      const outTrafficData = [];
 
       Object.entries(fetchedCpuData).forEach(([supplier, supplierData]) => {
         const { timeStamp, data: supplierDataArray } = supplierData;
@@ -99,14 +129,37 @@ const Graphs = () => {
             new Date(timestamp).toISOString().split(".")[0] + "Z";
           return timestampDate >= startDate && timestampDate <= endDate;
         });
-        const filteredDataValues = filteredTimeStamps.map((timestamp) => {
+
+        const filteredCpuValues = filteredTimeStamps.map((timestamp) => {
           const index = timeStamp.indexOf(timestamp);
           return supplierDataArray[index];
         });
 
+        const memoryDataArray = fetchedMemoryData[supplier]?.data || [];
+        const filteredMemoryValues = filteredTimeStamps.map((timestamp) => {
+          const index = timeStamp.indexOf(timestamp);
+          return memoryDataArray[index];
+        });
+
+        const inTrafficDataArray = fetchedInTrafficData[supplier]?.data || [];
+        const filteredInTrafficValues = filteredTimeStamps.map((timestamp) => {
+          const index = timeStamp.indexOf(timestamp);
+          return inTrafficDataArray[index];
+        });
+
+        const outTrafficDataArray = fetchedOutTrafficData[supplier]?.data || [];
+        const filteredOutTrafficValues = filteredTimeStamps.map((timestamp) => {
+          const index = timeStamp.indexOf(timestamp);
+          return outTrafficDataArray[index];
+        });
+
         labels.push(...filteredTimeStamps);
-        data.push(...filteredDataValues);
+        cpuData.push(...filteredCpuValues);
+        memoryData.push(...filteredMemoryValues);
+        inTrafficData.push(...filteredInTrafficValues);
+        outTrafficData.push(...filteredOutTrafficValues);
       });
+
       const formattedLabels = labels.map((timestamp) => {
         const date = new Date(timestamp);
         return date
@@ -120,22 +173,30 @@ const Graphs = () => {
           })
           .replace(",", "");
       });
-      setFilteredLabels(formattedLabels);
-      setFilteredData(data);
-      console.log(formattedLabels);
-    }
-  }, [isRealTime, startDate, endDate, fetchedCpuData]);
 
-  // const timestamps = Object.values(fetchedCpuData)
-  //   .map((supplierData) => supplierData.timestamp)
-  //   .flat();
+      setFilteredLabels(formattedLabels);
+      setFilteredCpuData(cpuData);
+      setFilteredMemoryData(memoryData);
+      setFilteredInTrafficData(inTrafficData);
+      setFilteredOutTrafficData(outTrafficData);
+      console.log(inTrafficData);
+    }
+  }, [
+    isRealTime,
+    startDate,
+    endDate,
+    fetchedCpuData,
+    fetchedMemoryData,
+    fetchedInTrafficData,
+    fetchedOutTrafficData,
+  ]);
+
   const cpuGraphData = {
     labels: filteredLabels,
     datasets: Object.entries(fetchedCpuData).map(([supplier, supplierData]) => {
       return {
         label: supplier,
-        data: filteredData,
-        // Additional dataset options if needed
+        data: filteredCpuData,
         backgroundColor: "#aa75b8",
         borderColor: "#aa75b8",
         pointBorderColor: "#aa75b8",
@@ -145,12 +206,61 @@ const Graphs = () => {
     }),
   };
 
+  const memoryGraphData = {
+    labels: filteredLabels,
+    datasets: Object.entries(fetchedMemoryData).map(
+      ([supplier, supplierData]) => {
+        return {
+          label: supplier,
+          data: filteredMemoryData,
+          backgroundColor: "#aa75b8",
+          borderColor: "#aa75b8",
+          pointBorderColor: "#aa75b8",
+          fill: true,
+          tension: 0.4,
+        };
+      }
+    ),
+  };
+  const inTrafficGraphData = {
+    labels: filteredLabels,
+    datasets: Object.entries(fetchedInTrafficData).map(
+      ([supplier, supplierData]) => {
+        return {
+          label: supplier,
+          data: filteredInTrafficData,
+          backgroundColor: "#aa75b8",
+          borderColor: "#aa75b8",
+          pointBorderColor: "#aa75b8",
+          fill: true,
+          tension: 0.4,
+        };
+      }
+    ),
+  };
+
+  const outTrafficGraphData = {
+    labels: filteredLabels,
+    datasets: Object.entries(fetchedOutTrafficData).map(
+      ([supplier, supplierData]) => {
+        return {
+          label: supplier,
+          data: filteredOutTrafficData,
+          backgroundColor: "#aa75b8",
+          borderColor: "#aa75b8",
+          pointBorderColor: "#aa75b8",
+          fill: true,
+          tension: 0.4,
+        };
+      }
+    ),
+  };
   const options = {
     plugins: {
       legend: true,
       title: {
         display: true,
-        text: "CPU percentage",
+        // text: "",
         color: "#516",
         font: {
           family: "Comic Sans MS",
@@ -220,58 +330,83 @@ const Graphs = () => {
     console.log(endDate);
   };
 
+  const graphStyle = {
+    display: "inline-block",
+    border: "1px solid black",
+    borderRadius: "5px",
+    padding: "20px",
+    marginTop: "40px",
+    width: "1000px",
+    height: "500px",
+  };
+
   return (
     <div className="graphs">
-      {/* <InsertToDB /> */}
       <h2>Results</h2>
       <TimeSelection
         onSelectChange={handleSelectChange}
         onDateChange={handleDateChange}
         isRealTime={isRealTime}
       />
-      {/* <div className="selection-container">
-        <select onChange={handleSelectChange} className="selection">
-          <option value="real-time">Real-time</option>
-          <option value="history">History</option>
-        </select>
-      </div> */}
-      <div
-        style={{
-          display: "inline-block",
-          border: "1px solid black",
-          borderRadius: "5px",
-          padding: "20px",
-          paddingLeft: "5px",
-          marginTop: "40px",
-          width: "1000px",
-          height: "500px",
-        }}
-      >
-        <Line data={cpuGraphData} options={options} />
-        {/* <div
-            style={{
-              display: "inline-block",
-              border: "1px solid black",
-              borderRadius: "5px",
-              padding: "20px",
-              marginTop: "40px",
-              width: "600px",
-              height: "300px",
-            }}
-          >
-            <Line data={cpuGraphData} options={options} />
-            <Line data={cpuGraphData} options={options} />
-            <Line data={cpuGraphData} options={options} /> */}
-        {/* <CPU labels={labels} percentage={cpuPercentages} />
-          <Memory labels={labels} percentage={percentageMemory} />
-          <Network
-            labels={labels}
-            incomingTraffic={incomingTraffic}
-            outcomingTraffic={outcomingTraffic}
-          />
-          {/* <h9>The selected value is: {type}</h9>
-          <h8> {location}</h8> */}
-        {/* </div> */}
+      <div style={graphStyle}>
+        <Line
+          data={cpuGraphData}
+          options={{
+            ...options,
+            plugins: {
+              ...options.plugins,
+              title: {
+                ...options.plugins.title,
+                text: "Cpu percentage",
+              },
+            },
+          }}
+        />
+      </div>
+      <div style={graphStyle}>
+        <Line
+          data={memoryGraphData}
+          options={{
+            ...options,
+            plugins: {
+              ...options.plugins,
+              title: {
+                ...options.plugins.title,
+                text: "Memory percentage",
+              },
+            },
+          }}
+        />
+      </div>
+      <div style={graphStyle}>
+        <Line
+          data={inTrafficGraphData}
+          options={{
+            ...options,
+            plugins: {
+              ...options.plugins,
+              title: {
+                ...options.plugins.title,
+                text: "Incoming traffic percentage",
+              },
+            },
+          }}
+        />
+      </div>
+      <div style={graphStyle}>
+        <Line
+          data={outTrafficGraphData}
+          options={{
+            ...options,
+            plugins: {
+              ...options.plugins,
+              title: {
+                ...options.plugins.title,
+                text: "Outcoming traffic percentage",
+              },
+            },
+          }}
+        />
       </div>
     </div>
   );
