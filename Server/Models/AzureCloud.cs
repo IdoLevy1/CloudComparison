@@ -13,7 +13,7 @@ namespace Server.Models
         private static readonly MongoHelper DB = new MongoHelper();
         private static readonly Random Random = new Random();
 
-        public static VirtualMachineMetricsModel InsertInfoToDB(
+        public static void InsertInfoToDB(
             string SubscriptionId,
             string ResourceGroupName,
             string VirtualMachineName,
@@ -38,7 +38,6 @@ namespace Server.Models
             Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete
 
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
-            return metrics;
         }
 
         public static VirtualMachineMetricsModel InsertDummyInfoToDB(string TimeSpan, string MachineType, string Location)
@@ -60,6 +59,11 @@ namespace Server.Models
         public static List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
         {
             return DB.LoadItems<VirtualMachineMetricsModel>(AzureCloudName + MachineType + Location);
+        }
+
+        public static List<VirtualMachineMetricsModel> LoadItemsFromTimeStamp(string MachineType, string Location, string TimeStamp)
+        {
+            return DB.LoadItemsFromTimeStamp(AzureCloudName + MachineType + Location, DateTime.ParseExact(TimeStamp, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
         }
 
         private static string BuildUrl(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string MetricName)

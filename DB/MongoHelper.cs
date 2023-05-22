@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using DB.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace DB
@@ -23,6 +24,14 @@ namespace DB
         {
             var collection = db.GetCollection<T>(table);
             return collection.Find(new BsonDocument()).ToList();
+        }
+
+        public List<VirtualMachineMetricsModel> LoadItemsFromTimeStamp(string table, DateTime time)
+        {
+            var collection = db.GetCollection<VirtualMachineMetricsModel>(table);
+            return collection.AsQueryable()
+                .Where(metric => metric.TimeStamp >= time)
+                .ToList();
         }
     }
 }
