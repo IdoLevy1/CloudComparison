@@ -263,7 +263,7 @@ const Graphs = () => {
         // text: "",
         color: "#516",
         font: {
-          family: "Comic Sans MS",
+          family: "Tahoma",
           size: 20,
           weight: "bold",
           lineHeight: 1.2,
@@ -305,12 +305,12 @@ const Graphs = () => {
             weight: "bold",
           },
           color: "black",
-          stepSize: 30,
+          // stepSize: 30,
         },
 
-        min: 0,
-        max: 180,
-        stepSize: 20,
+        // min: 0,
+        // max: 180,
+        // stepSize: 20,
       },
     },
   };
@@ -339,7 +339,85 @@ const Graphs = () => {
     width: "1000px",
     height: "500px",
   };
+  const cpuGraphOptions = {
+    ...options,
+    plugins: {
+      ...options.plugins,
+      title: {
+        ...options.plugins.title,
+        text: "CPU Percentage",
+      },
+    },
+    scales: {
+      ...options.scales,
+      y: {
+        ...options.scales.y,
+        min: 0,
+        max: 180,
+        stepSize: 40,
+      },
+    },
+  };
 
+  const memoryGraphOptions = {
+    ...options,
+    plugins: {
+      ...options.plugins,
+      title: {
+        ...options.plugins.title,
+        text: "Memory Percentage",
+      },
+    },
+    scales: {
+      ...options.scales,
+      y: {
+        ...options.scales.y,
+        min: 0,
+        max: 40,
+        stepSize: 10,
+      },
+    },
+  };
+
+  const inTrafficGraphOptions = {
+    ...options,
+    plugins: {
+      ...options.plugins,
+      title: {
+        ...options.plugins.title,
+        text: "Incoming Traffic Percentage",
+      },
+    },
+    scales: {
+      ...options.scales,
+      y: {
+        ...options.scales.y,
+        min: 0,
+        max: 180,
+        stepSize: 40,
+      },
+    },
+  };
+
+  const outTrafficGraphOptions = {
+    ...options,
+    plugins: {
+      ...options.plugins,
+      title: {
+        ...options.plugins.title,
+        text: "Outgoing Traffic Percentage",
+      },
+    },
+    scales: {
+      ...options.scales,
+      y: {
+        ...options.scales.y,
+        min: 0,
+        max: 0.5,
+        stepSize: 0.4,
+      },
+    },
+  };
   return (
     <div className="graphs">
       <h2>Results</h2>
@@ -348,148 +426,32 @@ const Graphs = () => {
         onDateChange={handleDateChange}
         isRealTime={isRealTime}
       />
-      <div style={graphStyle}>
-        <Line
-          data={cpuGraphData}
-          options={{
-            ...options,
-            plugins: {
-              ...options.plugins,
-              title: {
-                ...options.plugins.title,
-                text: "Cpu percentage",
-              },
-            },
-          }}
-        />
+      <div className="graph-row">
+        <div className="graph-container">
+          <div className="graph">
+            <Line data={cpuGraphData} options={cpuGraphOptions} />
+          </div>
+        </div>
+        <div className="graph-container">
+          <div className="graph">
+            <Line data={memoryGraphData} options={memoryGraphOptions} />
+          </div>
+        </div>
       </div>
-      <div style={graphStyle}>
-        <Line
-          data={memoryGraphData}
-          options={{
-            ...options,
-            plugins: {
-              ...options.plugins,
-              title: {
-                ...options.plugins.title,
-                text: "Memory percentage",
-              },
-            },
-          }}
-        />
-      </div>
-      <div style={graphStyle}>
-        <Line
-          data={inTrafficGraphData}
-          options={{
-            ...options,
-            plugins: {
-              ...options.plugins,
-              title: {
-                ...options.plugins.title,
-                text: "Incoming traffic percentage",
-              },
-            },
-          }}
-        />
-      </div>
-      <div style={graphStyle}>
-        <Line
-          data={outTrafficGraphData}
-          options={{
-            ...options,
-            plugins: {
-              ...options.plugins,
-              title: {
-                ...options.plugins.title,
-                text: "Outcoming traffic percentage",
-              },
-            },
-          }}
-        />
+      <div className="graph-row">
+        <div className="graph-container">
+          <div className="graph">
+            <Line data={inTrafficGraphData} options={inTrafficGraphOptions} />
+          </div>
+        </div>
+        <div className="graph-container">
+          <div className="graph">
+            <Line data={outTrafficGraphData} options={outTrafficGraphOptions} />
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default Graphs;
-
-// const cpuData = [
-//     {
-//       label: "Amazon",
-//       // data: json.PercentageCPU,
-//       data: [72, 60, 69, 78, 59],
-//       backgroundColor: "#2875b8",
-//       borderColor: "#2875b8",
-//       pointBorderColor: "#2875b8",
-//       fill: true,
-//       tension: 0.4,
-//     },
-//     {
-//       label: "Azure",
-//       // data: json.PercentageCPU,
-//       data: [69, 73, 69, 81, 83],
-//       backgroundColor: "#aa75b8",
-//       borderColor: "#aa75b8",
-//       pointBorderColor: "#aa75b8",
-//       fill: true,
-//       tension: 0.4,
-//     },
-//   ];
-// if (supplier === "Google") {
-//   url += `&startTime=${
-//     startTime.toISOString().split(".")[0] + "Z"
-//   }&endTime=${endTime.toISOString().split(".")[0] + "Z"}`;
-// } else if (supplier === "Azure") {
-//   url += `&timespan=${
-//     startTime.toISOString().split(".")[0] +
-//     "Z/" +
-//     endTime.toISOString().split(".")[0] +
-//     "Z"
-//   }`;
-// }
-// const setHistoryData = (url, supplier) => {
-//   const now = new Date();
-//   const endTime = new Date(now.getTime() - 10 * 60 * 60 * 1000);
-//   const startTime = new Date(now.getTime() - 12 * 60 * 60 * 1000);
-
-//   const labels = [];
-//   let currentTime = new Date(startTime.getTime());
-
-//   while (currentTime < endTime) {
-//     const label = `${currentTime.getDate()}/${
-//       currentTime.getMonth() + 1
-//     } ${currentTime.getHours()}:${currentTime.getMinutes()}:${currentTime.getSeconds()}`;
-//     labels.push(label);
-//     currentTime.setMinutes(currentTime.getMinutes() + 10);
-//   }
-
-//   const startLabel = `${startTime.getDate()}/${
-//     startTime.getMonth() + 1
-//   } ${startTime.getHours()}:${startTime.getMinutes()}:${startTime.getSeconds()}`;
-//   const endLabel = `${endTime.getDate()}/${
-//     endTime.getMonth() + 1
-//   } ${endTime.getHours()}:${endTime.getMinutes()}:${endTime.getSeconds()}`;
-
-//   setLabels([startLabel, ...labels, endLabel]);
-// };
-
-// const setRealtimeData = (url, supplier) => {
-//   const endTime = new Date();
-//   const startTime = new Date(endTime.getTime() - 1 * 60 * 1000);
-
-//   const endLabel = `${endTime.getDate()}/${
-//     endTime.getMonth() + 1
-//   } ${endTime.getHours()}:${endTime.getMinutes()}:${endTime.getSeconds()}`;
-//   setLabels((prevLabels) => {
-//     if (prevLabels.length >= 5) {
-//       // Remove the last label and add the new label at the beginning
-//       return [endLabel, ...prevLabels.slice(0, prevLabels.length - 1)];
-//     } else if (!prevLabels.includes(endLabel)) {
-//       // Add the new label at the beginning
-//       return [endLabel, ...prevLabels];
-//     } else {
-//       return [endLabel];
-//     }
-//   });
-// };

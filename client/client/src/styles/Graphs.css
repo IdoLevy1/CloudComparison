@@ -1,21 +1,35 @@
+.graphs {
+  background-color: #f2f2f2;
+  padding: 20px;
+  /* margin-bottom: 30px; */
+  border: 1px solid #ccc;
+}
+
 .graphs h2 {
   text-align: center;
   font-size: 70px;
-  height: 60px;
+  height: 50px;
   -webkit-text-stroke: 1px rgb(114, 110, 110);
   /* text-shadow: 5px black; */
   color: #27273c;
-  font-family: Comic Sans, Comic Sans MS, cursive;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-/* .selection-container {
+.graphs .graph-row {
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
-.selection {
-  padding: 10px;
-  font-size: 16px;
+.graphs .graph-container {
+  flex-basis: 49%;
+  margin-bottom: 20px;
+}
+
+.graphs .graph {
+  border: 1px solid black;
   border-radius: 5px;
-} */
+  padding: 20px;
+  width: 93%;
+  height: 300px;
+}
