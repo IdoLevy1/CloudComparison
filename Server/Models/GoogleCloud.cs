@@ -13,7 +13,7 @@ namespace Server.Models
         private static readonly MongoHelper DB = new MongoHelper();
         private static readonly Random Random = new Random();
 
-        public static VirtualMachineMetricsModel InsertInfoToDB(
+        public static void InsertInfoToDB(
             string ProjectId,
             string InstanceId,
             string StartTime,
@@ -40,10 +40,9 @@ namespace Server.Models
             Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete
 
             DB.InsertItem(GoogleCloudName + MachineType + Location, metrics);
-            return metrics;
         }
 
-        public static VirtualMachineMetricsModel InsertDummyInfoToDB(string StartTime, string MachineType, string Location)
+        public static void InsertDummyInfoToDB(string StartTime, string MachineType, string Location)
         {
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
             {
@@ -55,12 +54,16 @@ namespace Server.Models
             };
 
             DB.InsertItem(GoogleCloudName + MachineType + Location, metrics);
-            return metrics;
         }
 
         public static List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
         {
             return DB.LoadItems<VirtualMachineMetricsModel>(GoogleCloudName + MachineType + Location);
+        }
+
+        public static List<VirtualMachineMetricsModel> LoadItemsFromTimeStamp(string MachineType, string Location, string TimeStamp)
+        {
+            return DB.LoadItemsFromTimeStamp(GoogleCloudName + MachineType + Location, DateTime.ParseExact(TimeStamp, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
         }
 
         private static Timestamp ParseFromString(string DateTimeString)

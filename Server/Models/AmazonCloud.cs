@@ -2,7 +2,6 @@
 using Amazon.CloudWatch.Model;
 using DB;
 using DB.Models;
-using Google.Protobuf.WellKnownTypes;
 using System.Globalization;
 
 namespace Server.Models
@@ -13,7 +12,7 @@ namespace Server.Models
         private static readonly MongoHelper DB = new MongoHelper();
         private static readonly Random Random = new Random();
 
-        public static VirtualMachineMetricsModel InsertInfoToDB(
+        public static void InsertInfoToDB(
             string AccessKey,
             string SecretKey,
             string InstanceId,
@@ -40,10 +39,9 @@ namespace Server.Models
             Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete
 
             DB.InsertItem(AmazonCloudName + MachineType + Location, metrics);
-            return metrics;
         }
 
-        public static VirtualMachineMetricsModel InsertDummyInfoToDB(string StartTime, string MachineType, string Location)
+        public static void InsertDummyInfoToDB(string StartTime, string MachineType, string Location)
         {
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
             {
@@ -55,12 +53,16 @@ namespace Server.Models
             };
 
             DB.InsertItem(AmazonCloudName + MachineType + Location, metrics);
-            return metrics;
         }
 
         public static List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
         {
             return DB.LoadItems<VirtualMachineMetricsModel>(AmazonCloudName + MachineType + Location);
+        }
+
+        public static List<VirtualMachineMetricsModel> LoadItemsFromTimeStamp(string MachineType, string Location, string TimeStamp)
+        {
+            return DB.LoadItemsFromTimeStamp(AmazonCloudName + MachineType + Location, DateTime.ParseExact(TimeStamp, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
         }
 
         private static dynamic GetMetricInfo(
@@ -92,9 +94,7 @@ namespace Server.Models
             };
 
             GetMetricStatisticsResponse response = cloudWatchClient.GetMetricStatisticsAsync(request).GetAwaiter().GetResult();
-
-            var info = GetInfoFromResponse(response);
-            return info;
+            return GetInfoFromResponse(response);
         }
 
 
@@ -113,13 +113,13 @@ namespace Server.Models
         private static double GetNetworkInUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime)
         {
             var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, "NetworkIn");
-            return (info * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
+            return (info * 8) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
         }
 
         private static double GetNetworkOutUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime)
         {
             var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, "NetworkOut");
-            return (info * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
+            return (info * 8) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
         }
 
         private static dynamic GetMemoryInfo
