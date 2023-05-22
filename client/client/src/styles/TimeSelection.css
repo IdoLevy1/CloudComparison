@@ -30,7 +30,7 @@
   padding: 10px 20px;
   margin-bottom: 15px;
   margin-top: 10px;
-  background-color: #365f50;
+  background-color: #4b4c51;
   color: white;
   border: none;
   border-radius: 5px;
@@ -39,5 +39,5 @@
 }
 
 .date-picker-container button:hover {
-  background-color: #0056b3;
+  background-color: #6d7985;
 }
