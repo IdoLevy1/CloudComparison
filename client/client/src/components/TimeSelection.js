@@ -12,22 +12,6 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
     onSelectChange(value);
   };
 
-  const handleStartDateChange = (date) => {
-    setStartDate(date);
-    if (endDate && date) {
-      onDateChange(date, endDate);
-    }
-    console.log(startDate);
-  };
-
-  const handleEndDateChange = (date) => {
-    setEndDate(date);
-    if (startDate && date) {
-      onDateChange(startDate, date);
-    }
-    console.log(endDate);
-  };
-
   const handleSubmit = () => {
     console.log(startDate);
     console.log(endDate);
@@ -39,8 +23,8 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
   return (
     <div className="selection-container">
       <select onChange={handleSelectChange} className="selection">
-        <option value="history">History</option>
         <option value="real-time">Real-time</option>
+        <option value="history">History</option>
       </select>
       {isRealTime ? null : (
         <div className="date-picker-container">
@@ -77,12 +61,6 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
           <button onClick={handleSubmit}>Submit</button>
         </div>
       )}
-      {/* {!isRealTime && (
-        <>
-          <br />
-          <button onClick={handleSubmit}>Submit</button>
-        </>
-      )} */}
     </div>
   );
 };

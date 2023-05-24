@@ -1,4 +1,4 @@
-.selection-container {
+/* .selection-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,9 +24,9 @@
 
 .date-picker-container .date-picker {
   margin-bottom: 10px;
-}
+} */
 
-.date-picker-container button {
+/* .date-picker-container button {
   padding: 10px 20px;
   margin-bottom: 15px;
   margin-top: 10px;
@@ -40,4 +40,4 @@
 
 .date-picker-container button:hover {
   background-color: #6d7985;
-}
+} */

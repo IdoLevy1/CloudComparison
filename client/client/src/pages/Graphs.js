@@ -31,7 +31,7 @@ const Graphs = () => {
   const location = state.location;
   const suppliers = state.suppliers;
 
-  const [isRealTime, setIsRealTime] = useState(false);
+  const [isRealTime, setIsRealTime] = useState(true);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [filteredLabels, setFilteredLabels] = useState([]);
@@ -41,126 +41,223 @@ const Graphs = () => {
   const [filteredMemoryData, setFilteredMemoryData] = useState([]);
   const [fetchedInTrafficData, setFetchedInTrafficData] = useState({});
   const [filteredInTrafficData, setFilteredInTrafficData] = useState([]);
-  const [fetchedOutTrafficData, setFetchedOutTrafficData] = useState({});
+  const [fetchedOutTrafficData, setFetchedOutTrafficData] = useState([]);
   const [filteredOutTrafficData, setFilteredOutTrafficData] = useState([]);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (isRealTime) {
+      fetchDataRealTime(); // Fetch initial data based on isRealTime value
 
-  const fetchData = async () => {
-    const fetchedCpuData = {};
+      const intervalId = setInterval(fetchDataRealTime, 60000); // Fetch data every minute
+
+      return () => {
+        clearInterval(intervalId); // Clear the interval when the component unmounts or when isRealTime changes to false
+      };
+    } else {
+      fetchDataHistory();
+    }
+  }, [isRealTime]);
+
+  const fetchDataRealTime = async () => {
+    const now = new Date();
+    const sixMinutesAgo = new Date(now.getTime() - 6 * 60 * 1000); // Subtract 5 minutes from the current time
+
+    const isoTimestamp = sixMinutesAgo.toISOString().split(".")[0] + "Z";
+    console.log(isoTimestamp);
+    for (const supplier of suppliers) {
+      const supplierWithCloud = supplier + "Cloud";
+      let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromTimeStamp?MachineType=${type}&Location=${location}&TimeStamp=${isoTimestamp}`;
+      // } else {
+      //   url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromDB?MachineType=${type}&Location=${location}`;
+      // }
+
+      try {
+        const response = await fetch(url);
+        const json = await response.json();
+
+        const timeStamp = json.map((obj) => obj.timeStamp);
+        const cpuPercentage = json.map((obj) => obj.percentageCPU);
+        const memoryPercentage = json.map((obj) => obj.percentageMemory);
+        const inTraffic = json.map((obj) => obj.incomingTraffic);
+        const outTraffic = json.map((obj) => obj.outcomingTraffic);
+
+        filteredCpuData[supplier] = cpuPercentage;
+        filteredMemoryData[supplier] = memoryPercentage;
+        filteredInTrafficData[supplier] = inTraffic;
+        filteredOutTrafficData[supplier] = outTraffic;
+
+        const formattedLabels = timeStamp.map((timestamp) => {
+          const date = new Date(timestamp);
+          return date
+            .toLocaleString("en-US", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "numeric",
+              minute: "numeric",
+              hour12: false,
+            })
+            .replace(",", "");
+        });
+        setFilteredLabels((prevFilteredLabels) => {
+          const uniqueLabels = Array.from(
+            new Set([...prevFilteredLabels, ...formattedLabels])
+          );
+          return uniqueLabels;
+        });
+
+        setFilteredCpuData((prevFilteredCpuData) => {
+          return {
+            ...prevFilteredCpuData,
+            [supplier]: [
+              ...(prevFilteredCpuData[supplier] || []),
+              ...cpuPercentage,
+            ],
+          };
+        });
+        setFilteredMemoryData((prevFilteredMemoryData) => {
+          return {
+            ...prevFilteredMemoryData,
+            [supplier]: [
+              ...(prevFilteredMemoryData[supplier] || []),
+              ...memoryPercentage,
+            ],
+          };
+        });
+        setFilteredInTrafficData((prevFilteredInTrafficData) => {
+          return {
+            ...prevFilteredInTrafficData,
+            [supplier]: [
+              ...(prevFilteredInTrafficData[supplier] || []),
+              ...inTraffic,
+            ],
+          };
+        });
+        setFilteredOutTrafficData((prevFilteredOutTrafficData) => {
+          return {
+            ...prevFilteredOutTrafficData,
+            [supplier]: [
+              ...(prevFilteredOutTrafficData[supplier] || []),
+              ...outTraffic,
+            ],
+          };
+        });
+      } catch (error) {
+        console.error(`Failed to fetch data for ${supplier}:`, error);
+      }
+      // console.log(isRealTime);
+    }
+  };
+
+  const fetchDataHistory = async () => {
+    const fetchedCpuDataCopy = { ...fetchedCpuData };
+    const fetchedMemoryDataCopy = { ...fetchedMemoryData };
+    const fetchedInTrafficDataCopy = { ...fetchedInTrafficData };
+    const fetchedOutTrafficDataCopy = { ...fetchedOutTrafficData };
 
     for (const supplier of suppliers) {
-      if (supplier === "Google") {
-        const supplierWithCloud = supplier + "Cloud";
-        let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromDB?MachineType=${type}&Location=${location}`;
+      const supplierWithCloud = supplier + "Cloud";
+      let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromDB?MachineType=${type}&Location=${location}`;
 
-        try {
-          const response = await fetch(url);
-          const json = await response.json();
-          const cpuPercentage = [];
-          const memoryPercentage = [];
-          const inTraffic = [];
-          const outTraffic = [];
-          const timeStamp = [];
-          // console.log(json.timeStamp);
-          for (const obj of json) {
-            cpuPercentage.push(obj.percentageCPU);
-            memoryPercentage.push(obj.percentageMemory);
-            inTraffic.push(obj.incomingTraffic);
-            outTraffic.push(obj.outcomingTraffic);
-            timeStamp.push(obj.timeStamp);
-          }
+      try {
+        const response = await fetch(url);
+        const json = await response.json();
 
-          fetchedCpuData[supplier] = {
-            machineType: type,
-            location: location,
-            timeStamp: timeStamp,
-            data: cpuPercentage,
-          };
-          setFetchedCpuData(fetchedCpuData);
+        const timeStamp = json.map((obj) => obj.timeStamp);
+        const cpuPercentage = json.map((obj) => obj.percentageCPU);
+        const memoryPercentage = json.map((obj) => obj.percentageMemory);
+        const inTraffic = json.map((obj) => obj.incomingTraffic);
+        const outTraffic = json.map((obj) => obj.outcomingTraffic);
 
-          fetchedMemoryData[supplier] = {
-            machineType: type,
-            location: location,
-            timeStamp: timeStamp,
-            data: memoryPercentage,
-          };
-          setFetchedMemoryData(fetchedMemoryData);
+        fetchedCpuDataCopy[supplier] = {
+          timeStamp: timeStamp,
+          data: cpuPercentage,
+        };
 
-          fetchedInTrafficData[supplier] = {
-            machineType: type,
-            location: location,
-            timeStamp: timeStamp,
-            data: inTraffic,
-          };
-          setFetchedInTrafficData(fetchedInTrafficData);
+        fetchedMemoryDataCopy[supplier] = {
+          timeStamp: timeStamp,
+          data: memoryPercentage,
+        };
 
-          fetchedOutTrafficData[supplier] = {
-            machineType: type,
-            location: location,
-            timeStamp: timeStamp,
-            data: outTraffic,
-          };
-          setFetchedOutTrafficData(fetchedOutTrafficData);
-        } catch (error) {
-          console.error(`Failed to fetch data for ${supplier}:`, error);
-        }
+        fetchedInTrafficDataCopy[supplier] = {
+          timeStamp: timeStamp,
+          data: inTraffic,
+        };
+
+        fetchedOutTrafficDataCopy[supplier] = {
+          timeStamp: timeStamp,
+          data: outTraffic,
+        };
+        setFetchedCpuData(fetchedCpuDataCopy);
+        setFetchedMemoryData(fetchedMemoryDataCopy);
+        setFetchedInTrafficData(fetchedInTrafficDataCopy);
+        setFetchedOutTrafficData(fetchedOutTrafficDataCopy);
+      } catch (error) {
+        console.error(`Failed to fetch data for ${supplier}:`, error);
       }
-      // setFetchedCpuData(fetchedCpuData);
-      console.log(fetchedCpuData);
     }
   };
 
   useEffect(() => {
+    setFilteredCpuData({});
+    setFilteredMemoryData({});
+    setFilteredInTrafficData({});
+    setFilteredOutTrafficData({});
+    setFilteredLabels([]);
+  }, [isRealTime]);
+
+  useEffect(() => {
     if (!isRealTime && startDate && endDate) {
       const labels = [];
-      const cpuData = [];
-      const memoryData = [];
-      const inTrafficData = [];
-      const outTrafficData = [];
+      console.log(fetchedCpuData);
 
       Object.entries(fetchedCpuData).forEach(([supplier, supplierData]) => {
         const { timeStamp, data: supplierDataArray } = supplierData;
 
+        console.log(startDate);
         const filteredTimeStamps = timeStamp.filter((timestamp) => {
           const timestampDate =
             new Date(timestamp).toISOString().split(".")[0] + "Z";
           return timestampDate >= startDate && timestampDate <= endDate;
         });
 
-        const filteredCpuValues = filteredTimeStamps.map((timestamp) => {
+        filteredCpuData[supplier] = filteredTimeStamps.map((timestamp) => {
           const index = timeStamp.indexOf(timestamp);
           return supplierDataArray[index];
         });
+
+        // filteredCpuData[supplier] = filteredCpuValues;
 
         const memoryDataArray = fetchedMemoryData[supplier]?.data || [];
         const filteredMemoryValues = filteredTimeStamps.map((timestamp) => {
           const index = timeStamp.indexOf(timestamp);
           return memoryDataArray[index];
         });
+        filteredMemoryData[supplier] = filteredMemoryValues;
 
         const inTrafficDataArray = fetchedInTrafficData[supplier]?.data || [];
         const filteredInTrafficValues = filteredTimeStamps.map((timestamp) => {
           const index = timeStamp.indexOf(timestamp);
           return inTrafficDataArray[index];
         });
+        filteredInTrafficData[supplier] = filteredInTrafficValues;
 
         const outTrafficDataArray = fetchedOutTrafficData[supplier]?.data || [];
         const filteredOutTrafficValues = filteredTimeStamps.map((timestamp) => {
           const index = timeStamp.indexOf(timestamp);
           return outTrafficDataArray[index];
         });
+        filteredOutTrafficData[supplier] = filteredOutTrafficValues;
 
         labels.push(...filteredTimeStamps);
-        cpuData.push(...filteredCpuValues);
-        memoryData.push(...filteredMemoryValues);
-        inTrafficData.push(...filteredInTrafficValues);
-        outTrafficData.push(...filteredOutTrafficValues);
+        // cpuData.push(...filteredCpuValues);
+        // memoryData.push(...filteredMemoryValues);
+        // inTrafficData.push(...filteredInTrafficValues);
+        // outTrafficData.push(...filteredOutTrafficValues);
       });
+      const uniqueLabels = Array.from(new Set(labels));
 
-      const formattedLabels = labels.map((timestamp) => {
+      const formattedLabels = uniqueLabels.map((timestamp) => {
         const date = new Date(timestamp);
         return date
           .toLocaleString("en-US", {
@@ -175,11 +272,11 @@ const Graphs = () => {
       });
 
       setFilteredLabels(formattedLabels);
-      setFilteredCpuData(cpuData);
-      setFilteredMemoryData(memoryData);
-      setFilteredInTrafficData(inTrafficData);
-      setFilteredOutTrafficData(outTrafficData);
-      console.log(inTrafficData);
+      // setFilteredCpuData(cpuData);
+      // setFilteredMemoryData(memoryData);
+      // setFilteredInTrafficData(inTrafficData);
+      // setFilteredOutTrafficData(outTrafficData);
+      console.log(filteredMemoryData);
     }
   }, [
     isRealTime,
@@ -191,47 +288,54 @@ const Graphs = () => {
     fetchedOutTrafficData,
   ]);
 
+  const colors = ["#aa75b8", "#ff6384", "#36a2eb"]; // Add more colors as needed
+
   const cpuGraphData = {
     labels: filteredLabels,
-    datasets: Object.entries(fetchedCpuData).map(([supplier, supplierData]) => {
-      return {
-        label: supplier,
-        data: filteredCpuData,
-        backgroundColor: "#aa75b8",
-        borderColor: "#aa75b8",
-        pointBorderColor: "#aa75b8",
-        fill: true,
-        tension: 0.4,
-      };
-    }),
-  };
-
-  const memoryGraphData = {
-    labels: filteredLabels,
-    datasets: Object.entries(fetchedMemoryData).map(
-      ([supplier, supplierData]) => {
+    datasets: Object.entries(filteredCpuData).map(
+      ([supplier, supplierData], index) => {
+        const color = colors[index % colors.length];
         return {
           label: supplier,
-          data: filteredMemoryData,
-          backgroundColor: "#aa75b8",
-          borderColor: "#aa75b8",
-          pointBorderColor: "#aa75b8",
+          data: supplierData,
+          backgroundColor: color,
+          borderColor: color,
+          pointBorderColor: color,
           fill: true,
           tension: 0.4,
         };
       }
     ),
   };
-  const inTrafficGraphData = {
+
+  const memoryGraphData = {
     labels: filteredLabels,
-    datasets: Object.entries(fetchedInTrafficData).map(
-      ([supplier, supplierData]) => {
+    datasets: Object.entries(filteredMemoryData).map(
+      ([supplier, supplierData], index) => {
+        const color = colors[index % colors.length];
         return {
           label: supplier,
-          data: filteredInTrafficData,
-          backgroundColor: "#aa75b8",
-          borderColor: "#aa75b8",
-          pointBorderColor: "#aa75b8",
+          data: supplierData,
+          backgroundColor: color,
+          borderColor: color,
+          pointBorderColor: color,
+          fill: true,
+          tension: 0.2,
+        };
+      }
+    ),
+  };
+  const inTrafficGraphData = {
+    labels: filteredLabels,
+    datasets: Object.entries(filteredInTrafficData).map(
+      ([supplier, supplierData], index) => {
+        const color = colors[index % colors.length];
+        return {
+          label: supplier,
+          data: supplierData,
+          backgroundColor: color,
+          borderColor: color,
+          pointBorderColor: color,
           fill: true,
           tension: 0.4,
         };
@@ -241,20 +345,22 @@ const Graphs = () => {
 
   const outTrafficGraphData = {
     labels: filteredLabels,
-    datasets: Object.entries(fetchedOutTrafficData).map(
-      ([supplier, supplierData]) => {
+    datasets: Object.entries(filteredOutTrafficData).map(
+      ([supplier, supplierData], index) => {
+        const color = colors[index % colors.length]; // Get color based on index
         return {
           label: supplier,
-          data: filteredOutTrafficData,
-          backgroundColor: "#aa75b8",
-          borderColor: "#aa75b8",
-          pointBorderColor: "#aa75b8",
+          data: supplierData,
+          backgroundColor: color,
+          borderColor: color,
+          pointBorderColor: color,
           fill: true,
           tension: 0.4,
         };
       }
     ),
   };
+
   const options = {
     plugins: {
       legend: true,
@@ -421,6 +527,9 @@ const Graphs = () => {
   return (
     <div className="graphs">
       <h2>Results</h2>
+      <p>Suppliers: {suppliers.join(", ")}</p>
+      <p>Machine type: {type}</p>
+      <p>Machine location: {location}</p>
       <TimeSelection
         onSelectChange={handleSelectChange}
         onDateChange={handleDateChange}
