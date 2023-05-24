@@ -5,7 +5,7 @@ import "../styles/TimeSelection.css";
 
 const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
   const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  //   const [endDate, setEndDate] = useState("");
 
   const handleSelectChange = (event) => {
     const value = event.target.value;
@@ -14,21 +14,21 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
 
   const handleSubmit = () => {
     console.log(startDate);
-    console.log(endDate);
-    if (startDate && endDate) {
-      onDateChange(startDate, endDate);
+    // console.log(endDate);
+    if (startDate) {
+      onDateChange(startDate);
     }
   };
 
   return (
     <div className="selection-container">
-      <select onChange={handleSelectChange} className="selection">
+      <select onChange={handleSelectChange} className="selectState">
         <option value="real-time">Real-time</option>
         <option value="history">History</option>
       </select>
       {isRealTime ? null : (
         <div className="date-picker-container">
-          <div>
+          <div className="date-picker-wrapper">
             <label>Start Date:</label>
             <DatePicker
               selected={startDate}
@@ -43,7 +43,7 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
               className="date-picker"
             />
           </div>
-          <div>
+          {/* <div>
             <label>End Date:</label>
             <DatePicker
               selected={endDate}
@@ -57,7 +57,7 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
               maxDate={new Date(2023, 5, 30)} // June is month 5 (zero-based)
               className="date-picker"
             />
-          </div>
+          </div> */}
           <button onClick={handleSubmit}>Submit</button>
         </div>
       )}

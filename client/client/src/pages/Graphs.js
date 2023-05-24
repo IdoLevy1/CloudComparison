@@ -67,9 +67,6 @@ const Graphs = () => {
     for (const supplier of suppliers) {
       const supplierWithCloud = supplier + "Cloud";
       let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromTimeStamp?MachineType=${type}&Location=${location}&TimeStamp=${isoTimestamp}`;
-      // } else {
-      //   url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromDB?MachineType=${type}&Location=${location}`;
-      // }
 
       try {
         const response = await fetch(url);
@@ -90,9 +87,6 @@ const Graphs = () => {
           const date = new Date(timestamp);
           return date
             .toLocaleString("en-US", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
               hour: "numeric",
               minute: "numeric",
               hour12: false,
@@ -207,7 +201,7 @@ const Graphs = () => {
   }, [isRealTime]);
 
   useEffect(() => {
-    if (!isRealTime && startDate && endDate) {
+    if (!isRealTime && startDate) {
       const labels = [];
       console.log(fetchedCpuData);
 
@@ -218,15 +212,19 @@ const Graphs = () => {
         const filteredTimeStamps = timeStamp.filter((timestamp) => {
           const timestampDate =
             new Date(timestamp).toISOString().split(".")[0] + "Z";
-          return timestampDate >= startDate && timestampDate <= endDate;
+          const endDate = new Date(startDate);
+          endDate.setHours(endDate.getHours() + 4); // Adding 4 hours to the start date
+          const endDateFormatted = endDate.toISOString().split(".")[0] + "Z"; // Formatting the end date
+          console.log(timestampDate);
+          return (
+            timestampDate >= startDate && timestampDate <= endDateFormatted
+          );
         });
 
         filteredCpuData[supplier] = filteredTimeStamps.map((timestamp) => {
           const index = timeStamp.indexOf(timestamp);
           return supplierDataArray[index];
         });
-
-        // filteredCpuData[supplier] = filteredCpuValues;
 
         const memoryDataArray = fetchedMemoryData[supplier]?.data || [];
         const filteredMemoryValues = filteredTimeStamps.map((timestamp) => {
@@ -250,10 +248,6 @@ const Graphs = () => {
         filteredOutTrafficData[supplier] = filteredOutTrafficValues;
 
         labels.push(...filteredTimeStamps);
-        // cpuData.push(...filteredCpuValues);
-        // memoryData.push(...filteredMemoryValues);
-        // inTrafficData.push(...filteredInTrafficValues);
-        // outTrafficData.push(...filteredOutTrafficValues);
       });
       const uniqueLabels = Array.from(new Set(labels));
 
@@ -261,9 +255,6 @@ const Graphs = () => {
         const date = new Date(timestamp);
         return date
           .toLocaleString("en-US", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
             hour: "numeric",
             minute: "numeric",
             hour12: false,
@@ -272,16 +263,11 @@ const Graphs = () => {
       });
 
       setFilteredLabels(formattedLabels);
-      // setFilteredCpuData(cpuData);
-      // setFilteredMemoryData(memoryData);
-      // setFilteredInTrafficData(inTrafficData);
-      // setFilteredOutTrafficData(outTrafficData);
       console.log(filteredMemoryData);
     }
   }, [
     isRealTime,
     startDate,
-    endDate,
     fetchedCpuData,
     fetchedMemoryData,
     fetchedInTrafficData,
@@ -367,7 +353,7 @@ const Graphs = () => {
       title: {
         display: true,
         // text: "",
-        color: "#516",
+        color: "#474545",
         font: {
           family: "Tahoma",
           size: 20,
@@ -397,7 +383,7 @@ const Graphs = () => {
             weight: "bold",
           },
           color: "black",
-          maxTicksLimit: 8,
+          maxTicksLimit: 7,
         },
       },
       y: {
@@ -429,22 +415,22 @@ const Graphs = () => {
     }
   };
 
-  const handleDateChange = (start, end) => {
+  const handleDateChange = (start) => {
     setStartDate(start.toISOString().split(".")[0] + "Z");
-    setEndDate(end.toISOString().split(".")[0] + "Z");
+    // setEndDate(end.toISOString().split(".")[0] + "Z");
     console.log(startDate);
-    console.log(endDate);
+    // console.log(endDate);
   };
 
-  const graphStyle = {
-    display: "inline-block",
-    border: "1px solid black",
-    borderRadius: "5px",
-    padding: "20px",
-    marginTop: "40px",
-    width: "1000px",
-    height: "500px",
-  };
+  // const graphStyle = {
+  //   display: "inline-block",
+  //   border: "1px solid black",
+  //   borderRadius: "5px",
+  //   padding: "20px",
+  //   marginTop: "40px",
+  //   width: "2000px",
+  //   height: "1000px",
+  // };
   const cpuGraphOptions = {
     ...options,
     plugins: {
