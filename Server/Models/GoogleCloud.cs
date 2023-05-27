@@ -37,7 +37,7 @@ namespace Server.Models
                 Task.Run(() => metrics.IncomingTraffic = GetNetworkInUsageInfo(ProjectId, InstanceId, metricClient, interval)),
                 Task.Run(() => metrics.OutcomingTraffic = GetNetworkOutUsageInfo(ProjectId, InstanceId, metricClient, interval))
             };
-            Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete
+            Task.WaitAll(tasks.ToArray());
 
             DB.InsertItem(GoogleCloudName + MachineType + Location, metrics);
         }
@@ -47,10 +47,10 @@ namespace Server.Models
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
             {
                 TimeStamp = DateTime.ParseExact(StartTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
-                PercentageCPU = Random.NextDouble() * 10 + 70, //change random range
-                PercentageMemory = Random.NextDouble() * 10 + 30, //change random range
-                IncomingTraffic = Random.NextDouble() * 10 + 350, //change random range
-                OutcomingTraffic = Random.NextDouble() * 10 + 40 //change random range
+                PercentageCPU = Random.NextDouble() * 10 + 70,
+                PercentageMemory = Random.NextDouble() * 10 + 10,
+                IncomingTraffic = Random.NextDouble() * 10 + 250,
+                OutcomingTraffic = Random.NextDouble() + 0.9
             };
 
             DB.InsertItem(GoogleCloudName + MachineType + Location, metrics);
@@ -100,14 +100,14 @@ namespace Server.Models
         {
             var response = GetMetricInfo(ProjectId, InstanceId, MetricClient, Interval, "compute.googleapis.com/instance/network/received_bytes_count");
             var networkIn = response.FirstOrDefault().Points.LastOrDefault().Value.Int64Value;
-            return (networkIn * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
+            return (networkIn * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/s
         }
 
         private static double GetNetworkOutUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
         {
             var response = GetMetricInfo(ProjectId, InstanceId, MetricClient, Interval, "compute.googleapis.com/instance/network/sent_bytes_count");
             var networkOut = response.FirstOrDefault().Points.LastOrDefault().Value.Int64Value;
-            return (networkOut * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
+            return (networkOut * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/s
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Server.Models
                 Task.Run(() => metrics.IncomingTraffic = GetNetworkInUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken)),
                 Task.Run(() => metrics.OutcomingTraffic = GetNetworkOutUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken))
             };
-            Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete
+            Task.WaitAll(tasks.ToArray());
 
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
         }
@@ -46,10 +46,10 @@ namespace Server.Models
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
             {
                 TimeStamp = DateTime.ParseExact(parts[0], "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
-                PercentageCPU = Random.NextDouble() * 10 + 70, //change random range
-                PercentageMemory = Random.NextDouble() * 10 + 30, //change random range
-                IncomingTraffic = Random.NextDouble() * 10 + 350, //change random range
-                OutcomingTraffic = Random.NextDouble() * 10 + 40 //change random range
+                PercentageCPU = Random.NextDouble() * 10 + 70,
+                PercentageMemory = Random.NextDouble() * 10 + 10,
+                IncomingTraffic = Random.NextDouble() * 10 + 250,
+                OutcomingTraffic = Random.NextDouble() + 0.9
             };
 
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
@@ -125,13 +125,13 @@ namespace Server.Models
         private static double GetNetworkInUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Network In");
-            return (info.total * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
+            return (info.total * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/s
         }
 
         private static double GetNetworkOutUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Network Out");
-            return (info.total * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/sec
+            return (info.total * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/s
         }
     }
 }
