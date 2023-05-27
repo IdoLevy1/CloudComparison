@@ -6,7 +6,7 @@ using Server.VirtualMachineModel;
 
 public class InsertDataToDBService : BackgroundService
 {
-    private const string VirtualMachineJsonPath = "..\\Resources\\VirtualMachines.json";
+    private const string VirtualMachineJsonPath = "..\\Deployment\\VirtualMachines.json";
     private DateTime StartTimeUtc;
     private DateTime EndTimeUtc;
     private VirtualMachines VirtualMachines;
