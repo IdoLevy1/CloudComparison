@@ -1,0 +1,126 @@
+/* .selection-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.selection {
+  height: 50px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.date-picker-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.date-picker-container label {
+  margin-bottom: 5px;
+}
+
+.date-picker-container .date-picker {
+  margin-bottom: 10px;
+} */
+
+/* .date-picker-container button {
+  padding: 10px 20px;
+  margin-bottom: 15px;
+  margin-top: 10px;
+  background-color: #4b4c51;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.date-picker-container button:hover {
+  background-color: #6d7985;
+} */
+
+/* .date-picker-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+} */
+
+.selection-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.selectState {
+  height: 50px;
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 25px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  /* border: none; */
+  background-color: #d1d1d1;
+  /* padding: 8px 16px; */
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* .selectState::-ms-expand {
+  display: none;
+} */
+
+.selectState:after {
+  content: "\f078"; /* FontAwesome caret-down icon */
+  font-family: FontAwesome;
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #333;
+}
+
+.selectState option {
+  background-color: #f0eeee;
+  border-radius: 10px;
+  /* padding: 8px 16px; */
+}
+.date-picker-container {
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-bottom: 20px;
+}
+
+.date-picker-container > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.date-picker-container button {
+  padding: 10px 20px;
+  /* margin-bottom: 15px; */
+  margin-top: 10px;
+  background-color: #4b4c51;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.date-picker-container button:hover {
+  background-color: #6d7985;
+}
+.date-picker-wrapper {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}

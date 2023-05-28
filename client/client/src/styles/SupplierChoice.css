@@ -1,0 +1,30 @@
+/* .locationChoice {
+    margin-bottom: 20px;
+  }
+  
+  .supplierChoice label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .supplierChoice input[type="checkbox"] {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-bottom: 3px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  
+  .supplierChoice input[type="checkbox"]:checked::before {
+    content: '\2713';
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px;
+    color: #007bff;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    line-height: 16px;
+  } */
