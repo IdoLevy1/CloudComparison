@@ -48,7 +48,7 @@ namespace Server.Models
             {
                 TimeStamp = DateTime.ParseExact(StartTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
                 PercentageCPU = Random.NextDouble() * 10 + 70,
-                PercentageMemory = Random.NextDouble() * 10 + 10,
+                PercentageMemory = Random.NextDouble() * 10 + 85,
                 IncomingTraffic = Random.NextDouble() * 10 + 250,
                 OutcomingTraffic = Random.NextDouble() + 0.9
             };
@@ -93,7 +93,7 @@ namespace Server.Models
         private static double GetMemoryUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
         {
             var response = GetMetricInfo(ProjectId, InstanceId, MetricClient, Interval, "agent.googleapis.com/memory/percent_used");
-            return response.FirstOrDefault().Points.LastOrDefault().Value.DoubleValue;
+            return 100 - response.FirstOrDefault().Points.LastOrDefault().Value.DoubleValue;
         }
 
         private static double GetNetworkInUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
