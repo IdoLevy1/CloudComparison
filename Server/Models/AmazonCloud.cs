@@ -47,7 +47,7 @@ namespace Server.Models
             {
                 TimeStamp = DateTime.ParseExact(StartTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
                 PercentageCPU = Random.NextDouble() * 10 + 70,
-                PercentageMemory = Random.NextDouble() * 10 + 10,
+                PercentageMemory = Random.NextDouble() * 10 + 85,
                 IncomingTraffic = Random.NextDouble() * 10 + 250,
                 OutcomingTraffic = Random.NextDouble() + 0.9
             };
@@ -119,7 +119,7 @@ namespace Server.Models
         {
             // var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "Memory Available Bytes");
             // return info * 100;
-            return Random.NextDouble() * 10 + 10;
+            return Random.NextDouble() * 10 + 85;
         }
 
         private static double GetNetworkInUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)

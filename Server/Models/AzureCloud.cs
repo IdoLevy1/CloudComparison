@@ -49,7 +49,7 @@ namespace Server.Models
             {
                 TimeStamp = DateTime.ParseExact(parts[0], "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
                 PercentageCPU = Random.NextDouble() * 10 + 70,
-                PercentageMemory = Random.NextDouble() * 10 + 10,
+                PercentageMemory = Random.NextDouble() * 10 + 85,
                 IncomingTraffic = Random.NextDouble() * 10 + 250,
                 OutcomingTraffic = Random.NextDouble() + 0.9
             };
@@ -137,7 +137,7 @@ namespace Server.Models
         private static double GetMemoryUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken, double MemorySizeInGB)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Available Memory Bytes");
-            return (info.average * 100) / (double)(MemorySizeInGB * Math.Pow(2, 30));
+            return 100 - ((info.average * 100) / (double)(MemorySizeInGB * Math.Pow(2, 30)));
         }
 
         private static double GetNetworkInUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
