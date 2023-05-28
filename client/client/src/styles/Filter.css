@@ -1,0 +1,132 @@
+.submitChoice {
+  display: block;
+  text-align: center; /* Center the button within its container */
+}
+.checkbox-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around; /* Add space between components */
+  align-items: flex-start;
+  margin-bottom: 20px; /* Add some bottom margin */
+}
+
+.checkbox-grid h3 {
+  font-size: 24px;
+  /* font-weight: bold; */
+  color: #333;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-bottom: 1rem;
+}
+
+.checkbox-grid label {
+  /* display: block;
+  margin-bottom: 20px;
+  font-size: 25px; 
+  color: #333;
+  font-weight: bold;
+  color: #5313a6; */
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #333;
+}
+
+.checkbox-grid input[type="checkbox"] {
+  /* display: inline-block;
+  vertical-align: left;
+  margin-right: 10px;
+  margin-bottom: 3px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer; */
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.checkbox-grid input[type="checkbox"]:checked::before {
+  /* content: '\2713'; */
+  /* display: inline-block; */
+  /* vertical-align: middle; */
+  /* font-size: 16px;
+  color: #007bff;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  line-height: 16px; */
+  content: "\2713";
+  display: inline-block;
+  font-size: 14px;
+  color: #007bff;
+  width: 14px;
+  height: 14px;
+  text-align: center;
+  line-height: 14px;
+  border: 1px solid #007bff;
+  border-radius: 3px;
+  background-color: #fff;
+  margin-right: 5px;
+}
+
+/* Additional styling for the form submit button */
+/* button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0062cc; */
+
+.submitChoice button[type="submit"] {
+  background-color: #0e5487;
+  border: 0;
+  border-radius: 56px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: system-ui, -apple-system, system-ui, "Segoe UI", Roboto, Ubuntu,
+    "Helvetica Neue", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  outline: 0;
+  padding: 16px 21px;
+  position: relative;
+  text-decoration: none;
+  transition: all 0.3s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.submitChoice button[type="submit"]:before {
+  background-color: initial;
+  background-image: linear-gradient(#fff 0, rgba(255, 255, 255, 0) 100%);
+  border-radius: 125px;
+  content: "";
+  height: 50%;
+  left: 4%;
+  opacity: 0.5;
+  position: absolute;
+  top: 0;
+  transition: all 0.3s;
+  width: 92%;
+}
+
+.submitChoice button[type="submit"]:hover {
+  box-shadow: rgba(255, 255, 255, 0.2) 0 3px 15px inset,
+    rgba(0, 0, 0, 0.1) 0 3px 5px, rgba(0, 0, 0, 0.1) 0 10px 13px;
+  transform: scale(1.05);
+}
+
+@media (min-width: 768px) {
+  .submitChoice button[type="submit"] {
+    padding: 16px 48px;
+  }
+}

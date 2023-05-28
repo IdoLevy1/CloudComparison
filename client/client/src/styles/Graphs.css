@@ -1,0 +1,44 @@
+.graphs {
+  background-color: #f2f2f2;
+  padding: 20px;
+  /* margin-bottom: 30px; */
+  border: 1px solid #ccc;
+}
+
+.graphs h2 {
+  text-align: center;
+  font-size: 70px;
+  height: 70px;
+  -webkit-text-stroke: 1px rgb(114, 110, 110);
+  /* text-shadow: 5px black; */
+  color: #27273c;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.graphs p {
+  text-align: center;
+  font-size: 20px;
+  height: 50px;
+  -webkit-text-stroke: 1px rgb(114, 110, 110);
+  /* text-shadow: 5px black; */
+  color: #27273c;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.graphs .graph-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.graphs .graph-container {
+  flex-basis: 49%;
+  margin-bottom: 20px;
+}
+
+.graphs .graph {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 20px;
+  width: 93%; /* Adjust the width to occupy the full width of the container */
+  height: 300px;
+  margin: 0 auto; /* Center the graph horizontally */
+}
