@@ -4,6 +4,8 @@ using DB.Models;
 using DB;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace Server.Models
 {
@@ -18,22 +20,22 @@ namespace Server.Models
             string ResourceGroupName,
             string VirtualMachineName,
             string TimeSpan,
-            string AccessToken,
             string MachineType,
             string Location,
             double MemorySizeInGB)
         {
             string[] parts = TimeSpan.Split('/');
+            string accessToken = "Bearer " + GetAccessToken();
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
             {
                 TimeStamp = DateTime.ParseExact(parts[0], "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)
             };
             var tasks = new List<Task>
             {
-                Task.Run(() => metrics.PercentageCPU = GetCpuUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken)),
-                Task.Run(() => metrics.PercentageMemory = GetMemoryUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, MemorySizeInGB)),
-                Task.Run(() => metrics.IncomingTraffic = GetNetworkInUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken)),
-                Task.Run(() => metrics.OutcomingTraffic = GetNetworkOutUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken))
+                Task.Run(() => metrics.PercentageCPU = GetCpuUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken)),
+                Task.Run(() => metrics.PercentageMemory = GetMemoryUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken, MemorySizeInGB)),
+                Task.Run(() => metrics.IncomingTraffic = GetNetworkInUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken)),
+                Task.Run(() => metrics.OutcomingTraffic = GetNetworkOutUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken))
             };
             Task.WaitAll(tasks.ToArray());
 
@@ -64,6 +66,22 @@ namespace Server.Models
         public static List<VirtualMachineMetricsModel> LoadItemsFromTimeStamp(string MachineType, string Location, string TimeStamp)
         {
             return DB.LoadItemsFromTimeStamp(AzureCloudName + MachineType + Location, DateTime.ParseExact(TimeStamp, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
+        }
+
+        private static string GetAccessToken()
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = "powershell.exe";
+            process.StartInfo.Arguments = "-Command " + "az account get-access-token";
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            JObject response = JObject.Parse(output);
+            return response["accessToken"].ToString();
         }
 
         private static string BuildUrl(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string MetricName)

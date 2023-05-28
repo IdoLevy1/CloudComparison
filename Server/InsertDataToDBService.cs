@@ -61,7 +61,7 @@ public class InsertDataToDBService : BackgroundService
                     }
                     else
                     {
-                        AzureCloud.InsertInfoToDB(vm.SubscriptionId, vm.ResourceGroupName, vm.VirtualMachineName, StartTime + "/" + EndTime, vm.AccessToken, vm.MachineType, vm.Location, vm.MemorySize);
+                        AzureCloud.InsertInfoToDB(vm.SubscriptionId, vm.ResourceGroupName, vm.VirtualMachineName, StartTime + "/" + EndTime, vm.MachineType, vm.Location, vm.MemorySize);
                     }
                 }
                 catch (Exception)
