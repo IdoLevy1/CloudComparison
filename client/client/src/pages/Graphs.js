@@ -213,7 +213,7 @@ const Graphs = () => {
           const timestampDate =
             new Date(timestamp).toISOString().split(".")[0] + "Z";
           const endDate = new Date(startDate);
-          endDate.setHours(endDate.getHours() + 4); // Adding 4 hours to the start date
+          endDate.setHours(endDate.getHours() + 1); // Adding 4 hours to the start date
           const endDateFormatted = endDate.toISOString().split(".")[0] + "Z"; // Formatting the end date
           console.log(timestampDate);
           return (
@@ -383,7 +383,7 @@ const Graphs = () => {
             weight: "bold",
           },
           color: "black",
-          maxTicksLimit: 7,
+          maxTicksLimit: 10,
         },
       },
       y: {
@@ -465,7 +465,7 @@ const Graphs = () => {
       y: {
         ...options.scales.y,
         min: 0,
-        max: 40,
+        max: 100,
         stepSize: 10,
       },
     },

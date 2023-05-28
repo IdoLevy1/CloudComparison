@@ -8,7 +8,7 @@ function Home() {
     <div className="home" style={{ backgroundImage: `url(${BannerImage})` }}>
       <div className="headerContainer">
         <h1> Welcome to Cloud Fit </h1>
-        <p> Here, we will help you find the best cloud match for your needs!</p>
+        <p> Here, you will find your best cloud match!</p>
         <Link to="/choice">
           <button> GET STARTED </button>
         </Link>
