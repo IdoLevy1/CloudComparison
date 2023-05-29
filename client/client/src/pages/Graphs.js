@@ -61,15 +61,21 @@ const Graphs = () => {
   let isFirstCall = true;
 
   const fetchDataRealTime = async () => {
-
     const now = new Date();
-    const sixMinutesAgo = new Date(now.getTime() - 6 * 60 * 1000); // Subtract 5 minutes from the current time
-    const isoTimestamp = sixMinutesAgo.toISOString().split(".")[0] + "Z";
+    let isoTimestamp;
+    if (isFirstCall) {
+      const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
+      isoTimestamp = fifteenMinutesAgo.toISOString().split(".")[0] + "Z";
+      isFirstCall = false;
+    } else {
+      const sixMinutesAgo = new Date(now.getTime() - 6 * 60 * 1000);
+      isoTimestamp = sixMinutesAgo.toISOString().split(".")[0] + "Z";
+    }
     console.log(isoTimestamp);
-
     for (const supplier of suppliers) {
       const supplierWithCloud = supplier + "Cloud";
       let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromTimeStamp?MachineType=${type}&Location=${location}&TimeStamp=${isoTimestamp}`;
+
       try {
         const response = await fetch(url);
         const json = await response.json();
@@ -98,7 +104,6 @@ const Graphs = () => {
           );
           return uniqueLabels;
         });
-
         setFilteredCpuData((prevFilteredCpuData) => {
           return {
             ...prevFilteredCpuData,
@@ -108,7 +113,6 @@ const Graphs = () => {
             ],
           };
         });
-
         setFilteredMemoryData((prevFilteredMemoryData) => {
           return {
             ...prevFilteredMemoryData,
@@ -118,7 +122,6 @@ const Graphs = () => {
             ],
           };
         });
-
         setFilteredInTrafficData((prevFilteredInTrafficData) => {
           return {
             ...prevFilteredInTrafficData,
@@ -128,7 +131,6 @@ const Graphs = () => {
             ],
           };
         });
-
         setFilteredOutTrafficData((prevFilteredOutTrafficData) => {
           return {
             ...prevFilteredOutTrafficData,
@@ -138,7 +140,6 @@ const Graphs = () => {
             ],
           };
         });
-
       } catch (error) {
         console.error(`Failed to fetch data for ${supplier}:`, error);
       }
