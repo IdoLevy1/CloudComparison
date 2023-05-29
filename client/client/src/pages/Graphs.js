@@ -485,8 +485,8 @@ const Graphs = () => {
       y: {
         ...options.scales.y,
         min: 0,
-        max: 180,
-        stepSize: 40,
+        max: 700,
+        stepSize: 100,
       },
     },
   };
@@ -505,7 +505,7 @@ const Graphs = () => {
       y: {
         ...options.scales.y,
         min: 0,
-        max: 0.5,
+        max: 2,
         stepSize: 0.4,
       },
     },
@@ -513,7 +513,7 @@ const Graphs = () => {
   return (
     <div className="graphs">
       <h2>Results</h2>
-      <p>Suppliers: {suppliers.join(", ")}</p>
+      <p>Providers: {suppliers.join(", ")}</p>
       <p>Machine type: {type}</p>
       <p>Machine location: {location}</p>
       <TimeSelection

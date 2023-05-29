@@ -17,7 +17,7 @@ const SupplierChoice = ({ selectedSupplier, onSupplierChange }) => {
 
   return (
     <div className="supplierChoice">
-      <h3>Cloud suppliers:</h3>
+      <h3>Cloud providers:</h3>
       {suppliers.map((supplier) => (
         <div key={supplier}>
           <label>
