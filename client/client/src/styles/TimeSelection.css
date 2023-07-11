@@ -113,7 +113,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 .date-picker-container button:hover {

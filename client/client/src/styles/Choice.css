@@ -6,15 +6,14 @@
   /* display: flex; */
   /* flex-direction: column; */
   justify-content: center;
-  background-color: #f2f2f2;
+  /* background-color: #f2f2f2; */
 }
-.choice .title {
-  font-size: 30px;
-  height: 60px;
-  font-weight: 0;
-  color: rgb(0, 0, 0);
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
+/* .choice .title {
+  font-size: 32px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 16px;
+} */
 .choice p {
   /* display: flex; */
   width: 1200px;

@@ -1,6 +1,5 @@
 .graphs {
   background-color: #f2f2f2;
-  padding: 20px;
   /* margin-bottom: 30px; */
   border: 1px solid #ccc;
 }
@@ -23,7 +22,67 @@
   color: #27273c;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+
+/* CSS */
+.changeButton {
+  background-color: #666a81;
+  border: 0;
+  border-radius: 56px;
+  margin: -20px 20px 20px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: system-ui, -apple-system, system-ui, "Segoe UI", Roboto, Ubuntu,
+    "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  outline: 0;
+  padding: 10px 13px;
+  position: relative;
+  text-decoration: none;
+  transition: all 0.3s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  /* margin-top: 40px;
+  margin-bottom: 20px; */
+}
+
+.changeButton:before {
+  background-color: initial;
+  background-image: linear-gradient(#fff 0, rgba(255, 255, 255, 0) 100%);
+  border-radius: 125px;
+  content: "";
+  height: 50%;
+  left: 4%;
+  opacity: 0.5;
+  position: absolute;
+  top: 0;
+  transition: all 0.3s;
+  width: 92%;
+}
+
+.changeButton:hover {
+  box-shadow: rgba(255, 255, 255, 0.2) 0 3px 15px inset,
+    rgba(0, 0, 0, 0.1) 0 3px 5px, rgba(0, 0, 0, 0.1) 0 10px 13px;
+  transform: scale(1.05);
+}
+
+@media (min-width: 768px) {
+  .changeButton {
+    padding: 16px 48px;
+  }
+}
+/* .changeButton {
+  margin-left: 50px;
+  background-color: blue;
+  color: white;
+  border-radius: 5px;
+} */
+
 .graphs .graph-row {
+  padding: 20px;
+
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

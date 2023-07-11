@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import "../styles/Graphs.css";
 import TimeSelection from "../components/TimeSelection";
@@ -529,6 +530,11 @@ const Graphs = () => {
         onDateChange={handleDateChange}
         isRealTime={isRealTime}
       />
+      <div>
+        <Link to={"/Filter"}>
+          <button className="changeButton">Change selection</button>
+        </Link>
+      </div>
       <div className="graph-row">
         <div className="graph-container">
           <div className="graph">

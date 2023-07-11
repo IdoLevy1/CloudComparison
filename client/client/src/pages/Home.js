@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/Home.css";
-import BannerImage from "../assets/cloud.jpg";
+import BannerImage from "../assets/back4.png";
 
 function Home() {
   return (
@@ -9,7 +9,7 @@ function Home() {
       <div className="headerContainer">
         <h1> Welcome to Cloud Fit </h1>
         <p> Here, you will find your best cloud match!</p>
-        <Link to="/choice">
+        <Link to="/filter">
           <button> GET STARTED </button>
         </Link>
       </div>
