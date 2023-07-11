@@ -25,7 +25,7 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
         sx={{
           width: 150,
           height: 50,
-          backgroundColor: "#d5d6de", // Custom background color
+          backgroundColor: "#d5d6de",
           borderRadius: "8px",
         }}
         value={isRealTime ? "real-time" : "history"}

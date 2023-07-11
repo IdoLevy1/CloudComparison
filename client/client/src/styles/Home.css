@@ -12,21 +12,30 @@
 .headerContainer {
   width: auto;
   margin-left: 50px;
-  align-items: left;
+  align-items: right;
   margin-bottom: 30px; /* Adjust the margin-bottom value for the desired gap */
 }
 
 .headerContainer h1 {
   font-size: 70px;
-  font-weight: bold;
-  color: rgb(4, 38, 41);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  /* font-weight: bold; */
+  color: rgb(197, 206, 207);
+  text-shadow: 2px 8px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+  margin-left: 410px;
+  font-family: Tahoma, Verdana, Segoe, sans-serif;
+  /* color: transparent; */
+  /* background-clip: text;
+  -webkit-background-clip: text; */
 }
 
 .headerContainer p {
-  font-size: 37px;
+  font-family: Tahoma, Verdana, Segoe, sans-serif;
+
+  font-size: 32px;
   font-weight: lighter;
-  color: rgb(6, 54, 58);
+  color: rgb(197, 206, 207);
+  margin-left: 418px;
   margin-bottom: 40px; /* Adjust the margin-bottom value for the desired gap */
 }
 
@@ -43,7 +52,8 @@
   color: white;
   text-decoration: none;
   font-size: 20px;
-  margin-left: 260px;
+  /* margin-left: 260px; */
+  margin-left: 650px;
 }
 
 .headerContainer button:hover {
