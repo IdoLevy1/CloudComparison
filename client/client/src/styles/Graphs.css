@@ -23,7 +23,6 @@
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-/* CSS */
 .changeButton {
   background-color: #666a81;
   border: 0;
@@ -34,10 +33,10 @@
   display: inline-block;
   font-family: system-ui, -apple-system, system-ui, "Segoe UI", Roboto, Ubuntu,
     "Helvetica Neue", sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   outline: 0;
-  padding: 10px 13px;
+  padding: 6px 10px;
   position: relative;
   text-decoration: none;
   transition: all 0.3s;
@@ -100,4 +99,6 @@
   width: 93%; /* Adjust the width to occupy the full width of the container */
   height: 300px;
   margin: 0 auto; /* Center the graph horizontally */
+  background-color: #eef3f3; /* Add a background color to the graph */
+  box-shadow: 5px 4px 5px 1px rgba(0, 0, 0, 0.1);
 }
