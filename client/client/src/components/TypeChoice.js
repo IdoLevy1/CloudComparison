@@ -20,7 +20,7 @@ const TypeChoice = (props) => {
 
   return (
     <div className="typeChoice">
-      <h3>Machine type:</h3>
+      <h3>Machine type</h3>
       {types.map((type) => (
         <div key={type}>
           <label>

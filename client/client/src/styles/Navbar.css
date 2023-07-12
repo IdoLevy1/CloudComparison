@@ -7,7 +7,6 @@
     rgba(25, 33, 86, 1) 49%,
     rgba(44, 64, 104, 1) 87%
   );
-  /* background-color: hsl(203, 14%, 18%); */
   display: flex;
   flex-direction: row;
 }

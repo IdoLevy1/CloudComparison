@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import "../styles/Graphs.css";
 import TimeSelection from "../components/TimeSelection";
+import BannerImage from "../assets/graphsBack.png";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -520,7 +521,7 @@ const Graphs = () => {
     },
   };
   return (
-    <div className="graphs">
+    <div className="graphs" style={{ backgroundImage: `url(${BannerImage})` }}>
       <h2>Results</h2>
       <p>Providers: {suppliers.join(", ")}</p>
       <p>Machine type: {type}</p>

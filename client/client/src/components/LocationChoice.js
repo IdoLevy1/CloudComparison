@@ -21,7 +21,7 @@ const TypeChoice = (props) => {
 
   return (
     <div className="locationChoice">
-      <h3>Machine location:</h3>
+      <h3>Machine location</h3>
       {locations.map((location) => (
         <div key={location}>
           <label>

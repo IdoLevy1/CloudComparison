@@ -6,6 +6,7 @@ import SupplierChoice from "../components/SupplierChoice";
 import TypeChoice from "../components/TypeChoice";
 import LocationChoice from "../components/LocationChoice";
 import "../styles/Filter.css";
+import BannerImage from "../assets/HomePage1.png";
 
 const Filter = () => {
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -34,18 +35,13 @@ const Filter = () => {
     }
   };
 
-  const Title = styled(Typography)(({ theme }) => ({
-    fontSize: "40px",
-    marginTop: "30px",
-    color: "black",
-    textAlign: "center",
-    marginBottom: "30px",
-  }));
-
   return (
-    <div className="submitChoice">
+    <div
+      className="submitChoice"
+      style={{ backgroundImage: `url(${BannerImage})` }}
+    >
       <form onSubmit={handleFormSubmit}>
-        <Title variant="h1">Select from the options below:</Title>
+        <h1>Select from the options below:</h1>
         <Grid container spacing={2} justifyContent="center" alignItems="center">
           <Grid item xs={10} sm={3} className="grid-item">
             <SupplierChoice
