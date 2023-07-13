@@ -35,7 +35,6 @@ const Graphs = () => {
 
   const [isRealTime, setIsRealTime] = useState(true);
   const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [filteredLabels, setFilteredLabels] = useState([]);
   const [fetchedCpuData, setFetchedCpuData] = useState({});
   const [filteredCpuData, setFilteredCpuData] = useState([]);
@@ -219,7 +218,7 @@ const Graphs = () => {
           const timestampDate =
             new Date(timestamp).toISOString().split(".")[0] + "Z";
           const endDate = new Date(startDate);
-          endDate.setHours(endDate.getHours() + 1); // Adding 4 hours to the start date
+          endDate.setHours(endDate.getHours() + 1);
           const endDateFormatted = endDate.toISOString().split(".")[0] + "Z"; // Formatting the end date
           console.log(timestampDate);
           return (
@@ -280,7 +279,7 @@ const Graphs = () => {
     fetchedOutTrafficData,
   ]);
 
-  const colors = ["#aa75b8", "#ff6384", "#36a2eb"]; // Add more colors as needed
+  const colors = ["#5664d1", "#ad5769", "#3d9174"]; // Add more colors as needed
 
   const cpuGraphData = {
     labels: filteredLabels,
@@ -454,8 +453,12 @@ const Graphs = () => {
       ...options.scales,
       y: {
         ...options.scales.y,
-        min: 0,
-        max: 180,
+        min: isRealTime
+          ? 0
+          : Math.min(...Object.values(filteredCpuData).flat()) - 30,
+        max: isRealTime
+          ? 180
+          : Math.max(...Object.values(filteredCpuData).flat()) + 30,
         stepSize: 40,
       },
     },
@@ -474,8 +477,13 @@ const Graphs = () => {
       ...options.scales,
       y: {
         ...options.scales.y,
-        min: 0,
-        max: 100,
+
+        min: isRealTime
+          ? 0
+          : Math.min(...Object.values(filteredMemoryData).flat()) - 30,
+        max: isRealTime
+          ? 100
+          : Math.max(...Object.values(filteredMemoryData).flat()) + 30,
         stepSize: 10,
       },
     },
@@ -494,8 +502,13 @@ const Graphs = () => {
       ...options.scales,
       y: {
         ...options.scales.y,
-        min: 0,
-        max: 700,
+
+        min: isRealTime
+          ? 0
+          : Math.min(...Object.values(filteredInTrafficData).flat()) - 30,
+        max: isRealTime
+          ? 700
+          : Math.max(...Object.values(filteredInTrafficData).flat()) + 30,
         stepSize: 100,
       },
     },
@@ -514,8 +527,13 @@ const Graphs = () => {
       ...options.scales,
       y: {
         ...options.scales.y,
-        min: 0,
-        max: 2,
+
+        min: isRealTime
+          ? 0
+          : Math.min(...Object.values(filteredOutTrafficData).flat()) - 30,
+        max: isRealTime
+          ? 2
+          : Math.max(...Object.values(filteredOutTrafficData).flat()) + 30,
         stepSize: 0.4,
       },
     },
@@ -533,7 +551,7 @@ const Graphs = () => {
       />
       <div>
         <Link to={"/Filter"}>
-          <button className="changeButton">Change selection</button>
+          <button className="changeButton">Edit selection</button>
         </Link>
       </div>
       <div className="graph-row">

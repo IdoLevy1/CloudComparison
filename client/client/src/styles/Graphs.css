@@ -61,7 +61,7 @@
 
 .changeButton:before {
   background-color: initial;
-  background-image: linear-gradient(#fff 0, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(#c7c5c5 0, rgba(255, 255, 255, 0) 100%);
   border-radius: 125px;
   content: "";
   height: 50%;

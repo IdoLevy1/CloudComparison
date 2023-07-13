@@ -28,8 +28,8 @@
   transition: background-color 0.2s ease;
   text-align: center;
   padding: 10px;
-  /* margin: 50px; */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
 /* .grid-item:not(:last-child) {
@@ -68,19 +68,20 @@
 }
 
 .grid-item input[type="checkbox"]:checked::before {
-  content: "\2713";
+  content: "\2714";
   display: inline-block;
   font-size: 14px;
-  color: #007bff;
+  color: #1f2123;
   width: 14px;
   height: 14px;
   text-align: center;
   line-height: 14px;
-  border: 1px solid #007bff;
+  border: 2px solid #707070;
   border-radius: 3px;
   background-color: #fff;
   margin-right: 5px;
 }
+
 .buttonWrapper {
   display: flex;
   justify-content: center;
@@ -111,7 +112,7 @@
 
 .submitChoice button[type="submit"]:before {
   background-color: initial;
-  background-image: linear-gradient(#fff 0, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(#808080 0, rgba(255, 255, 255, 0) 100%);
   border-radius: 125px;
   content: "";
   height: 50%;

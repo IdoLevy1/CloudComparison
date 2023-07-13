@@ -28,6 +28,8 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
           backgroundColor: "#e1e3e3",
           borderRadius: "8px",
           borderColor: "GrayText",
+          fontSize: "18px",
+          fontFamily: "Tahoma, Verdana, Segoe, sans-serif",
         }}
         value={isRealTime ? "real-time" : "history"}
         onChange={handleSelectChange}
