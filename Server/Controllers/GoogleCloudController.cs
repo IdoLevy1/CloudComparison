@@ -14,10 +14,12 @@ namespace Server.Controllers
         {
             try
             {
+                GoogleCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location}");
                 return Ok(GoogleCloud.GetInfoFromDB(MachineType, Location));
             }
             catch (Exception ex)
             {
+                GoogleCloud.Logger.Error(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -30,10 +32,12 @@ namespace Server.Controllers
         {
             try
             {
+                GoogleCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location} at {TimeStamp}");
                 return Ok(GoogleCloud.LoadItemsFromTimeStamp(MachineType, Location, TimeStamp));
             }
             catch (Exception ex)
             {
+                GoogleCloud.Logger.Error(ex.Message);
                 return BadRequest(ex.Message);
             }
         }

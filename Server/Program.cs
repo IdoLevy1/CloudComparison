@@ -1,3 +1,7 @@
+using NLog;
+using NLog.Web;
+
+LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
@@ -12,6 +16,7 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Host.UseNLog();
 builder.Services.AddHostedService<InsertDataToDBService>();
 var app = builder.Build();
 

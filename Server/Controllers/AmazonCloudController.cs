@@ -14,10 +14,12 @@ namespace Server.Controllers
         {
             try
             {
+                AmazonCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location}");
                 return Ok(AmazonCloud.GetInfoFromDB(MachineType, Location));
             }
             catch (Exception ex)
             {
+                AmazonCloud.Logger.Error(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -30,10 +32,12 @@ namespace Server.Controllers
         {
             try
             {
+                AmazonCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location} at {TimeStamp}");
                 return Ok(AmazonCloud.LoadItemsFromTimeStamp(MachineType, Location, TimeStamp));
             }
             catch (Exception ex)
             {
+                AmazonCloud.Logger.Error(ex.Message);
                 return BadRequest(ex.Message);
             }
         }

@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 using System.Globalization;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Web;
 
 namespace Server.Models
 {
@@ -14,7 +17,8 @@ namespace Server.Models
         private const string AzureCloudName = "AzureCloud";
         private static readonly MongoHelper DB = new MongoHelper();
         private static readonly Random Random = new Random();
-
+        public static readonly NLog.ILogger Logger = LogManager.GetLogger("AzureCloudLogger");
+        
         public static void InsertInfoToDB(
             string SubscriptionId,
             string ResourceGroupName,
@@ -39,6 +43,7 @@ namespace Server.Models
             };
             Task.WaitAll(tasks.ToArray());
 
+            Logger.Info($"{MachineType} {Location}: PercentageCPU = {metrics.PercentageCPU}, PercentageMemory = {metrics.PercentageMemory}, IncomingTraffic = {metrics.IncomingTraffic}, OutcomingTraffic = {metrics.OutcomingTraffic}");
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
         }
 
@@ -54,6 +59,7 @@ namespace Server.Models
                 OutcomingTraffic = Random.NextDouble() + 0.9
             };
 
+            Logger.Info($"{MachineType} {Location}: PercentageCPU = {metrics.PercentageCPU}, PercentageMemory = {metrics.PercentageMemory}, IncomingTraffic = {metrics.IncomingTraffic}, OutcomingTraffic = {metrics.OutcomingTraffic}");
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
             return metrics;
         }

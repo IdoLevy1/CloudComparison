@@ -14,10 +14,12 @@ namespace Server.Controllers
         {
             try
             {
+                AzureCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location}");
                 return Ok(AzureCloud.GetInfoFromDB(MachineType, Location));
             }
             catch(Exception ex) 
             {
+                AzureCloud.Logger.Error(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -30,10 +32,12 @@ namespace Server.Controllers
         {
             try
             {
+                AzureCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location} at {TimeStamp}");
                 return Ok(AzureCloud.LoadItemsFromTimeStamp(MachineType, Location, TimeStamp));
             }
             catch (Exception ex)
             {
+                AzureCloud.Logger.Error(ex.Message);
                 return BadRequest(ex.Message);
             }
         }

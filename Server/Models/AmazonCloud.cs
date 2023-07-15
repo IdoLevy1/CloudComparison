@@ -2,6 +2,8 @@
 using Amazon.CloudWatch.Model;
 using DB;
 using DB.Models;
+using NLog;
+using System;
 using System.Globalization;
 
 namespace Server.Models
@@ -11,6 +13,7 @@ namespace Server.Models
         private const string AmazonCloudName = "AmazonCloud";
         private static readonly MongoHelper DB = new MongoHelper();
         private static readonly Random Random = new Random();
+        public static readonly NLog.ILogger Logger = LogManager.GetLogger("AmazonCloudLogger");
 
         public static void InsertInfoToDB(
             string AccessKey,
@@ -38,6 +41,7 @@ namespace Server.Models
             };
             Task.WaitAll(tasks.ToArray());
 
+            Logger.Info($"{MachineType} {Location}: PercentageCPU = {metrics.PercentageCPU}, PercentageMemory = {metrics.PercentageMemory}, IncomingTraffic = {metrics.IncomingTraffic}, OutcomingTraffic = {metrics.OutcomingTraffic}");
             DB.InsertItem(AmazonCloudName + MachineType + Location, metrics);
         }
 
@@ -52,6 +56,7 @@ namespace Server.Models
                 OutcomingTraffic = Random.NextDouble() + 0.9
             };
 
+            Logger.Info($"{MachineType} {Location}: PercentageCPU = {metrics.PercentageCPU}, PercentageMemory = {metrics.PercentageMemory}, IncomingTraffic = {metrics.IncomingTraffic}, OutcomingTraffic = {metrics.OutcomingTraffic}");
             DB.InsertItem(AmazonCloudName + MachineType + Location, metrics);
         }
 
@@ -117,6 +122,38 @@ namespace Server.Models
         }
         private static double GetMemoryUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
         {
+            //AmazonCloudWatchClient cloudWatchClient = new AmazonCloudWatchClient(AccessKey, SecretKey, Amazon.RegionEndpoint.GetBySystemName(Region));
+
+            //GetMetricStatisticsRequest request = new GetMetricStatisticsRequest
+            //{
+            //    Namespace = "CWAgent",
+            //    MetricName = "Memory Available Bytes",
+            //    StartTimeUtc = StartTime,
+            //    EndTimeUtc = EndTime,
+            //    Period = 60,
+            //    Statistics = new List<string> { "Average" },
+            //    Dimensions = new List<Dimension>
+            //   {
+            //       new Dimension
+            //       {
+            //           Name = "InstanceId",
+            //           Value = InstanceId
+            //       }
+            //   }
+            //};
+
+            //GetMetricStatisticsResponse response = cloudWatchClient.GetMetricStatisticsAsync(request).GetAwaiter().GetResult();
+            //if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
+            //{
+            //    return response.Datapoints[0].Average;
+            //}
+            //else
+            //{
+            //    throw new Exception("Can't get info from VM");
+            //}
+
+            //return GetInfoFromResponse(response);
+
             // var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "Memory Available Bytes");
             // return info * 100;
             return Random.NextDouble() * 10 + 85;
