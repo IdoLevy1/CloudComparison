@@ -431,15 +431,6 @@ const Graphs = () => {
     // console.log(endDate);
   };
 
-  // const graphStyle = {
-  //   display: "inline-block",
-  //   border: "1px solid black",
-  //   borderRadius: "5px",
-  //   padding: "20px",
-  //   marginTop: "40px",
-  //   width: "2000px",
-  //   height: "1000px",
-  // };
   const cpuGraphOptions = {
     ...options,
     plugins: {
@@ -455,10 +446,10 @@ const Graphs = () => {
         ...options.scales.y,
         min: isRealTime
           ? 0
-          : Math.min(...Object.values(filteredCpuData).flat()) - 30,
+          : Math.min(...Object.values(filteredCpuData).flat()) - 20,
         max: isRealTime
           ? 180
-          : Math.max(...Object.values(filteredCpuData).flat()) + 30,
+          : Math.max(...Object.values(filteredCpuData).flat()) + 20,
         stepSize: 40,
       },
     },
@@ -480,10 +471,10 @@ const Graphs = () => {
 
         min: isRealTime
           ? 0
-          : Math.min(...Object.values(filteredMemoryData).flat()) - 30,
+          : Math.min(...Object.values(filteredMemoryData).flat()) - 20,
         max: isRealTime
           ? 100
-          : Math.max(...Object.values(filteredMemoryData).flat()) + 30,
+          : Math.max(...Object.values(filteredMemoryData).flat()) + 20,
         stepSize: 10,
       },
     },
@@ -505,10 +496,10 @@ const Graphs = () => {
 
         min: isRealTime
           ? 0
-          : Math.min(...Object.values(filteredInTrafficData).flat()) - 30,
+          : Math.min(...Object.values(filteredInTrafficData).flat()) - 20,
         max: isRealTime
           ? 700
-          : Math.max(...Object.values(filteredInTrafficData).flat()) + 30,
+          : Math.max(...Object.values(filteredInTrafficData).flat()) + 20,
         stepSize: 100,
       },
     },
@@ -530,10 +521,10 @@ const Graphs = () => {
 
         min: isRealTime
           ? 0
-          : Math.min(...Object.values(filteredOutTrafficData).flat()) - 30,
+          : Math.min(...Object.values(filteredOutTrafficData).flat()) - 20,
         max: isRealTime
           ? 2
-          : Math.max(...Object.values(filteredOutTrafficData).flat()) + 30,
+          : Math.max(...Object.values(filteredOutTrafficData).flat()) + 20,
         stepSize: 0.4,
       },
     },
