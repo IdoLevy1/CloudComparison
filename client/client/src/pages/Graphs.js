@@ -35,6 +35,7 @@ const Graphs = () => {
 
   const [isRealTime, setIsRealTime] = useState(true);
   const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [filteredLabels, setFilteredLabels] = useState([]);
   const [fetchedCpuData, setFetchedCpuData] = useState({});
   const [filteredCpuData, setFilteredCpuData] = useState([]);
@@ -85,10 +86,12 @@ const Graphs = () => {
         const memoryPercentage = json.map((obj) => obj.percentageMemory);
         const inTraffic = json.map((obj) => obj.incomingTraffic);
         const outTraffic = json.map((obj) => obj.outcomingTraffic);
+
         filteredCpuData[supplier] = cpuPercentage;
         filteredMemoryData[supplier] = memoryPercentage;
         filteredInTrafficData[supplier] = inTraffic;
         filteredOutTrafficData[supplier] = outTraffic;
+
         const formattedLabels = timeStamp.map((timestamp) => {
           const date = new Date(timestamp);
           return date
@@ -105,6 +108,7 @@ const Graphs = () => {
           );
           return uniqueLabels;
         });
+
         setFilteredCpuData((prevFilteredCpuData) => {
           return {
             ...prevFilteredCpuData,
@@ -219,6 +223,7 @@ const Graphs = () => {
             new Date(timestamp).toISOString().split(".")[0] + "Z";
           const endDate = new Date(startDate);
           endDate.setHours(endDate.getHours() + 1);
+          endDate.setHours(endDate.getHours() + 1); // Adding 4 hours to the start date
           const endDateFormatted = endDate.toISOString().split(".")[0] + "Z"; // Formatting the end date
           console.log(timestampDate);
           return (
@@ -280,6 +285,7 @@ const Graphs = () => {
   ]);
 
   const colors = ["#5664d1", "#ad5769", "#3d9174"]; // Add more colors as needed
+  // const colors = ["#aa75b8", "#ff6384", "#36a2eb"]; // Add more colors as needed
 
   const cpuGraphData = {
     labels: filteredLabels,
@@ -431,6 +437,15 @@ const Graphs = () => {
     // console.log(endDate);
   };
 
+  // const graphStyle = {
+  //   display: "inline-block",
+  //   border: "1px solid black",
+  //   borderRadius: "5px",
+  //   padding: "20px",
+  //   marginTop: "40px",
+  //   width: "2000px",
+  //   height: "1000px",
+  // };
   const cpuGraphOptions = {
     ...options,
     plugins: {
@@ -450,6 +465,8 @@ const Graphs = () => {
         max: isRealTime
           ? 180
           : Math.max(...Object.values(filteredCpuData).flat()) + 20,
+        min: 0,
+        max: 180,
         stepSize: 40,
       },
     },
@@ -475,6 +492,8 @@ const Graphs = () => {
         max: isRealTime
           ? 100
           : Math.max(...Object.values(filteredMemoryData).flat()) + 20,
+        min: 0,
+        max: 100,
         stepSize: 10,
       },
     },
@@ -493,13 +512,14 @@ const Graphs = () => {
       ...options.scales,
       y: {
         ...options.scales.y,
-
         min: isRealTime
           ? 0
           : Math.min(...Object.values(filteredInTrafficData).flat()) - 20,
         max: isRealTime
           ? 700
           : Math.max(...Object.values(filteredInTrafficData).flat()) + 20,
+        min: 0,
+        max: 700,
         stepSize: 100,
       },
     },
@@ -518,13 +538,14 @@ const Graphs = () => {
       ...options.scales,
       y: {
         ...options.scales.y,
-
         min: isRealTime
           ? 0
           : Math.min(...Object.values(filteredOutTrafficData).flat()) - 20,
         max: isRealTime
           ? 2
           : Math.max(...Object.values(filteredOutTrafficData).flat()) + 20,
+        min: 0,
+        max: 2,
         stepSize: 0.4,
       },
     },
