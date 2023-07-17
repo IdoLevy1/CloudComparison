@@ -104,3 +104,30 @@
     color: #626e76;
   }
 }
+
+@media only screen and (min-width: 1500px) {
+  .headerContainer h1 {
+    font-size: 100px;
+    margin-left: 630px;
+  }
+
+  .headerContainer p {
+    font-size: 32px;
+    margin-left: 640px;
+  }
+  .headerContainer button {
+    color: rgb(88, 81, 81);
+    border: 1px solid black;
+    border-radius: 40px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    background-color: #566161;
+    height: 50px;
+    width: 180px;
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    margin-left: 1050px;
+  }
+}
