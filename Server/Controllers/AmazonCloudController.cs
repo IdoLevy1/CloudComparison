@@ -14,18 +14,12 @@ namespace Server.Controllers
         {
             try
             {
-<<<<<<< HEAD
-=======
                 AmazonCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location}");
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
                 return Ok(AmazonCloud.GetInfoFromDB(MachineType, Location));
             }
             catch (Exception ex)
             {
-<<<<<<< HEAD
-=======
                 AmazonCloud.Logger.Error(ex.Message);
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
                 return BadRequest(ex.Message);
             }
         }
@@ -38,18 +32,12 @@ namespace Server.Controllers
         {
             try
             {
-<<<<<<< HEAD
-=======
                 AmazonCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location} at {TimeStamp}");
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
                 return Ok(AmazonCloud.LoadItemsFromTimeStamp(MachineType, Location, TimeStamp));
             }
             catch (Exception ex)
             {
-<<<<<<< HEAD
-=======
                 AmazonCloud.Logger.Error(ex.Message);
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
                 return BadRequest(ex.Message);
             }
         }

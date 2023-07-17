@@ -17,11 +17,7 @@ const SupplierChoice = ({ selectedSupplier, onSupplierChange }) => {
 
   return (
     <div className="supplierChoice">
-<<<<<<< HEAD
       <h3>Cloud providers</h3>
-=======
-      <h3>Cloud providers:</h3>
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
       {suppliers.map((supplier) => (
         <div key={supplier}>
           <label>

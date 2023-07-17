@@ -59,11 +59,7 @@
 
 .selectState {
   height: 50px;
-<<<<<<< HEAD
   /* font-size: 50px; */
-=======
-  font-size: 16px;
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   text-align: center;
   margin-bottom: 25px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -112,20 +108,12 @@
   padding: 10px 20px;
   /* margin-bottom: 15px; */
   margin-top: 10px;
-<<<<<<< HEAD
   background-color: #4b4c4a;
-=======
-  background-color: #4b4c51;
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-<<<<<<< HEAD
   font-size: 14px;
-=======
-  font-size: 16px;
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 .date-picker-container button:hover {

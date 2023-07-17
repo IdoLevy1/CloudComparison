@@ -6,12 +6,9 @@ using Newtonsoft.Json;
 using System.Globalization;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
-<<<<<<< HEAD
-=======
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
 
 namespace Server.Models
 {
@@ -20,12 +17,8 @@ namespace Server.Models
         private const string AzureCloudName = "AzureCloud";
         private static readonly MongoHelper DB = new MongoHelper();
         private static readonly Random Random = new Random();
-<<<<<<< HEAD
-
-=======
         public static readonly NLog.ILogger Logger = LogManager.GetLogger("AzureCloudLogger");
         
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         public static void InsertInfoToDB(
             string SubscriptionId,
             string ResourceGroupName,
@@ -44,20 +37,14 @@ namespace Server.Models
             var tasks = new List<Task>
             {
                 Task.Run(() => metrics.PercentageCPU = GetCpuUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken)),
-<<<<<<< HEAD
                 Task.Run(() => metrics.PercentageMemory = GetMemoryUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken, MemorySizeInGB)),
-=======
                 Task.Run(() => metrics.PercentageMemory = 100 - GetMemoryUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken, MemorySizeInGB)),
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
                 Task.Run(() => metrics.IncomingTraffic = GetNetworkInUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken)),
                 Task.Run(() => metrics.OutcomingTraffic = GetNetworkOutUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken))
             };
             Task.WaitAll(tasks.ToArray());
 
-<<<<<<< HEAD
-=======
             Logger.Info($"{MachineType} {Location}: PercentageCPU = {metrics.PercentageCPU}, PercentageMemory = {metrics.PercentageMemory}, IncomingTraffic = {metrics.IncomingTraffic}, OutcomingTraffic = {metrics.OutcomingTraffic}");
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
         }
 
@@ -73,10 +60,7 @@ namespace Server.Models
                 OutcomingTraffic = Random.NextDouble() + 0.9
             };
 
-<<<<<<< HEAD
-=======
             Logger.Info($"{MachineType} {Location}: PercentageCPU = {metrics.PercentageCPU}, PercentageMemory = {metrics.PercentageMemory}, IncomingTraffic = {metrics.IncomingTraffic}, OutcomingTraffic = {metrics.OutcomingTraffic}");
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
             return metrics;
         }
@@ -154,21 +138,15 @@ namespace Server.Models
         private static double GetCpuUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Percentage%20CPU");
-<<<<<<< HEAD
             return info.average;
-=======
             return info.average * 5;
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         }
 
         private static double GetMemoryUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken, double MemorySizeInGB)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Available Memory Bytes");
-<<<<<<< HEAD
             return 100 - ((info.average * 100) / (double)(MemorySizeInGB * Math.Pow(2, 30)));
-=======
             return (info.average * 100) / (double)(MemorySizeInGB * Math.Pow(2, 30));
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         }
 
         private static double GetNetworkInUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)

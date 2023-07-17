@@ -9,6 +9,7 @@ public class InsertDataToDBService : BackgroundService
     private DateTime StartTimeUtc;
     private DateTime EndTimeUtc;
     private VirtualMachines VirtualMachines;
+    private string VirtualMachineJsonPath = AppContext.BaseDirectory + "..\\..\\..\\..\\Deployment\\VirtualMachines.json";
 
     public InsertDataToDBService()
     {
@@ -63,6 +64,7 @@ public class InsertDataToDBService : BackgroundService
                         AzureCloud.InsertInfoToDB(vm.SubscriptionId, vm.ResourceGroupName, vm.VirtualMachineName, StartTime + "/" + EndTime, vm.MachineType, vm.Location, vm.MemorySize);
                     }
                 }
+                catch (Exception ex)
                 {
                     AzureCloud.Logger.Error(ex.Message);
                     //Continue to the next Virtual Machine
@@ -92,6 +94,7 @@ public class InsertDataToDBService : BackgroundService
                         GoogleCloud.InsertInfoToDB(vm.ProjectId, vm.InstanceId, StartTime, EndTime, vm.JsonFileLocation, vm.MachineType, vm.Location);
                     }
                 }
+                catch(Exception ex) 
                 {
                     GoogleCloud.Logger.Error(ex.Message);
                     //Continue to the next Virtual Machine

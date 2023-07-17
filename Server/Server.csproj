@@ -23,10 +23,7 @@
     <PackageReference Include="Azure.ResourceManager" Version="1.4.0" />
     <PackageReference Include="Google.Cloud.Monitoring.V3" Version="3.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-<<<<<<< HEAD
-=======
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.2" />
->>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
     <PackageReference Include="RestSharp" Version="108.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
