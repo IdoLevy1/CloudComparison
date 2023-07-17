@@ -11,7 +11,11 @@ function Footer() {
       <div className="socialMedia">
         <InstagramIcon /> <TwitterIcon /> <FacebookIcon /> <LinkedInIcon />
       </div>
+<<<<<<< HEAD
       <p> &copy; 2023 cloudFit.com</p>
+=======
+      <p> &copy; 2023 cloudCompare.com</p>
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
     </div>
   );
 }

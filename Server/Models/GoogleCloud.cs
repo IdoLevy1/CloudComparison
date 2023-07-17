@@ -3,6 +3,10 @@ using DB.Models;
 using Google.Api.Gax;
 using Google.Cloud.Monitoring.V3;
 using Google.Protobuf.WellKnownTypes;
+<<<<<<< HEAD
+=======
+using NLog;
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
 using System.Globalization;
 
 namespace Server.Models
@@ -12,6 +16,10 @@ namespace Server.Models
         private const string GoogleCloudName = "GoogleCloud";
         private static readonly MongoHelper DB = new MongoHelper();
         private static readonly Random Random = new Random();
+<<<<<<< HEAD
+=======
+        public static readonly NLog.ILogger Logger = LogManager.GetLogger("GoogleCloudLogger");
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
 
         public static void InsertInfoToDB(
             string ProjectId,
@@ -39,6 +47,10 @@ namespace Server.Models
             };
             Task.WaitAll(tasks.ToArray());
 
+<<<<<<< HEAD
+=======
+            Logger.Info($"{MachineType} {Location}: PercentageCPU = {metrics.PercentageCPU}, PercentageMemory = {metrics.PercentageMemory}, IncomingTraffic = {metrics.IncomingTraffic}, OutcomingTraffic = {metrics.OutcomingTraffic}");
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
             DB.InsertItem(GoogleCloudName + MachineType + Location, metrics);
         }
 
@@ -53,6 +65,10 @@ namespace Server.Models
                 OutcomingTraffic = Random.NextDouble() + 0.9
             };
 
+<<<<<<< HEAD
+=======
+            Logger.Info($"{MachineType} {Location}: PercentageCPU = {metrics.PercentageCPU}, PercentageMemory = {metrics.PercentageMemory}, IncomingTraffic = {metrics.IncomingTraffic}, OutcomingTraffic = {metrics.OutcomingTraffic}");
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
             DB.InsertItem(GoogleCloudName + MachineType + Location, metrics);
         }
 

@@ -3,15 +3,24 @@
   height: 90vh;
   display: flex;
   justify-content: center;
+<<<<<<< HEAD
+=======
+  align-items: left;
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   flex-direction: column;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+<<<<<<< HEAD
+=======
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
 }
 
 .headerContainer {
   width: auto;
   margin-left: 50px;
+<<<<<<< HEAD
   align-items: right;
   margin-bottom: 30px; /* Adjust the margin-bottom value for the desired gap */
 }
@@ -36,14 +45,51 @@
   color: rgb(197, 206, 207);
   margin-left: 418px;
   margin-bottom: 40px; /* Adjust the margin-bottom value for the desired gap */
+=======
+}
+
+.headerContainer h1 {
+  /* display: inline-block; */
+  /* outline: 0; */
+  /* padding: 5px 7px; */
+  /* position: relative; */
+  /* border: 10px;
+    border-color: #9c2121; */
+  /* border-radius: 20px; */
+  justify-content: center;
+  /* align-items: center; */
+  /* text-align: center; */
+  font-size: 70px;
+  height: 60px;
+  font-weight: 0;
+  -webkit-text-stroke: 1px black;
+  text-shadow: 1px black;
+  color: rgb(4, 38, 41);
+  /* background-color: rgb(118, 123, 155); */
+}
+
+.headerContainer p {
+  padding: 0;
+  -webkit-text-stroke: 1px black;
+  text-shadow: 1px black;
+  font-size: 40px;
+  font-weight: lighter;
+  color: rgb(6, 54, 58);
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
 }
 
 .headerContainer button {
   color: rgb(88, 81, 81);
+<<<<<<< HEAD
   border: 1px solid black;
   border-radius: 40px;
   cursor: pointer;
   align-items: center;
+=======
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   justify-content: center;
   background-color: #566161;
   height: 50px;
@@ -51,8 +97,11 @@
   color: white;
   text-decoration: none;
   font-size: 20px;
+<<<<<<< HEAD
   /* margin-left: 260px; */
   margin-left: 650px;
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
 }
 
 .headerContainer button:hover {
@@ -84,13 +133,19 @@
     font-size: 40px;
     height: 30px;
     color: white;
+<<<<<<< HEAD
     margin-bottom: 5px; /* Adjust the margin-bottom value for the desired gap */
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   }
 
   .headerContainer p {
     font-size: 30px;
     color: white;
+<<<<<<< HEAD
     margin-bottom: 5px; /* Adjust the margin-bottom value for the desired gap */
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   }
 
   .headerContainer button {
@@ -104,6 +159,7 @@
     color: #626e76;
   }
 }
+<<<<<<< HEAD
 
 @media only screen and (min-width: 1500px) {
   .headerContainer h1 {
@@ -131,3 +187,5 @@
     margin-left: 1050px;
   }
 }
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d

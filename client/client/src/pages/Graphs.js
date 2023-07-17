@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import "../styles/Graphs.css";
 import TimeSelection from "../components/TimeSelection";
 import BannerImage from "../assets/graphsBack.png";
+=======
+import { useLocation } from "react-router-dom";
+import "../styles/Graphs.css";
+import TimeSelection from "../components/TimeSelection";
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -86,12 +92,18 @@ const Graphs = () => {
         const memoryPercentage = json.map((obj) => obj.percentageMemory);
         const inTraffic = json.map((obj) => obj.incomingTraffic);
         const outTraffic = json.map((obj) => obj.outcomingTraffic);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         filteredCpuData[supplier] = cpuPercentage;
         filteredMemoryData[supplier] = memoryPercentage;
         filteredInTrafficData[supplier] = inTraffic;
         filteredOutTrafficData[supplier] = outTraffic;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         const formattedLabels = timeStamp.map((timestamp) => {
           const date = new Date(timestamp);
           return date
@@ -108,7 +120,10 @@ const Graphs = () => {
           );
           return uniqueLabels;
         });
+<<<<<<< HEAD
 
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         setFilteredCpuData((prevFilteredCpuData) => {
           return {
             ...prevFilteredCpuData,
@@ -222,7 +237,10 @@ const Graphs = () => {
           const timestampDate =
             new Date(timestamp).toISOString().split(".")[0] + "Z";
           const endDate = new Date(startDate);
+<<<<<<< HEAD
           endDate.setHours(endDate.getHours() + 1);
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
           endDate.setHours(endDate.getHours() + 1); // Adding 4 hours to the start date
           const endDateFormatted = endDate.toISOString().split(".")[0] + "Z"; // Formatting the end date
           console.log(timestampDate);
@@ -284,8 +302,12 @@ const Graphs = () => {
     fetchedOutTrafficData,
   ]);
 
+<<<<<<< HEAD
   const colors = ["#5664d1", "#ad5769", "#3d9174"]; // Add more colors as needed
   // const colors = ["#aa75b8", "#ff6384", "#36a2eb"]; // Add more colors as needed
+=======
+  const colors = ["#aa75b8", "#ff6384", "#36a2eb"]; // Add more colors as needed
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
 
   const cpuGraphData = {
     labels: filteredLabels,
@@ -459,12 +481,15 @@ const Graphs = () => {
       ...options.scales,
       y: {
         ...options.scales.y,
+<<<<<<< HEAD
         min: isRealTime
           ? 0
           : Math.min(...Object.values(filteredCpuData).flat()) - 20,
         max: isRealTime
           ? 180
           : Math.max(...Object.values(filteredCpuData).flat()) + 20,
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         min: 0,
         max: 180,
         stepSize: 40,
@@ -485,6 +510,7 @@ const Graphs = () => {
       ...options.scales,
       y: {
         ...options.scales.y,
+<<<<<<< HEAD
 
         min: isRealTime
           ? 0
@@ -492,6 +518,8 @@ const Graphs = () => {
         max: isRealTime
           ? 100
           : Math.max(...Object.values(filteredMemoryData).flat()) + 20,
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         min: 0,
         max: 100,
         stepSize: 10,
@@ -512,12 +540,15 @@ const Graphs = () => {
       ...options.scales,
       y: {
         ...options.scales.y,
+<<<<<<< HEAD
         min: isRealTime
           ? 0
           : Math.min(...Object.values(filteredInTrafficData).flat()) - 20,
         max: isRealTime
           ? 700
           : Math.max(...Object.values(filteredInTrafficData).flat()) + 20,
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         min: 0,
         max: 700,
         stepSize: 100,
@@ -538,12 +569,15 @@ const Graphs = () => {
       ...options.scales,
       y: {
         ...options.scales.y,
+<<<<<<< HEAD
         min: isRealTime
           ? 0
           : Math.min(...Object.values(filteredOutTrafficData).flat()) - 20,
         max: isRealTime
           ? 2
           : Math.max(...Object.values(filteredOutTrafficData).flat()) + 20,
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         min: 0,
         max: 2,
         stepSize: 0.4,
@@ -551,7 +585,11 @@ const Graphs = () => {
     },
   };
   return (
+<<<<<<< HEAD
     <div className="graphs" style={{ backgroundImage: `url(${BannerImage})` }}>
+=======
+    <div className="graphs">
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
       <h2>Results</h2>
       <p>Providers: {suppliers.join(", ")}</p>
       <p>Machine type: {type}</p>
@@ -561,11 +599,14 @@ const Graphs = () => {
         onDateChange={handleDateChange}
         isRealTime={isRealTime}
       />
+<<<<<<< HEAD
       <div>
         <Link to={"/Filter"}>
           <button className="changeButton">Edit selection</button>
         </Link>
       </div>
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
       <div className="graph-row">
         <div className="graph-container">
           <div className="graph">

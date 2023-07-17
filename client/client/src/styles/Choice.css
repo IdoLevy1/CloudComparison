@@ -6,6 +6,7 @@
   /* display: flex; */
   /* flex-direction: column; */
   justify-content: center;
+<<<<<<< HEAD
   /* background-color: #f2f2f2; */
 }
 /* .choice .title {
@@ -14,6 +15,17 @@
   text-align: center;
   margin-bottom: 16px;
 } */
+=======
+  background-color: #f2f2f2;
+}
+.choice .title {
+  font-size: 30px;
+  height: 60px;
+  font-weight: 0;
+  color: rgb(0, 0, 0);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
 .choice p {
   /* display: flex; */
   width: 1200px;

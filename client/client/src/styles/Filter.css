@@ -1,4 +1,5 @@
 .submitChoice {
+<<<<<<< HEAD
   background-image: linear-gradient(
     90deg,
     rgba(89, 95, 118, 1) 0%,
@@ -63,25 +64,91 @@
 }
 
 .grid-item input[type="checkbox"] {
+=======
+  display: block;
+  text-align: center; /* Center the button within its container */
+}
+.checkbox-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around; /* Add space between components */
+  align-items: flex-start;
+  margin-bottom: 20px; /* Add some bottom margin */
+}
+
+.checkbox-grid h3 {
+  font-size: 24px;
+  /* font-weight: bold; */
+  color: #333;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-bottom: 1rem;
+}
+
+.checkbox-grid label {
+  /* display: block;
+  margin-bottom: 20px;
+  font-size: 25px; 
+  color: #333;
+  font-weight: bold;
+  color: #5313a6; */
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #333;
+}
+
+.checkbox-grid input[type="checkbox"] {
+  /* display: inline-block;
+  vertical-align: left;
+  margin-right: 10px;
+  margin-bottom: 3px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer; */
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   margin-right: 10px;
   cursor: pointer;
 }
 
+<<<<<<< HEAD
 .grid-item input[type="checkbox"]:checked::before {
   content: "\2714";
   display: inline-block;
   font-size: 14px;
   color: #1f2123;
+=======
+.checkbox-grid input[type="checkbox"]:checked::before {
+  /* content: '\2713'; */
+  /* display: inline-block; */
+  /* vertical-align: middle; */
+  /* font-size: 16px;
+  color: #007bff;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  line-height: 16px; */
+  content: "\2713";
+  display: inline-block;
+  font-size: 14px;
+  color: #007bff;
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   width: 14px;
   height: 14px;
   text-align: center;
   line-height: 14px;
+<<<<<<< HEAD
   border: 2px solid #707070;
+=======
+  border: 1px solid #007bff;
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   border-radius: 3px;
   background-color: #fff;
   margin-right: 5px;
 }
 
+<<<<<<< HEAD
 .buttonWrapper {
   display: flex;
   justify-content: center;
@@ -89,6 +156,23 @@
 }
 .submitChoice button[type="submit"] {
   background-color: #3b3c43;
+=======
+/* Additional styling for the form submit button */
+/* button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0062cc; */
+
+.submitChoice button[type="submit"] {
+  background-color: #0e5487;
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   border: 0;
   border-radius: 56px;
   color: #fff;
@@ -112,7 +196,11 @@
 
 .submitChoice button[type="submit"]:before {
   background-color: initial;
+<<<<<<< HEAD
   background-image: linear-gradient(#808080 0, rgba(255, 255, 255, 0) 100%);
+=======
+  background-image: linear-gradient(#fff 0, rgba(255, 255, 255, 0) 100%);
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
   border-radius: 125px;
   content: "";
   height: 50%;
@@ -135,9 +223,12 @@
     padding: 16px 48px;
   }
 }
+<<<<<<< HEAD
 
 .errorContainer {
   display: flex;
   justify-content: center;
   margin-top: 10px;
 }
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d

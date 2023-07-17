@@ -1,11 +1,18 @@
 import React, { useState } from "react";
+<<<<<<< HEAD
 import { Select, MenuItem, Button, InputLabel } from "@mui/material";
+=======
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/TimeSelection.css";
 
 const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
   const [startDate, setStartDate] = useState("");
+<<<<<<< HEAD
+=======
+  //   const [endDate, setEndDate] = useState("");
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
 
   const handleSelectChange = (event) => {
     const value = event.target.value;
@@ -14,6 +21,10 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
 
   const handleSubmit = () => {
     console.log(startDate);
+<<<<<<< HEAD
+=======
+    // console.log(endDate);
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
     if (startDate) {
       onDateChange(startDate);
     }
@@ -21,6 +32,7 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
 
   return (
     <div className="selection-container">
+<<<<<<< HEAD
       <Select
         sx={{
           width: 150,
@@ -39,6 +51,13 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
         <MenuItem value="history">History</MenuItem>
       </Select>
       {!isRealTime && (
+=======
+      <select onChange={handleSelectChange} className="selectState">
+        <option value="real-time">Real-time</option>
+        <option value="history">History</option>
+      </select>
+      {isRealTime ? null : (
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         <div className="date-picker-container">
           <div className="date-picker-wrapper">
             <label>Start Date:</label>
@@ -50,12 +69,36 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
               timeIntervals={15}
               timeCaption="Time"
               dateFormat="yyyy-MM-dd HH:mm"
+<<<<<<< HEAD
               minDate={new Date(2023, 4, 15)}
               maxDate={new Date(2023, 5, 30)}
               className="date-picker"
             />
           </div>
           <Button onClick={handleSubmit}>Submit</Button>
+=======
+              minDate={new Date(2023, 4, 15)} // May is month 4 (zero-based)
+              maxDate={new Date(2023, 5, 30)} // June is month 5 (zero-based)
+              className="date-picker"
+            />
+          </div>
+          {/* <div>
+            <label>End Date:</label>
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={15}
+              timeCaption="Time"
+              dateFormat="yyyy-MM-dd HH:mm"
+              minDate={new Date(2023, 4, 15)} // May is month 4 (zero-based)
+              maxDate={new Date(2023, 5, 30)} // June is month 5 (zero-based)
+              className="date-picker"
+            />
+          </div> */}
+          <button onClick={handleSubmit}>Submit</button>
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
         </div>
       )}
     </div>

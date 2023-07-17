@@ -20,7 +20,11 @@ const TypeChoice = (props) => {
 
   return (
     <div className="typeChoice">
+<<<<<<< HEAD
       <h3>Machine type</h3>
+=======
+      <h3>Machine type:</h3>
+>>>>>>> 62b88ebe38a934635a3335cf6d8ad7c66800ea9d
       {types.map((type) => (
         <div key={type}>
           <label>
