@@ -7,7 +7,6 @@ import Filter from "./pages/Filter";
 import Graphs from "./pages/Graphs";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import InsertToDB from "./components/InsertToDB";
 
 function App() {
   return (
@@ -17,11 +16,11 @@ function App() {
         <Router>
           <Navbar />
           <Routes>
-            <Route path="/" element={<Home />} exact />
-            <Route path="/filter" element={<Filter />} exact />
-            <Route path="/graphs" element={<Graphs />} exact />
-            <Route path="/about" element={<About />} exact />
-            <Route path="/contact" element={<Contact />} exact />
+            <Route path="/" element={<Home />} />
+            <Route path="/filter" element={<Filter />} />
+            <Route path="/graphs" element={<Graphs />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </Router>
       </div>
