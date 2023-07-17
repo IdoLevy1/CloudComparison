@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Grid, Alert, AlertTitle } from "@mui/material";
-import { Typography, styled } from "@mui/material";
+import { Grid, Alert, AlertTitle } from "@mui/material";
 import SupplierChoice from "../components/SupplierChoice";
 import TypeChoice from "../components/TypeChoice";
 import LocationChoice from "../components/LocationChoice";
 import "../styles/Filter.css";
-import BannerImage from "../assets/HomePage1.png";
+import BannerImage from "../assets/filterBack.png";
 
 const Filter = () => {
   const [selectedLocation, setSelectedLocation] = useState("");
