@@ -1,6 +1,4 @@
 .graphs {
-  /* background-color: #f2f2f2; */
-  /* margin-bottom: 30px; */
   background-image: linear-gradient(
     90deg,
     rgba(44, 129, 162, 1) 0%,
@@ -16,8 +14,6 @@
   text-align: center;
   font-size: 70px;
   height: 70px;
-  /* -webkit-text-stroke: 1px rgb(114, 110, 110); */
-  /* text-shadow: 5px black; */
   -webkit-text-stroke: 1px rgb(54, 53, 53);
   color: #191925;
   text-shadow: 2px 2px 4px rgba(0.3, 0.3, 0.3, 0.3);
@@ -29,10 +25,53 @@
   font-size: 20px;
   font-weight: 520;
   height: 50px;
-  /* -webkit-text-stroke: 1px rgb(114, 110, 110); */
-  /* text-shadow: 5px black; */
   color: #07070b;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.graphs .graph-row {
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.graphs .graph-container {
+  flex-basis: calc(50% - 10px);
+  margin-bottom: 20px;
+}
+
+.graphs .graph {
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 20px;
+  width: 90%;
+  height: 360px;
+  margin: 0 auto;
+  background-color: #d2d6d6;
+  box-shadow: 5px 4px 5px 1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  /* display: flex;
+  flex-direction: column; */
+  justify-content: flex-end;
+}
+.graphs .graph p {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 18px;
+}
+
+@media (min-width: 1300px) {
+  .graphs .graph {
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 20px;
+    width: 89%;
+    height: 460px;
+    margin: 0 auto;
+    background-color: #d2d6d6;
+    box-shadow: 5px 4px 5px 1px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .changeButton {
@@ -55,8 +94,6 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  /* margin-top: 40px;
-  margin-bottom: 20px; */
 }
 
 .changeButton:before {
@@ -83,33 +120,4 @@
   .changeButton {
     padding: 16px 48px;
   }
-}
-/* .changeButton {
-  margin-left: 50px;
-  background-color: blue;
-  color: white;
-  border-radius: 5px;
-} */
-
-.graphs .graph-row {
-  padding: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.graphs .graph-container {
-  flex-basis: 49%;
-  margin-bottom: 20px;
-}
-
-.graphs .graph {
-  border: 2px solid black;
-  border-radius: 5px;
-  padding: 20px;
-  width: 91%; /* Adjust the width to occupy the full width of the container */
-  height: 300px;
-  margin: 0 auto; /* Center the graph horizontally */
-  background-color: #d2d6d6; /* Add a background color to the graph */
-  box-shadow: 5px 4px 5px 1px rgba(0, 0, 0, 0.1);
 }

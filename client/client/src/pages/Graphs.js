@@ -61,9 +61,15 @@ const Graphs = () => {
   }, [isRealTime]);
 
   let isFirstCall = true;
+  const [lowestCpuSupplier, setLowestCpuSupplier] = useState("");
+  const [lowestMemorySupplier, setLowestMemorySupplier] = useState("");
+  const [highestInTrafficSupplier, setHighestInTrafficSupplier] = useState("");
+  const [highestOutTrafficSupplier, setHighestOutTrafficSupplier] =
+    useState("");
 
   const fetchDataRealTime = async () => {
     const now = new Date();
+    //TODO move to setIsoTimeStamp function.
     let isoTimestamp;
     if (isFirstCall) {
       const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
@@ -91,7 +97,6 @@ const Graphs = () => {
         filteredMemoryData[supplier] = memoryPercentage;
         filteredInTrafficData[supplier] = inTraffic;
         filteredOutTrafficData[supplier] = outTraffic;
-
         const formattedLabels = timeStamp.map((timestamp) => {
           const date = new Date(timestamp);
           return date
@@ -148,8 +153,43 @@ const Graphs = () => {
       } catch (error) {
         console.error(`Failed to fetch data for ${supplier}:`, error);
       }
-      // console.log(isRealTime);
     }
+    setLowestCpuSupplier(findLowestMetric(filteredCpuData));
+    setLowestMemorySupplier(findLowestMetric(filteredMemoryData));
+    setHighestInTrafficSupplier(findHighestMetric(filteredInTrafficData));
+    setHighestOutTrafficSupplier(findHighestMetric(filteredOutTrafficData));
+  };
+
+  const findLowestMetric = (metricsData) => {
+    let lowestValue = Infinity;
+    let lowestSupplier = "";
+    for (const [supplier, data] of Object.entries(metricsData)) {
+      if (data && data.length > 0) {
+        console.log(data[data.length - 1]);
+        const lastValue = data[data.length - 1];
+        if (lastValue < lowestValue) {
+          lowestValue = lastValue;
+          lowestSupplier = supplier;
+        }
+      }
+    }
+    return lowestSupplier;
+  };
+
+  const findHighestMetric = (metricsData) => {
+    let lowestValue = -1;
+    let lowestSupplier = "";
+    for (const [supplier, data] of Object.entries(metricsData)) {
+      if (data && data.length > 0) {
+        console.log(data[data.length - 1]);
+        const lastValue = data[data.length - 1];
+        if (lastValue > lowestValue) {
+          lowestValue = lastValue;
+          lowestSupplier = supplier;
+        }
+      }
+    }
+    return lowestSupplier;
   };
 
   const fetchDataHistory = async () => {
@@ -284,104 +324,74 @@ const Graphs = () => {
     fetchedOutTrafficData,
   ]);
 
-  const colors = ["#5664d1", "#ad5769", "#3d9174"]; // Add more colors as needed
-  // const colors = ["#aa75b8", "#ff6384", "#36a2eb"]; // Add more colors as needed
+  const handleSelectChange = (value) => {
+    if (value === "real-time") {
+      setIsRealTime(true);
+    } else if (value === "history") {
+      setIsRealTime(false);
+    }
+  };
+
+  const handleDateChange = (start) => {
+    setStartDate(start.toISOString().split(".")[0] + "Z");
+    console.log(startDate);
+  };
+
+  const colors = ["#5664d1", "#ad5769", "#3d9174"];
+
+  const createGraphDataset = (data, colors, tension = 0.4, pointRadius = 2) => {
+    return Object.entries(data).map(([supplier, supplierData], index) => {
+      const color = colors[index % colors.length];
+      return {
+        label: supplier,
+        data: supplierData,
+        backgroundColor: color,
+        borderColor: color,
+        pointBorderColor: color,
+        fill: true,
+        tension,
+        pointRadius,
+      };
+    });
+  };
 
   const cpuGraphData = {
     labels: filteredLabels,
-    datasets: Object.entries(filteredCpuData).map(
-      ([supplier, supplierData], index) => {
-        const color = colors[index % colors.length];
-        return {
-          label: supplier,
-          data: supplierData,
-          backgroundColor: color,
-          borderColor: color,
-          pointBorderColor: color,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 2,
-        };
-      }
-    ),
+    datasets: createGraphDataset(filteredCpuData, colors, 0.4, 2),
   };
 
   const memoryGraphData = {
     labels: filteredLabels,
-    datasets: Object.entries(filteredMemoryData).map(
-      ([supplier, supplierData], index) => {
-        const color = colors[index % colors.length];
-        return {
-          label: supplier,
-          data: supplierData,
-          backgroundColor: color,
-          borderColor: color,
-          pointBorderColor: color,
-          fill: true,
-          tension: 0.2,
-          pointRadius: 2,
-        };
-      }
-    ),
+    datasets: createGraphDataset(filteredMemoryData, colors, 0.2, 2),
   };
+
   const inTrafficGraphData = {
     labels: filteredLabels,
-    datasets: Object.entries(filteredInTrafficData).map(
-      ([supplier, supplierData], index) => {
-        const color = colors[index % colors.length];
-        return {
-          label: supplier,
-          data: supplierData,
-          backgroundColor: color,
-          borderColor: color,
-          pointBorderColor: color,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 2,
-        };
-      }
-    ),
+    datasets: createGraphDataset(filteredInTrafficData, colors, 0.4, 2),
   };
 
   const outTrafficGraphData = {
     labels: filteredLabels,
-    datasets: Object.entries(filteredOutTrafficData).map(
-      ([supplier, supplierData], index) => {
-        const color = colors[index % colors.length]; // Get color based on index
-        return {
-          label: supplier,
-          data: supplierData,
-          backgroundColor: color,
-          borderColor: color,
-          pointBorderColor: color,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 2,
-        };
-      }
-    ),
+    datasets: createGraphDataset(filteredOutTrafficData, colors, 0.4, 2),
   };
-
   const options = {
     plugins: {
       legend: true,
       title: {
         display: true,
-        // text: "",
         color: "#474545",
         font: {
           family: "Tahoma",
           size: 20,
-          weight: "bold",
-          lineHeight: 1.2,
+          lineHeight: 1.5,
         },
         padding: { top: 15, left: 0, right: 0, bottom: 15 },
       },
     },
     layout: {
       padding: {
-        left: 50, // Adjust the left padding as needed
-        right: 50, // Adjust the right padding as needed
+        left: 50,
+        right: 50,
         top: 0,
         bottom: 0,
       },
@@ -412,140 +422,72 @@ const Graphs = () => {
             weight: "bold",
           },
           color: "black",
-          // stepSize: 30,
         },
-
-        // min: 0,
-        // max: 180,
-        // stepSize: 20,
       },
     },
   };
-
-  const handleSelectChange = (value) => {
-    if (value === "real-time") {
-      setIsRealTime(true);
-    } else if (value === "history") {
-      setIsRealTime(false);
-    }
+  const getGraphOptions = (title, minValue, maxValue, data, stepSize) => {
+    return {
+      ...options,
+      plugins: {
+        ...options.plugins,
+        title: {
+          ...options.plugins.title,
+          text: title,
+        },
+      },
+      scales: {
+        ...options.scales,
+        y: {
+          ...options.scales.y,
+          min: isRealTime
+            ? minValue
+            : Math.min(...Object.values(data).flat()) - 20,
+          max: isRealTime
+            ? maxValue
+            : Math.max(...Object.values(data).flat()) + 20,
+          stepSize,
+        },
+      },
+    };
   };
 
-  const handleDateChange = (start) => {
-    setStartDate(start.toISOString().split(".")[0] + "Z");
-    // setEndDate(end.toISOString().split(".")[0] + "Z");
-    console.log(startDate);
-    // console.log(endDate);
-  };
+  const cpuGraphOptions = getGraphOptions(
+    "CPU Percentage",
+    0,
+    180,
+    filteredCpuData,
+    filteredCpuData,
+    40
+  );
 
-  // const graphStyle = {
-  //   display: "inline-block",
-  //   border: "1px solid black",
-  //   borderRadius: "5px",
-  //   padding: "20px",
-  //   marginTop: "40px",
-  //   width: "2000px",
-  //   height: "1000px",
-  // };
-  const cpuGraphOptions = {
-    ...options,
-    plugins: {
-      ...options.plugins,
-      title: {
-        ...options.plugins.title,
-        text: "CPU Percentage",
-      },
-    },
-    scales: {
-      ...options.scales,
-      y: {
-        ...options.scales.y,
-        min: isRealTime
-          ? 0
-          : Math.min(...Object.values(filteredCpuData).flat()) - 20,
-        max: isRealTime
-          ? 180
-          : Math.max(...Object.values(filteredCpuData).flat()) + 20,
+  const memoryGraphOptions = getGraphOptions(
+    "Memory Percentage",
+    0,
+    100,
+    filteredMemoryData,
+    filteredMemoryData,
+    10
+  );
 
-        stepSize: 40,
-      },
-    },
-  };
+  const inTrafficGraphOptions = getGraphOptions(
+    "Incoming Traffic Percentage",
+    0,
+    700,
+    filteredInTrafficData,
+    filteredInTrafficData,
+    100
+  );
 
-  const memoryGraphOptions = {
-    ...options,
-    plugins: {
-      ...options.plugins,
-      title: {
-        ...options.plugins.title,
-        text: "Memory Percentage",
-      },
-    },
-    scales: {
-      ...options.scales,
-      y: {
-        ...options.scales.y,
+  const outTrafficGraphOptions = getGraphOptions(
+    "Outgoing Traffic Percentage",
+    0,
+    2,
+    filteredOutTrafficData,
+    filteredOutTrafficData,
+    0.2
+  );
 
-        min: isRealTime
-          ? 0
-          : Math.min(...Object.values(filteredMemoryData).flat()) - 20,
-        max: isRealTime
-          ? 100
-          : Math.max(...Object.values(filteredMemoryData).flat()) + 20,
-
-        stepSize: 10,
-      },
-    },
-  };
-
-  const inTrafficGraphOptions = {
-    ...options,
-    plugins: {
-      ...options.plugins,
-      title: {
-        ...options.plugins.title,
-        text: "Incoming Traffic Percentage",
-      },
-    },
-    scales: {
-      ...options.scales,
-      y: {
-        ...options.scales.y,
-        min: isRealTime
-          ? 0
-          : Math.min(...Object.values(filteredInTrafficData).flat()) - 20,
-        max: isRealTime
-          ? 700
-          : Math.max(...Object.values(filteredInTrafficData).flat()) + 20,
-
-        stepSize: 100,
-      },
-    },
-  };
-
-  const outTrafficGraphOptions = {
-    ...options,
-    plugins: {
-      ...options.plugins,
-      title: {
-        ...options.plugins.title,
-        text: "Outgoing Traffic Percentage",
-      },
-    },
-    scales: {
-      ...options.scales,
-      y: {
-        ...options.scales.y,
-        min: isRealTime
-          ? 0
-          : Math.min(...Object.values(filteredOutTrafficData).flat()) - 20,
-        max: isRealTime
-          ? 2
-          : Math.max(...Object.values(filteredOutTrafficData).flat()) + 20,
-
-        stepSize: 0.4,
-      },
-    },
-  };
   return (
     <div className="graphs" style={{ backgroundImage: `url(${BannerImage})` }}>
       <h2>Results</h2>
@@ -566,11 +508,17 @@ const Graphs = () => {
         <div className="graph-container">
           <div className="graph">
             <Line data={cpuGraphData} options={cpuGraphOptions} />
+            {suppliers.length > 1 && lowestCpuSupplier && (
+              <p>Best performance: {lowestCpuSupplier}</p>
+            )}
           </div>
         </div>
         <div className="graph-container">
           <div className="graph">
             <Line data={memoryGraphData} options={memoryGraphOptions} />
+            {suppliers.length > 1 && lowestMemorySupplier && (
+              <p>Best performance: {lowestMemorySupplier}</p>
+            )}
           </div>
         </div>
       </div>
@@ -578,11 +526,17 @@ const Graphs = () => {
         <div className="graph-container">
           <div className="graph">
             <Line data={inTrafficGraphData} options={inTrafficGraphOptions} />
+            {suppliers.length > 1 && highestInTrafficSupplier && (
+              <p>Best performance: {highestInTrafficSupplier}</p>
+            )}
           </div>
         </div>
         <div className="graph-container">
           <div className="graph">
             <Line data={outTrafficGraphData} options={outTrafficGraphOptions} />
+            {suppliers.length > 1 && highestOutTrafficSupplier && (
+              <p>Best performance: {highestOutTrafficSupplier}</p>
+            )}
           </div>
         </div>
       </div>

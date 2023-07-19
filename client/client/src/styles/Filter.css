@@ -1,14 +1,9 @@
 .submitChoice {
-  background-image: linear-gradient(
-    90deg,
-    rgba(89, 95, 118, 1) 0%,
-    rgba(86, 100, 190, 1) 49%,
-    rgba(118, 144, 196, 1) 87%
-  );
   padding: 1px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  height: 100vh;
 }
 .submitChoice h1 {
   font-size: 40px;
@@ -32,9 +27,6 @@
   border-radius: 10px;
 }
 
-/* .grid-item:not(:last-child) {
-  margin: 10px; 
-} */
 .grid-item:hover {
   background-color: #c1c0c0;
 }
