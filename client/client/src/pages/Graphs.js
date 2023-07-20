@@ -35,7 +35,6 @@ const Graphs = () => {
 
   const [isRealTime, setIsRealTime] = useState(true);
   const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [filteredLabels, setFilteredLabels] = useState([]);
   const [fetchedCpuData, setFetchedCpuData] = useState({});
   const [filteredCpuData, setFilteredCpuData] = useState([]);
@@ -166,9 +165,11 @@ const Graphs = () => {
     for (const [supplier, data] of Object.entries(metricsData)) {
       if (data && data.length > 0) {
         console.log(data[data.length - 1]);
-        const lastValue = data[data.length - 1];
-        if (lastValue < lowestValue) {
-          lowestValue = lastValue;
+        const value = isRealTime
+          ? data[data.length - 1]
+          : calculateAverage(data);
+        if (value < lowestValue) {
+          lowestValue = value;
           lowestSupplier = supplier;
         }
       }
@@ -177,19 +178,21 @@ const Graphs = () => {
   };
 
   const findHighestMetric = (metricsData) => {
-    let lowestValue = -1;
-    let lowestSupplier = "";
+    let highestValue = -1;
+    let highestSupplier = "";
     for (const [supplier, data] of Object.entries(metricsData)) {
       if (data && data.length > 0) {
         console.log(data[data.length - 1]);
-        const lastValue = data[data.length - 1];
-        if (lastValue > lowestValue) {
-          lowestValue = lastValue;
-          lowestSupplier = supplier;
+        const value = isRealTime
+          ? data[data.length - 1]
+          : calculateAverage(data);
+        if (value > highestValue) {
+          highestValue = value;
+          highestSupplier = supplier;
         }
       }
     }
-    return lowestSupplier;
+    return highestSupplier;
   };
 
   const fetchDataHistory = async () => {
@@ -249,7 +252,16 @@ const Graphs = () => {
     setFilteredLabels([]);
   }, [isRealTime]);
 
+  const calculateAverage = (data) => {
+    if (data && data.length > 0) {
+      const sum = data.reduce((accumulator, value) => accumulator + value, 0);
+      return sum / data.length;
+    }
+    return 0;
+  };
+
   useEffect(() => {
+    // TODO seperate to functions
     if (!isRealTime && startDate) {
       const labels = [];
       console.log(fetchedCpuData);
@@ -314,6 +326,11 @@ const Graphs = () => {
 
       setFilteredLabels(formattedLabels);
       console.log(filteredMemoryData);
+
+      setLowestCpuSupplier(findLowestMetric(filteredCpuData));
+      setLowestMemorySupplier(findLowestMetric(filteredMemoryData));
+      setHighestInTrafficSupplier(findHighestMetric(filteredInTrafficData));
+      setHighestOutTrafficSupplier(findHighestMetric(filteredOutTrafficData));
     }
   }, [
     isRealTime,
@@ -374,6 +391,7 @@ const Graphs = () => {
     labels: filteredLabels,
     datasets: createGraphDataset(filteredOutTrafficData, colors, 0.4, 2),
   };
+
   const options = {
     plugins: {
       legend: true,
@@ -426,6 +444,7 @@ const Graphs = () => {
       },
     },
   };
+
   const getGraphOptions = (title, minValue, maxValue, data, stepSize) => {
     return {
       ...options,
@@ -442,10 +461,13 @@ const Graphs = () => {
           ...options.scales.y,
           min: isRealTime
             ? minValue
-            : Math.min(...Object.values(data).flat()) - 20,
+            : Math.max(
+                Math.floor(Math.min(...Object.values(data).flat()) - 10),
+                0
+              ),
           max: isRealTime
             ? maxValue
-            : Math.max(...Object.values(data).flat()) + 20,
+            : Math.floor(Math.max(...Object.values(data).flat()) + 10),
           stepSize,
         },
       },
@@ -499,10 +521,17 @@ const Graphs = () => {
         onDateChange={handleDateChange}
         isRealTime={isRealTime}
       />
-      <div>
-        <Link to={"/Filter"}>
-          <button className="changeButton">Edit selection</button>
-        </Link>
+      <div className="button-container">
+        <div>
+          <Link to={"/Filter"}>
+            <button className="changeButton">Edit selection</button>
+          </Link>
+        </div>
+        <div>
+          <Link to={"/ProvidersRank"}>
+            <button className="changeButton">View Providers Rank</button>
+          </Link>
+        </div>
       </div>
       <div className="graph-row">
         <div className="graph-container">
