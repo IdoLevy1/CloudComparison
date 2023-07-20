@@ -51,7 +51,7 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime }) => {
               timeCaption="Time"
               dateFormat="yyyy-MM-dd HH:mm"
               minDate={new Date(2023, 4, 15)}
-              maxDate={new Date(2023, 5, 30)}
+              maxDate={new Date(2023, 6, 30)}
               className="date-picker"
             />
           </div>

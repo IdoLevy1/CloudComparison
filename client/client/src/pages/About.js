@@ -12,19 +12,14 @@ function About() {
       <div className="aboutBottom">
         <h1> ABOUT US</h1>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
-          mollitia, molestiae quas vel sint commodi repudiandae consequuntur
-          voluptatum laborum numquam blanditiis harum quisquam eius sed odit
-          fugiat iusto fuga praesentium optio, eaque rerum! Provident similique
-          accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut
-          molestias architecto voluptate aliquam nihil, eveniet aliquid culpa
-          officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum
-          nesciunt ipsum debitis quas aliquid. Reprehenderit, quia. Quo neque
-          error repudiandae fuga? Ipsa laudantium molestias eos sapiente
-          officiis modi at sunt excepturi expedita sint? Sed quibusdam
-          recusandae alias error harum maxime adipisci amet laborum.
-          Perspiciatis minima nesciunt dolorem! Officiis iure rerum voluptates a
-          cumque velit
+          Our application empowers you to conduct stress tests on virtual
+          machines with identical CPU and memory properties. With just a few
+          clicks, you can choose your preferred cloud provider, specify desired
+          machine properties, and even select your preferred location. It's all
+          about customization! But we don't stop there. Our application goes the
+          extra mile by providing access to a comprehensive virtual machine
+          history based on your individual preferences. You can track
+          performance metrics, analyze trends, and make data-driven decisions.
         </p>
       </div>
     </div>
