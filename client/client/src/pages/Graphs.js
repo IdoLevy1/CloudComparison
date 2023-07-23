@@ -59,16 +59,15 @@ const Graphs = () => {
     }
   }, [isRealTime]);
 
-  let isFirstCall = true;
+  let isFirstCall = true; //TODO change to useState
   const [lowestCpuSupplier, setLowestCpuSupplier] = useState("");
   const [lowestMemorySupplier, setLowestMemorySupplier] = useState("");
   const [highestInTrafficSupplier, setHighestInTrafficSupplier] = useState("");
   const [highestOutTrafficSupplier, setHighestOutTrafficSupplier] =
     useState("");
 
-  const fetchDataRealTime = async () => {
+  const setIsoTimestamp = (isFirstCall) => {
     const now = new Date();
-    //TODO move to setIsoTimeStamp function.
     let isoTimestamp;
     if (isFirstCall) {
       const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
@@ -78,7 +77,12 @@ const Graphs = () => {
       const sixMinutesAgo = new Date(now.getTime() - 6 * 60 * 1000);
       isoTimestamp = sixMinutesAgo.toISOString().split(".")[0] + "Z";
     }
-    console.log(isoTimestamp);
+    return isoTimestamp;
+  };
+
+  const fetchDataRealTime = async () => {
+    let isoTimestamp = setIsoTimestamp(isFirstCall);
+
     for (const supplier of suppliers) {
       const supplierWithCloud = supplier + "Cloud";
       let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromTimeStamp?MachineType=${type}&Location=${location}&TimeStamp=${isoTimestamp}`;
