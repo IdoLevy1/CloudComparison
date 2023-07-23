@@ -372,33 +372,33 @@ namespace Server.Models
             {
                 if (AmazonPoints[Metric] >= GooglePoints[Metric])
                 {
-                    result = "AzureCloud,AmazonCloud,GoogleCloud";
+                    result = "Azure,Amazon,Google";
                 }
                 else
                 {
-                    result = "AzureCloud,GoogleCloud,AmazonCloud";
+                    result = "Azure,Google,Amazon";
                 }
             }
             else if(AmazonPoints[Metric] >= GooglePoints[Metric])
             {
                 if(AzurePoints[Metric] >= GooglePoints[Metric])
                 {
-                    result = "AmazonCloud,AzureCloud,GoogleCloud";
+                    result = "Amazon,Azure,Google";
                 }
                 else
                 {
-                    result = "AmazonCloud,GoogleCloud,AzureCloud";
+                    result = "Amazon,Google,Azure";
                 }
             }
             else
             {
                 if (AzurePoints[Metric] >= AmazonPoints[Metric])
                 {
-                    result = "GoogleCloud,AzureCloud,AmazonCloud";
+                    result = "Google,Azure,Amazon";
                 }
                 else
                 {
-                    result = "GoogleCloud,AmazonCloud,AzureCloud";
+                    result = "Google,Amazon,Azure";
                 }
             }
 
