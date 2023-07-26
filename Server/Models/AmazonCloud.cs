@@ -89,27 +89,37 @@ namespace Server.Models
             string Region,
             DateTime StartTime,
             DateTime EndTime,
-            string MetricName)
+            string MetricName,
+            string NameSpace)
         {
             AmazonCloudWatchClient cloudWatchClient = new AmazonCloudWatchClient(AccessKey, SecretKey, Amazon.RegionEndpoint.GetBySystemName(Region));
 
             GetMetricStatisticsRequest request = new GetMetricStatisticsRequest
             {
-                Namespace = "AWS/EC2",
+                Namespace = NameSpace,
                 MetricName = MetricName,
                 StartTimeUtc = StartTime,
                 EndTimeUtc = EndTime,
                 Period = 60, 
                 Statistics = new List<string> { "Average" },
                 Dimensions = new List<Dimension>
-               {
+                {
                    new Dimension
                    {
                        Name = "InstanceId",
                        Value = InstanceId
                    }
-               }
+                }
             };
+
+            if (MetricName == "Memory % Committed Bytes In Use")
+            {
+                request.Dimensions.Add(new Dimension
+                {
+                    Name = "objectname",
+                    Value = "Memory"
+                });
+            }
 
             GetMetricStatisticsResponse response = cloudWatchClient.GetMetricStatisticsAsync(request).GetAwaiter().GetResult();
             return GetInfoFromResponse(response);
@@ -117,57 +127,24 @@ namespace Server.Models
 
         private static double GetCpuUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
         {
-            var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "CPUUtilization");
+            var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "CPUUtilization", "AWS/EC2");
             return info;
         }
         private static double GetMemoryUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
         {
-            //AmazonCloudWatchClient cloudWatchClient = new AmazonCloudWatchClient(AccessKey, SecretKey, Amazon.RegionEndpoint.GetBySystemName(Region));
-
-            //GetMetricStatisticsRequest request = new GetMetricStatisticsRequest
-            //{
-            //    Namespace = "CWAgent",
-            //    MetricName = "Memory Available Bytes",
-            //    StartTimeUtc = StartTime,
-            //    EndTimeUtc = EndTime,
-            //    Period = 60,
-            //    Statistics = new List<string> { "Average" },
-            //    Dimensions = new List<Dimension>
-            //   {
-            //       new Dimension
-            //       {
-            //           Name = "InstanceId",
-            //           Value = InstanceId
-            //       }
-            //   }
-            //};
-
-            //GetMetricStatisticsResponse response = cloudWatchClient.GetMetricStatisticsAsync(request).GetAwaiter().GetResult();
-            //if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
-            //{
-            //    return response.Datapoints[0].Average;
-            //}
-            //else
-            //{
-            //    throw new Exception("Can't get info from VM");
-            //}
-
-            //return GetInfoFromResponse(response);
-
-            // var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "Memory Available Bytes");
-            // return info * 100;
-            return Random.NextDouble() * 10 + 85;
+            var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "Memory % Committed Bytes In Use", "CWAgent");
+            return info;
         }
 
         private static double GetNetworkInUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
         {
-            var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "NetworkIn");
+            var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "NetworkIn", "AWS/EC2");
             return (info * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/s
         }
 
         private static double GetNetworkOutUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
         {
-            var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "NetworkOut");
+            var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "NetworkOut", "AWS/EC2");
             return (info * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/s
         }
     }

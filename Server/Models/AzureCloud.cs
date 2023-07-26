@@ -139,14 +139,12 @@ namespace Server.Models
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Percentage%20CPU");
             return info.average;
-            return info.average * 5;
         }
 
         private static double GetMemoryUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken, double MemorySizeInGB)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Available Memory Bytes");
             return 100 - ((info.average * 100) / (double)(MemorySizeInGB * Math.Pow(2, 30)));
-            return (info.average * 100) / (double)(MemorySizeInGB * Math.Pow(2, 30));
         }
 
         private static double GetNetworkInUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
