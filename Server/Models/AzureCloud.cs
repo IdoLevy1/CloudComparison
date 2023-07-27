@@ -37,7 +37,6 @@ namespace Server.Models
             var tasks = new List<Task>
             {
                 Task.Run(() => metrics.PercentageCPU = GetCpuUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken)),
-                Task.Run(() => metrics.PercentageMemory = GetMemoryUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken, MemorySizeInGB)),
                 Task.Run(() => metrics.PercentageMemory = 100 - GetMemoryUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken, MemorySizeInGB)),
                 Task.Run(() => metrics.IncomingTraffic = GetNetworkInUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken)),
                 Task.Run(() => metrics.OutcomingTraffic = GetNetworkOutUsageInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, accessToken))
@@ -144,7 +143,7 @@ namespace Server.Models
         private static double GetMemoryUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken, double MemorySizeInGB)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Available Memory Bytes");
-            return 100 - ((info.average * 100) / (double)(MemorySizeInGB * Math.Pow(2, 30)));
+            return ((info.average * 100) / (double)(MemorySizeInGB * Math.Pow(2, 30)));
         }
 
         private static double GetNetworkInUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
