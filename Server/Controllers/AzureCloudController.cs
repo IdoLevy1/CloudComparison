@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Server.Models;
+using Server.Interfaces;
 
 namespace Server.Controllers
 {
@@ -7,6 +7,13 @@ namespace Server.Controllers
     [ApiController]
     public class AzureCloudController : ControllerBase
     {
+        private readonly IAzureCloud AzureCloud;
+
+        public AzureCloudController(IAzureCloud azureCloud)
+        {
+            AzureCloud = azureCloud;
+        }
+
         [HttpGet("GetMetricsFromDB")]
         public ActionResult GetInfoFromDB(
             [FromQuery(Name = "MachineType")] string MachineType,
@@ -32,7 +39,7 @@ namespace Server.Controllers
         {
             try
             {
-                AzureCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location} at {TimeStamp}");
+                AzureCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location} from {TimeStamp}");
                 return Ok(AzureCloud.LoadItemsFromTimeStamp(MachineType, Location, TimeStamp));
             }
             catch (Exception ex)

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Server.Models;
+using Server.Interfaces;
 
 namespace Server.Controllers
 {
@@ -7,14 +7,20 @@ namespace Server.Controllers
     [ApiController]
     public class MetricsResultsController : ControllerBase
     {
+        private readonly IMetricsResults MetricsResults;
+
+        public MetricsResultsController(IMetricsResults metricsResults)
+        {
+            MetricsResults = metricsResults;
+        }
+
 
         [HttpGet("GetMetrics")]
         public ActionResult GetInfoFromDB()
         {
             try
             {
-                MetricsResults results = new MetricsResults();
-                return Ok(results.GetMetricsResultsFromDB());
+                return Ok(MetricsResults.GetMetricsResultsFromDB());
             }
             catch (Exception ex)
             {

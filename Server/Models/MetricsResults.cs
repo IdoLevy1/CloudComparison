@@ -2,18 +2,24 @@
 using Server.VirtualMachineModel;
 using DB.Models;
 using DB;
+using Server.Interfaces;
 
 namespace Server.Models
 {
-    public class MetricsResults
+    public class MetricsResults : IMetricsResults
     {
-        private static readonly MongoHelper DB = new MongoHelper();
+        private readonly MongoHelper DB;
         private static string VirtualMachineJsonPath = AppContext.BaseDirectory + "..\\..\\..\\..\\Deployment\\VirtualMachines.json";
         private VirtualMachines VirtualMachines;
         private List<string> MachineTypes;
         private Dictionary<string, int> AzurePoints;
         private Dictionary<string, int> AmazonPoints;
         private Dictionary<string, int> GooglePoints;
+
+        public MetricsResults(MongoHelper mongoHelper)
+        {
+            DB = mongoHelper;
+        }
 
         public Dictionary<string, string> GetMetricsResultsFromDB()
         {

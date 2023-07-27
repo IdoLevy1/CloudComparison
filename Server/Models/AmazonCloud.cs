@@ -3,19 +3,25 @@ using Amazon.CloudWatch.Model;
 using DB;
 using DB.Models;
 using NLog;
-using System;
+using Server.Interfaces;
 using System.Globalization;
 
 namespace Server.Models
 {
-    public class AmazonCloud
+    public class AmazonCloud : IAmazonCloud
     {
         private const string AmazonCloudName = "AmazonCloud";
-        private static readonly MongoHelper DB = new MongoHelper();
+        private readonly MongoHelper DB;
         private static readonly Random Random = new Random();
-        public static readonly NLog.ILogger Logger = LogManager.GetLogger("AmazonCloudLogger");
+        public NLog.ILogger Logger { get; }
 
-        public static void InsertInfoToDB(
+        public AmazonCloud(MongoHelper mongoHelper)
+        {
+            DB = mongoHelper;
+            Logger = LogManager.GetLogger("AmazonCloudLogger");
+        }
+
+        public void InsertInfoToDB(
             string AccessKey,
             string SecretKey,
             string InstanceId,
@@ -45,7 +51,7 @@ namespace Server.Models
             DB.InsertItem(AmazonCloudName + MachineType + Location, metrics);
         }
 
-        public static void InsertDummyInfoToDB(string StartTime, string MachineType, string Location)
+        public void InsertDummyInfoToDB(string StartTime, string MachineType, string Location)
         {
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
             {
@@ -60,17 +66,17 @@ namespace Server.Models
             DB.InsertItem(AmazonCloudName + MachineType + Location, metrics);
         }
 
-        public static List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
+        public List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
         {
             return DB.LoadItems<VirtualMachineMetricsModel>(AmazonCloudName + MachineType + Location);
         }
 
-        public static List<VirtualMachineMetricsModel> LoadItemsFromTimeStamp(string MachineType, string Location, string TimeStamp)
+        public List<VirtualMachineMetricsModel> LoadItemsFromTimeStamp(string MachineType, string Location, string TimeStamp)
         {
             return DB.LoadItemsFromTimeStamp(AmazonCloudName + MachineType + Location, DateTime.ParseExact(TimeStamp, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
         }
 
-        private static dynamic GetInfoFromResponse(GetMetricStatisticsResponse Response)
+        private dynamic GetInfoFromResponse(GetMetricStatisticsResponse Response)
         {
             if (Response.HttpStatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -82,7 +88,7 @@ namespace Server.Models
             }
         }
 
-        private static dynamic GetMetricInfo(
+        private dynamic GetMetricInfo(
             string AccessKey,
             string SecretKey,
             string InstanceId,
@@ -125,24 +131,24 @@ namespace Server.Models
             return GetInfoFromResponse(response);
         }
 
-        private static double GetCpuUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
+        private double GetCpuUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
         {
             var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "CPUUtilization", "AWS/EC2");
             return info;
         }
-        private static double GetMemoryUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
+        private double GetMemoryUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
         {
             var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "Memory % Committed Bytes In Use", "CWAgent");
             return info;
         }
 
-        private static double GetNetworkInUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
+        private double GetNetworkInUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
         {
             var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "NetworkIn", "AWS/EC2");
             return (info * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/s
         }
 
-        private static double GetNetworkOutUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
+        private double GetNetworkOutUsageInfo(string AccessKey, string SecretKey, string InstanceId, string Region, DateTime StartTime, DateTime EndTime)
         {
             var info = GetMetricInfo(AccessKey, SecretKey, InstanceId, Region, StartTime, EndTime, "NetworkOut", "AWS/EC2");
             return (info * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/s

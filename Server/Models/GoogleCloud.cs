@@ -4,18 +4,25 @@ using Google.Api.Gax;
 using Google.Cloud.Monitoring.V3;
 using Google.Protobuf.WellKnownTypes;
 using NLog;
+using Server.Interfaces;
 using System.Globalization;
 
 namespace Server.Models
 {
-    public class GoogleCloud
+    public class GoogleCloud : IGoogleCloud
     {
         private const string GoogleCloudName = "GoogleCloud";
-        private static readonly MongoHelper DB = new MongoHelper();
+        private readonly MongoHelper DB;
         private static readonly Random Random = new Random();
-        public static readonly NLog.ILogger Logger = LogManager.GetLogger("GoogleCloudLogger");
+        public NLog.ILogger Logger { get; }
 
-        public static void InsertInfoToDB(
+        public GoogleCloud(MongoHelper mongoHelper)
+        {
+            DB = mongoHelper;
+            Logger = LogManager.GetLogger("GoogleCloudLogger");
+        }
+
+        public void InsertInfoToDB(
             string ProjectId,
             string InstanceId,
             string StartTime,
@@ -45,7 +52,7 @@ namespace Server.Models
             DB.InsertItem(GoogleCloudName + MachineType + Location, metrics);
         }
 
-        public static void InsertDummyInfoToDB(string StartTime, string MachineType, string Location)
+        public void InsertDummyInfoToDB(string StartTime, string MachineType, string Location)
         {
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
             {
@@ -61,23 +68,23 @@ namespace Server.Models
             DB.InsertItem(GoogleCloudName + MachineType + Location, metrics);
         }
 
-        public static List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
+        public List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
         {
             return DB.LoadItems<VirtualMachineMetricsModel>(GoogleCloudName + MachineType + Location);
         }
 
-        public static List<VirtualMachineMetricsModel> LoadItemsFromTimeStamp(string MachineType, string Location, string TimeStamp)
+        public List<VirtualMachineMetricsModel> LoadItemsFromTimeStamp(string MachineType, string Location, string TimeStamp)
         {
             return DB.LoadItemsFromTimeStamp(GoogleCloudName + MachineType + Location, DateTime.ParseExact(TimeStamp, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
         }
 
-        private static Timestamp ParseFromString(string DateTimeString)
+        private Timestamp ParseFromString(string DateTimeString)
         {
             DateTime dateTime = DateTime.ParseExact(DateTimeString, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
             return Timestamp.FromDateTime(dateTime);
         }
 
-        private static PagedEnumerable<ListTimeSeriesResponse, TimeSeries> GetMetricInfo(
+        private PagedEnumerable<ListTimeSeriesResponse, TimeSeries> GetMetricInfo(
             string ProjectId,
             string InstanceId,
             MetricServiceClient MetricClient,
@@ -89,26 +96,26 @@ namespace Server.Models
             return MetricClient.ListTimeSeries(request);
         }
 
-        public static double GetCpuUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
+        public double GetCpuUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
         {
             var response = GetMetricInfo(ProjectId, InstanceId, MetricClient, Interval, "compute.googleapis.com/instance/cpu/utilization");
             return response.FirstOrDefault().Points.LastOrDefault().Value.DoubleValue * 100;
         }
 
-        private static double GetMemoryUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
+        private double GetMemoryUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
         {
             var response = GetMetricInfo(ProjectId, InstanceId, MetricClient, Interval, "agent.googleapis.com/memory/percent_used");
             return 100 - response.FirstOrDefault().Points.LastOrDefault().Value.DoubleValue;
         }
 
-        private static double GetNetworkInUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
+        private double GetNetworkInUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
         {
             var response = GetMetricInfo(ProjectId, InstanceId, MetricClient, Interval, "compute.googleapis.com/instance/network/received_bytes_count");
             var networkIn = response.FirstOrDefault().Points.LastOrDefault().Value.Int64Value;
             return (networkIn * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/s
         }
 
-        private static double GetNetworkOutUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
+        private double GetNetworkOutUsageInfo(string ProjectId, string InstanceId, MetricServiceClient MetricClient, TimeInterval Interval)
         {
             var response = GetMetricInfo(ProjectId, InstanceId, MetricClient, Interval, "compute.googleapis.com/instance/network/sent_bytes_count");
             var networkOut = response.FirstOrDefault().Points.LastOrDefault().Value.Int64Value;

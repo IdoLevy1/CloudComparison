@@ -1,7 +1,5 @@
-﻿using Microsoft.Identity.Client;
-using MongoDB.Driver.Linq;
-using Newtonsoft.Json;
-using Server.Models;
+﻿using Newtonsoft.Json;
+using Server.Interfaces;
 using Server.VirtualMachineModel;
 
 public class InsertDataToDBService : BackgroundService
@@ -10,13 +8,19 @@ public class InsertDataToDBService : BackgroundService
     private DateTime EndTimeUtc;
     private VirtualMachines VirtualMachines;
     private string VirtualMachineJsonPath = AppContext.BaseDirectory + "..\\..\\..\\..\\Deployment\\VirtualMachines.json";
+    private readonly IAzureCloud AzureCloud;
+    private readonly IAmazonCloud AmazonCloud;
+    private readonly IGoogleCloud GoogleCloud;
 
-    public InsertDataToDBService()
+    public InsertDataToDBService(IAzureCloud azureCloud, IAmazonCloud amazonCloud, IGoogleCloud googleCloud)
     {
         StartTimeUtc = DateTime.UtcNow.AddMinutes(-5);
         EndTimeUtc = DateTime.UtcNow.AddMinutes(-4);
         StartTimeUtc = StartTimeUtc.AddSeconds(-StartTimeUtc.Second);
         EndTimeUtc = EndTimeUtc.AddSeconds(-EndTimeUtc.Second);
+        AzureCloud = azureCloud;
+        AmazonCloud = amazonCloud;
+        GoogleCloud = googleCloud;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

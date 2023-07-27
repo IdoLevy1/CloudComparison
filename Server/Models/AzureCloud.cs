@@ -6,20 +6,25 @@ using Newtonsoft.Json;
 using System.Globalization;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
-using Microsoft.Extensions.Logging;
 using NLog;
-using NLog.Web;
+using Server.Interfaces;
 
 namespace Server.Models
 {
-    public class AzureCloud
+    public class AzureCloud : IAzureCloud
     {
         private const string AzureCloudName = "AzureCloud";
-        private static readonly MongoHelper DB = new MongoHelper();
+        private readonly MongoHelper DB;
         private static readonly Random Random = new Random();
-        public static readonly NLog.ILogger Logger = LogManager.GetLogger("AzureCloudLogger");
-        
-        public static void InsertInfoToDB(
+        public NLog.ILogger Logger { get; }
+
+        public AzureCloud(MongoHelper mongoHelper)
+        {
+            DB = mongoHelper;
+            Logger = LogManager.GetLogger("AzureCloudLogger");
+        }
+
+        public void InsertInfoToDB(
             string SubscriptionId,
             string ResourceGroupName,
             string VirtualMachineName,
@@ -47,7 +52,7 @@ namespace Server.Models
             DB.InsertItem(AzureCloudName + MachineType + Location, metrics);
         }
 
-        public static VirtualMachineMetricsModel InsertDummyInfoToDB(string TimeSpan, string MachineType, string Location)
+        public VirtualMachineMetricsModel InsertDummyInfoToDB(string TimeSpan, string MachineType, string Location)
         {
             string[] parts = TimeSpan.Split('/');
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel
@@ -64,17 +69,17 @@ namespace Server.Models
             return metrics;
         }
 
-        public static List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
+        public List<VirtualMachineMetricsModel> GetInfoFromDB(string MachineType, string Location)
         {
             return DB.LoadItems<VirtualMachineMetricsModel>(AzureCloudName + MachineType + Location);
         }
 
-        public static List<VirtualMachineMetricsModel> LoadItemsFromTimeStamp(string MachineType, string Location, string TimeStamp)
+        public List<VirtualMachineMetricsModel> LoadItemsFromTimeStamp(string MachineType, string Location, string TimeStamp)
         {
             return DB.LoadItemsFromTimeStamp(AzureCloudName + MachineType + Location, DateTime.ParseExact(TimeStamp, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
         }
 
-        private static string GetAccessToken()
+        private string GetAccessToken()
         {
             Process process = new Process();
             process.StartInfo.FileName = "powershell.exe";
@@ -90,7 +95,7 @@ namespace Server.Models
             return response["accessToken"].ToString();
         }
 
-        private static string BuildUrl(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string MetricName)
+        private string BuildUrl(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string MetricName)
         {
             var url = $"https://management.azure.com/subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/providers/Microsoft.Compute/virtualMachines/{VirtualMachineName}/providers/microsoft.insights/metrics";
             url = QueryHelpers.AddQueryString(url, new Dictionary<string, string?>
@@ -103,7 +108,7 @@ namespace Server.Models
             return url ;
         }
 
-        private static dynamic GetInfoFromResponse(RestResponse Response)
+        private dynamic GetInfoFromResponse(RestResponse Response)
         {
             if(Response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -116,7 +121,7 @@ namespace Server.Models
             }
         }
         
-        private static dynamic GetMetricInfo(
+        private dynamic GetMetricInfo(
             string SubscriptionId,
             string ResourceGroupName,
             string VirtualMachineName,
@@ -134,25 +139,25 @@ namespace Server.Models
             return info;
         }
 
-        private static double GetCpuUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
+        private double GetCpuUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Percentage%20CPU");
             return info.average;
         }
 
-        private static double GetMemoryUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken, double MemorySizeInGB)
+        private double GetMemoryUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken, double MemorySizeInGB)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Available Memory Bytes");
             return ((info.average * 100) / (double)(MemorySizeInGB * Math.Pow(2, 30)));
         }
 
-        private static double GetNetworkInUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
+        private double GetNetworkInUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Network In");
             return (info.total * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/s
         }
 
-        private static double GetNetworkOutUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
+        private double GetNetworkOutUsageInfo(string SubscriptionId, string ResourceGroupName, string VirtualMachineName, string TimeSpan, string AccessToken)
         {
             var info = GetMetricInfo(SubscriptionId, ResourceGroupName, VirtualMachineName, TimeSpan, AccessToken, "Network Out");
             return (info.total * 8 / 60) / Math.Pow(2, 20); // from total bytes in minute to Mbits/s

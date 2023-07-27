@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Server.Models;
+using Server.Interfaces;
 
 namespace Server.Controllers
 {
@@ -7,6 +7,13 @@ namespace Server.Controllers
     [ApiController]
     public class GoogleCloudController : ControllerBase
     {
+        private readonly IGoogleCloud GoogleCloud;
+
+        public GoogleCloudController(IGoogleCloud googleCloud)
+        {
+            GoogleCloud = googleCloud;
+        }
+
         [HttpGet("GetMetricsFromDB")]
         public ActionResult GetInfoFromDB(
             [FromQuery(Name = "MachineType")] string MachineType,
@@ -32,7 +39,7 @@ namespace Server.Controllers
         {
             try
             {
-                GoogleCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location} at {TimeStamp}");
+                GoogleCloud.Logger.Info($"Get metrics from DB for {MachineType} {Location} from {TimeStamp}");
                 return Ok(GoogleCloud.LoadItemsFromTimeStamp(MachineType, Location, TimeStamp));
             }
             catch (Exception ex)
