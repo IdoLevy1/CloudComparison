@@ -56,6 +56,12 @@ const Filter = () => {
     >
       <form onSubmit={handleFormSubmit}>
         <h1>Select from the options below:</h1>
+        <p>
+          Please select the cloud providers you want to check, the location of
+          the machine, and the machine type (CPU and Memory properties). Once
+          you've made your selections, you can view the graphs and performance
+          data for the selected providers.
+        </p>
         <Grid container spacing={2} justifyContent="center" alignItems="center">
           <Grid item xs={10} sm={3} className="grid-item">
             <SupplierChoice
