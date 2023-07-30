@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../styles/SupplierChoice.css";
 
 const SupplierChoice = ({ selectedSupplier, onSupplierChange }) => {
   const suppliers = ["Azure", "Amazon", "Google"];

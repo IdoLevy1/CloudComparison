@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "../styles/Graphs.css";
 import TimeSelection from "../components/TimeSelection";
 import BannerImage from "../assets/graphsBack.png";
@@ -59,7 +58,7 @@ const Graphs = () => {
     }
   }, [isRealTime]);
 
-  let isFirstCall = true; //TODO change to useState
+  const [isFirstCall, setIsFirstCall] = useState(true);
   const [lowestCpuSupplier, setLowestCpuSupplier] = useState("");
   const [lowestMemorySupplier, setLowestMemorySupplier] = useState("");
   const [highestInTrafficSupplier, setHighestInTrafficSupplier] = useState("");
@@ -72,7 +71,7 @@ const Graphs = () => {
     if (isFirstCall) {
       const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
       isoTimestamp = fifteenMinutesAgo.toISOString().split(".")[0] + "Z";
-      isFirstCall = false;
+      setIsFirstCall(false);
     } else {
       const sixMinutesAgo = new Date(now.getTime() - 6 * 60 * 1000);
       isoTimestamp = sixMinutesAgo.toISOString().split(".")[0] + "Z";
@@ -100,6 +99,7 @@ const Graphs = () => {
         filteredMemoryData[supplier] = memoryPercentage;
         filteredInTrafficData[supplier] = inTraffic;
         filteredOutTrafficData[supplier] = outTraffic;
+
         const formattedLabels = timeStamp.map((timestamp) => {
           const date = new Date(timestamp);
           return date
@@ -168,7 +168,7 @@ const Graphs = () => {
     let lowestSupplier = "";
     for (const [supplier, data] of Object.entries(metricsData)) {
       if (data && data.length > 0) {
-        console.log(data[data.length - 1]);
+        console.log(supplier + data[data.length - 1]);
         const value = isRealTime
           ? data[data.length - 1]
           : calculateAverage(data);

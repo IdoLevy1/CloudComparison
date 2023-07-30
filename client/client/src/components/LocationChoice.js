@@ -5,20 +5,6 @@ const LocationChoice = (props) => {
   const { selectedLocation, onLocationChange } = props;
   const locations = ["Virginia", "UK", "Japan"];
 
-  //   const onOptionChange = (e) => {
-  //     setLocation(e.target.value);
-  //   };
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   if (!type) {
-  //     alert("Please select a machine type");
-  //     return;
-  //   }
-  //   const component = <GraphsInfo type={type} />;
-  //   setCPUComponent(component);
-  // };
-
   return (
     <div className="locationChoice">
       <h3>Machine location</h3>

@@ -3,7 +3,7 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  height: 100vh;
+  min-height: 100vh;
 }
 .submitChoice h1 {
   font-size: 40px;
@@ -13,30 +13,28 @@
   margin-bottom: 30px;
   font-weight: 540;
   font-family: Tahoma, Verdana, Segoe, sans-serif;
-  text-shadow: 1px 2px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0.3, 0.3);
 }
 
 .submitChoice p {
-  margin-left: auto;
-  margin-right: auto;
-  font-size: 21px;
-  color: #292929;
-  margin-bottom: 40px;
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  font-size: 22px;
+  color: #000000;
   text-align: center;
   line-height: 1.5;
+  font-weight: bold;
 }
 
-.grid-item {
-  margin: 15px !important;
+.submitChoice .grid-item {
+  margin: 15px;
   border: 5px solid #ccc;
-  border-radius: 4px;
+  border-radius: 2px;
   background-color: #dddee0;
-  transition: background-color 0.2s ease;
-  text-align: center;
   padding: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   display: flex;
+  justify-content: center;
   align-items: center;
 }
 
@@ -48,26 +46,13 @@
   font-family: Tahoma, Verdana, Segoe, sans-serif;
   font-weight: 500;
   font-size: 25px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
   text-decoration: underline;
-  margin-left: 65px;
 }
 
 .grid-item label {
-  /* flex: 5; */
-  display: flex;
-  align-items: center;
-  /* justify-content: center; */
-  /* justify-content: flex-start; */
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   font-size: 20px;
   color: #333;
-  margin-left: 100px;
-  margin-right: 20px;
 }
 
 .grid-item input[type="checkbox"] {
@@ -93,6 +78,8 @@
 .buttonWrapper {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: 10px;
 }
 .submitChoice button[type="submit"] {
@@ -143,9 +130,15 @@
     padding: 16px 48px;
   }
 }
+@media (min-width: 1500px) {
+  .submitChoice p {
+    max-width: 1500px;
+  }
+}
 
 .errorContainer {
   display: flex;
   justify-content: center;
   margin-top: 10px;
+  margin-bottom: 20px;
 }

@@ -1,22 +1,9 @@
 import React, { useState } from "react";
+import "../styles/TypeChoice.css";
 
 const TypeChoice = (props) => {
   const { selectedType, onTypeChange } = props;
   const types = ["2cpu-4GB", "4cpu-16GB", "8cpu-32GB"];
-
-  //   const onOptionChange = (e) => {
-  //     setType(e.target.value);
-  //   };
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   if (!type) {
-  //     alert("Please select a machine type");
-  //     return;
-  //   }
-  //   const component = <GraphsInfo type={type} />;
-  //   setCPUComponent(component);
-  // };
 
   return (
     <div className="typeChoice">

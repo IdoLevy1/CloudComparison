@@ -16,13 +16,10 @@ const Filter = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (selectedLocation && selectedType && selectedSupplier.length > 0) {
-      console.log(formSubmitted);
-      setFormSubmitted(true);
-      setError(false);
-    } else {
-      setError(true);
-    }
+    setFormSubmitted(true);
+    setError(
+      !(selectedLocation && selectedType && selectedSupplier.length > 0)
+    );
   };
 
   const handleSupplierChange = (e) => {
@@ -82,14 +79,17 @@ const Filter = () => {
             />
           </Grid>
         </Grid>
-        {error && (
-          <div className="errorContainer">
-            <Alert severity="error" sx={{ marginTop: "10px" }}>
-              <AlertTitle>Error</AlertTitle>
-              Please select from all three options
-            </Alert>
-          </div>
-        )}
+        {formSubmitted &&
+          (!selectedLocation ||
+            !selectedType ||
+            selectedSupplier.length === 0) && (
+            <div className="errorContainer">
+              <Alert severity="error" sx={{ marginTop: "10px" }}>
+                <AlertTitle>Error</AlertTitle>
+                Please select from all three options
+              </Alert>
+            </div>
+          )}
         <div className="buttonWrapper">
           {error ? (
             <button type="submit">Submit</button>
