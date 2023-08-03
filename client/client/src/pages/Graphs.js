@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "../styles/Graphs.css";
 import TimeSelection from "../components/TimeSelection";
@@ -13,6 +13,7 @@ import {
   Legend,
   Tooltip,
   Title,
+  Filler,
 } from "chart.js";
 
 ChartJS.register(
@@ -22,7 +23,8 @@ ChartJS.register(
   PointElement,
   Legend,
   Tooltip,
-  Title
+  Title,
+  Filler
 );
 
 const Graphs = () => {
@@ -43,35 +45,34 @@ const Graphs = () => {
   const [filteredInTrafficData, setFilteredInTrafficData] = useState([]);
   const [fetchedOutTrafficData, setFetchedOutTrafficData] = useState([]);
   const [filteredOutTrafficData, setFilteredOutTrafficData] = useState([]);
-
-  useEffect(() => {
-    if (isRealTime) {
-      fetchDataRealTime(); // Fetch initial data based on isRealTime value
-
-      const intervalId = setInterval(fetchDataRealTime, 60000); // Fetch data every minute
-
-      return () => {
-        clearInterval(intervalId); // Clear the interval when the component unmounts or when isRealTime changes to false
-      };
-    } else {
-      fetchDataHistory();
-    }
-  }, [isRealTime]);
-
-  const [isFirstCall, setIsFirstCall] = useState(true);
   const [lowestCpuSupplier, setLowestCpuSupplier] = useState("");
   const [lowestMemorySupplier, setLowestMemorySupplier] = useState("");
   const [highestInTrafficSupplier, setHighestInTrafficSupplier] = useState("");
   const [highestOutTrafficSupplier, setHighestOutTrafficSupplier] =
     useState("");
+  const firstTimeRef = useRef(true);
+  const [allSuppliersProcessed, setAllSuppliersProcessed] = useState(0);
 
-  const setIsoTimestamp = (isFirstCall) => {
+  useEffect(() => {
+    if (isRealTime) {
+      fetchDataRealTime();
+      const intervalId = setInterval(fetchDataRealTime, 60000);
+
+      return () => {
+        clearInterval(intervalId);
+      };
+    } else {
+      firstTimeRef.current = true;
+    }
+  }, [isRealTime]);
+
+  const setIsoTimestamp = () => {
     const now = new Date();
     let isoTimestamp;
-    if (isFirstCall) {
+    if (firstTimeRef.current) {
       const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
       isoTimestamp = fifteenMinutesAgo.toISOString().split(".")[0] + "Z";
-      setIsFirstCall(false);
+      firstTimeRef.current = false;
     } else {
       const sixMinutesAgo = new Date(now.getTime() - 6 * 60 * 1000);
       isoTimestamp = sixMinutesAgo.toISOString().split(".")[0] + "Z";
@@ -80,9 +81,11 @@ const Graphs = () => {
   };
 
   const fetchDataRealTime = async () => {
-    let isoTimestamp = setIsoTimestamp(isFirstCall);
-
+    let isoTimestamp = setIsoTimestamp();
+    console.log(isoTimestamp, firstTimeRef);
+    setAllSuppliersProcessed(0);
     for (const supplier of suppliers) {
+      setAllSuppliersProcessed((prev) => prev + 1);
       const supplierWithCloud = supplier + "Cloud";
       let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromTimeStamp?MachineType=${type}&Location=${location}&TimeStamp=${isoTimestamp}`;
 
@@ -94,11 +97,6 @@ const Graphs = () => {
         const memoryPercentage = json.map((obj) => obj.percentageMemory);
         const inTraffic = json.map((obj) => obj.incomingTraffic);
         const outTraffic = json.map((obj) => obj.outcomingTraffic);
-
-        filteredCpuData[supplier] = cpuPercentage;
-        filteredMemoryData[supplier] = memoryPercentage;
-        filteredInTrafficData[supplier] = inTraffic;
-        filteredOutTrafficData[supplier] = outTraffic;
 
         const formattedLabels = timeStamp.map((timestamp) => {
           const date = new Date(timestamp);
@@ -117,6 +115,7 @@ const Graphs = () => {
           return uniqueLabels;
         });
 
+        //TODO function
         setFilteredCpuData((prevFilteredCpuData) => {
           return {
             ...prevFilteredCpuData,
@@ -157,11 +156,22 @@ const Graphs = () => {
         console.error(`Failed to fetch data for ${supplier}:`, error);
       }
     }
-    setLowestCpuSupplier(findLowestMetric(filteredCpuData));
-    setLowestMemorySupplier(findLowestMetric(filteredMemoryData));
-    setHighestInTrafficSupplier(findHighestMetric(filteredInTrafficData));
-    setHighestOutTrafficSupplier(findHighestMetric(filteredOutTrafficData));
   };
+
+  useEffect(() => {
+    if (allSuppliersProcessed === suppliers.length) {
+      setLowestCpuSupplier(findLowestMetric(filteredCpuData));
+      setLowestMemorySupplier(findLowestMetric(filteredMemoryData));
+      setHighestInTrafficSupplier(findHighestMetric(filteredInTrafficData));
+      setHighestOutTrafficSupplier(findHighestMetric(filteredOutTrafficData));
+    }
+  }, [
+    allSuppliersProcessed,
+    filteredCpuData,
+    filteredMemoryData,
+    filteredInTrafficData,
+    filteredOutTrafficData,
+  ]);
 
   const findLowestMetric = (metricsData) => {
     let lowestValue = Infinity;
@@ -266,6 +276,7 @@ const Graphs = () => {
 
   useEffect(() => {
     if (!isRealTime && startDate) {
+      fetchDataHistory();
       const labels = [];
 
       Object.entries(fetchedCpuData).forEach(([supplier, supplierData]) => {
@@ -318,7 +329,7 @@ const Graphs = () => {
   ]);
 
   const filterTimeStamps = (timeStamp, startDate) => {
-    console.log(startDate);
+    // console.log(startDate);
     const filteredTimeStamps = timeStamp.filter((timestamp) => {
       const timestampDate =
         new Date(timestamp).toISOString().split(".")[0] + "Z";
@@ -326,7 +337,7 @@ const Graphs = () => {
 
       endDate.setHours(endDate.getHours() + 1);
       const endDateFormatted = endDate.toISOString().split(".")[0] + "Z";
-      console.log(timestampDate);
+      // console.log(timestampDate);
       return timestampDate >= startDate && timestampDate <= endDateFormatted;
     });
     return filteredTimeStamps;
@@ -371,11 +382,15 @@ const Graphs = () => {
     } else if (value === "history") {
       setIsRealTime(false);
     }
+    setLowestCpuSupplier("");
+    setLowestMemorySupplier("");
+    setHighestInTrafficSupplier("");
+    setHighestOutTrafficSupplier("");
   };
 
   const handleDateChange = (start) => {
     setStartDate(start.toISOString().split(".")[0] + "Z");
-    console.log(startDate);
+    // console.log(startDate);
   };
 
   const colors = ["#5664d1", "#ad5769", "#3d9174"];
@@ -389,7 +404,6 @@ const Graphs = () => {
         backgroundColor: color,
         borderColor: color,
         pointBorderColor: color,
-        fill: true,
         tension,
         pointRadius,
       };
@@ -503,7 +517,6 @@ const Graphs = () => {
     0,
     180,
     filteredCpuData,
-    filteredCpuData,
     40
   );
 
@@ -511,7 +524,6 @@ const Graphs = () => {
     "Memory Percentage",
     0,
     100,
-    filteredMemoryData,
     filteredMemoryData,
     10
   );
@@ -521,7 +533,6 @@ const Graphs = () => {
     0,
     700,
     filteredInTrafficData,
-    filteredInTrafficData,
     100
   );
 
@@ -530,10 +541,11 @@ const Graphs = () => {
     0,
     2,
     filteredOutTrafficData,
-    filteredOutTrafficData,
     0.2
   );
-
+  useEffect(() => {
+    console.log(filteredMemoryData);
+  }, [filteredMemoryData]);
   return (
     <div className="graphs" style={{ backgroundImage: `url(${BannerImage})` }}>
       <h2>Results</h2>
