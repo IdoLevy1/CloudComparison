@@ -379,16 +379,16 @@ const Graphs = () => {
   };
 
   const handleSelectChange = (value) => {
-    if (value === "real-time") {
-      setIsRealTime(true);
-    } else if(value ==='Custom') {
-      setIsRealTime(false);
-      setIsCustom(true);
-    }
-    else{
-      setIsRealTime(false);
-      setIsCustom(false);
-    }
+      setIsRealTime(value === 'real-time' ? true : false);
+      setIsCustom(value === 'Custom' ? true : false )
+
+      if(value ==='Last-Week') {
+        //setStartDate(); set start date 1 week from now
+      }
+      else if(value ==='Last-Month'){
+        //setStartDate();  set start date 1 month from now
+      }
+   
     setLowestCpuSupplier("");
     setLowestMemorySupplier("");
     setHighestInTrafficSupplier("");
