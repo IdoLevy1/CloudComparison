@@ -35,7 +35,9 @@ const Graphs = () => {
   const suppliers = state.suppliers;
 
   const [isRealTime, setIsRealTime] = useState(true);
+  const [isCustom, setIsCustom] = useState(false);
   const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [filteredLabels, setFilteredLabels] = useState([]);
   const [fetchedCpuData, setFetchedCpuData] = useState({});
   const [filteredCpuData, setFilteredCpuData] = useState([]);
@@ -275,7 +277,7 @@ const Graphs = () => {
   };
 
   useEffect(() => {
-    if (!isRealTime && startDate) {
+    if (!isRealTime && startDate && endDate) {
       fetchDataHistory();
       const labels = [];
 
@@ -331,9 +333,9 @@ const Graphs = () => {
   const filterTimeStamps = (timeStamp, startDate) => {
     // console.log(startDate);
     const filteredTimeStamps = timeStamp.filter((timestamp) => {
-      const timestampDate =
-        new Date(timestamp).toISOString().split(".")[0] + "Z";
-      const endDate = new Date(startDate);
+    const timestampDate =
+    new Date(timestamp).toISOString().split(".")[0] + "Z";
+    const endDate = new Date(startDate);
 
       endDate.setHours(endDate.getHours() + 1);
       const endDateFormatted = endDate.toISOString().split(".")[0] + "Z";
@@ -379,8 +381,13 @@ const Graphs = () => {
   const handleSelectChange = (value) => {
     if (value === "real-time") {
       setIsRealTime(true);
-    } else if (value === "history") {
+    } else if(value ==='Custom') {
       setIsRealTime(false);
+      setIsCustom(true);
+    }
+    else{
+      setIsRealTime(false);
+      setIsCustom(false);
     }
     setLowestCpuSupplier("");
     setLowestMemorySupplier("");
@@ -388,8 +395,10 @@ const Graphs = () => {
     setHighestOutTrafficSupplier("");
   };
 
-  const handleDateChange = (start) => {
+  const handleDateChange = (start,end) => {
     setStartDate(start.toISOString().split(".")[0] + "Z");
+    setEndDate(end.toISOString().split(".")[0] + "Z");
+
     // console.log(startDate);
   };
 
@@ -556,6 +565,7 @@ const Graphs = () => {
         onSelectChange={handleSelectChange}
         onDateChange={handleDateChange}
         isRealTime={isRealTime}
+        isCustom ={isCustom}
       />
       <div className="button-container">
         <div>
