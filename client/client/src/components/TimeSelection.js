@@ -13,12 +13,23 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime, isCustom }) =
     const value = event.target.value;
     setSelectedValue(value);
     onSelectChange(value);
+
+    if(value ==='Last-Week') {
+      const now = new Date();
+      const oneWeekAgo = new Date(now.getTime()  - 7 * 24 * 60 * 60 * 1000);
+      onDateChange(oneWeekAgo, now);
+    }
+    else if(value ==='Last-Month'){
+      const now = new Date();
+      const oneMonthAgo = new Date(now);
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      onDateChange(oneMonthAgo, now);
+      }
   };
 
   const handleSubmit = () => {
-    console.log(startDate);
     if (startDate && endDate) { // add endDate > StartDate chec
-      onDateChange(startDate,endDate);
+      onDateChange(startDate, endDate);
     }
   };
 

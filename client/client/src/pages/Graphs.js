@@ -50,8 +50,7 @@ const Graphs = () => {
   const [lowestCpuSupplier, setLowestCpuSupplier] = useState("");
   const [lowestMemorySupplier, setLowestMemorySupplier] = useState("");
   const [highestInTrafficSupplier, setHighestInTrafficSupplier] = useState("");
-  const [highestOutTrafficSupplier, setHighestOutTrafficSupplier] =
-    useState("");
+  const [highestOutTrafficSupplier, setHighestOutTrafficSupplier] = useState("");
   const firstTimeRef = useRef(true);
   const [allSuppliersProcessed, setAllSuppliersProcessed] = useState(0);
 
@@ -64,6 +63,7 @@ const Graphs = () => {
         clearInterval(intervalId);
       };
     } else {
+      fetchDataHistory();
       firstTimeRef.current = true;
     }
   }, [isRealTime]);
@@ -180,7 +180,7 @@ const Graphs = () => {
     let lowestSupplier = "";
     for (const [supplier, data] of Object.entries(metricsData)) {
       if (data && data.length > 0) {
-        console.log(supplier + data[data.length - 1]);
+      //  console.log(supplier + data[data.length - 1]);
         const value = isRealTime
           ? data[data.length - 1]
           : calculateAverage(data);
@@ -198,7 +198,7 @@ const Graphs = () => {
     let highestSupplier = "";
     for (const [supplier, data] of Object.entries(metricsData)) {
       if (data && data.length > 0) {
-        console.log(data[data.length - 1]);
+        //console.log(data[data.length - 1]);
         const value = isRealTime
           ? data[data.length - 1]
           : calculateAverage(data);
@@ -216,8 +216,10 @@ const Graphs = () => {
     const fetchedMemoryDataCopy = { ...fetchedMemoryData };
     const fetchedInTrafficDataCopy = { ...fetchedInTrafficData };
     const fetchedOutTrafficDataCopy = { ...fetchedOutTrafficData };
+    setAllSuppliersProcessed(0);
 
     for (const supplier of suppliers) {
+      setAllSuppliersProcessed((prev) => prev + 1);
       const supplierWithCloud = supplier + "Cloud";
       let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromDB?MachineType=${type}&Location=${location}`;
 
@@ -254,6 +256,8 @@ const Graphs = () => {
         setFetchedMemoryData(fetchedMemoryDataCopy);
         setFetchedInTrafficData(fetchedInTrafficDataCopy);
         setFetchedOutTrafficData(fetchedOutTrafficDataCopy);
+        //console.log(fetchedCpuDataCopy);
+
       } catch (error) {
         console.error(`Failed to fetch data for ${supplier}:`, error);
       }
@@ -277,73 +281,166 @@ const Graphs = () => {
   };
 
   useEffect(() => {
+
     if (!isRealTime && startDate && endDate) {
-      fetchDataHistory();
       const labels = [];
+      const timeDifferenceInHours = calcTimeDifferenceInHours(startDate, endDate);
+      const durationInMinutes = calcGroupedDuration(timeDifferenceInHours);
+      let timestampsAdded = false; // Flag to track if timestamps have been added
+
 
       Object.entries(fetchedCpuData).forEach(([supplier, supplierData]) => {
         const { timeStamp } = supplierData;
+        const filteredTimeStamps = filterTimeStamps(timeStamp, startDate, endDate);
 
-        const filteredTimeStamps = filterTimeStamps(timeStamp, startDate);
-        filteredCpuData[supplier] = filterDataByTimeStamps(
+        const cpuData = filterDataByTimeStamps(
           timeStamp,
           fetchedCpuData,
           filteredTimeStamps,
           supplier
         );
 
-        filteredMemoryData[supplier] = filterDataByTimeStamps(
+        const groupedCpuData = groupDataByDuration(filteredTimeStamps, cpuData, durationInMinutes);
+        filteredCpuData[supplier] = groupedCpuData.data;
+
+        const memoryData = filterDataByTimeStamps(
           timeStamp,
           fetchedMemoryData,
           filteredTimeStamps,
           supplier
         );
-        filteredInTrafficData[supplier] = filterDataByTimeStamps(
+
+        const groupedMemoryData = groupDataByDuration(filteredTimeStamps, memoryData, durationInMinutes);
+        filteredMemoryData[supplier] = groupedMemoryData.data;
+
+        const inTrafficData = filterDataByTimeStamps(
           timeStamp,
           fetchedInTrafficData,
           filteredTimeStamps,
           supplier
         );
-        filteredOutTrafficData[supplier] = filterDataByTimeStamps(
+
+        const groupedInTrafficData = groupDataByDuration(filteredTimeStamps, inTrafficData, durationInMinutes);
+        filteredInTrafficData[supplier] = groupedInTrafficData.data;
+
+        const outTrafficData = filterDataByTimeStamps(
           timeStamp,
           fetchedOutTrafficData,
           filteredTimeStamps,
           supplier
         );
 
-        labels.push(...filteredTimeStamps);
-      });
-      const formattedLabels = getFormattedLabels(labels);
-      setFilteredLabels(formattedLabels);
+        const groupedOutTrafficData = groupDataByDuration(filteredTimeStamps, outTrafficData, durationInMinutes);
 
-      setLowestCpuSupplier(findLowestMetric(filteredCpuData));
-      setLowestMemorySupplier(findLowestMetric(filteredMemoryData));
-      setHighestInTrafficSupplier(findHighestMetric(filteredInTrafficData));
-      setHighestOutTrafficSupplier(findHighestMetric(filteredOutTrafficData));
+        if (!timestampsAdded) {
+          labels.push(...groupedOutTrafficData.timestamps);
+          timestampsAdded = true;
+        }        
+        
+        filteredOutTrafficData[supplier] = groupedOutTrafficData.data;
+      });
+
+      const formattedLabels = getFormattedLabels(labels, timeDifferenceInHours);
+      setFilteredLabels(formattedLabels);
     }
+    
   }, [
     isRealTime,
+    isCustom,
     startDate,
+    endDate,
     fetchedCpuData,
     fetchedMemoryData,
     fetchedInTrafficData,
     fetchedOutTrafficData,
   ]);
 
-  const filterTimeStamps = (timeStamp, startDate) => {
-    // console.log(startDate);
-    const filteredTimeStamps = timeStamp.filter((timestamp) => {
-    const timestampDate =
-    new Date(timestamp).toISOString().split(".")[0] + "Z";
-    const endDate = new Date(startDate);
+  const calcTimeDifferenceInHours = (startDate, endDate) =>{
+    const startTimestamp = new Date(startDate).getTime();
+    const endTimestamp =  new Date(endDate).getTime();
+    const timeDifferenceInMilliseconds  = endTimestamp - startTimestamp;
+    const millisecondsInAnHour = 60 * 60 * 1000;
+    const timeDifferenceInHours = timeDifferenceInMilliseconds / millisecondsInAnHour;
+    return timeDifferenceInHours;
+  } 
 
-      endDate.setHours(endDate.getHours() + 1);
-      const endDateFormatted = endDate.toISOString().split(".")[0] + "Z";
-      // console.log(timestampDate);
-      return timestampDate >= startDate && timestampDate <= endDateFormatted;
+  const calcGroupedDuration = (timeDifferenceInHours) =>{
+      let durationInMinutes = 1;
+
+      if(timeDifferenceInHours <= 5){
+        durationInMinutes = 30;
+      }
+      else if(timeDifferenceInHours <=24){
+        durationInMinutes = 60;
+      }
+      else if(timeDifferenceInHours <= 24 * 7) {
+        durationInMinutes = 60 * 12;
+      }
+      else if(timeDifferenceInHours > 24 * 7){
+        durationInMinutes = 24 * 60;
+      }
+      return durationInMinutes;
+
+  }
+
+  const groupDataByDuration = (timestamps, data, durationInMinutes) => {
+    const groupedData = [];
+    const groupedTimestamps = [];
+    
+    if (timestamps.length !== data.length) {
+      throw new Error("Timestamps and data arrays must have the same length.");
+    }
+  
+    let currentGroupStart = new Date(timestamps[0]);
+    let currentGroupEnd = new Date(currentGroupStart.getTime() + durationInMinutes * 60 * 1000);
+  
+    let sum = 0;
+    let count = 0;
+  
+    for (let i = 0; i < timestamps.length; i++) {
+      const currentTimestamp = new Date(timestamps[i]);
+      const currentValue = data[i];
+  
+      if (currentTimestamp >= currentGroupEnd) {
+        if (count > 0) {
+          groupedData.push(sum / count);
+          groupedTimestamps.push(new Date(currentGroupStart));
+        } else {
+          groupedData.push(null);
+          groupedTimestamps.push(new Date(currentGroupStart));
+        }
+  
+        sum = 0;
+        count = 0;
+  
+        currentGroupStart = new Date(currentGroupEnd);
+        currentGroupEnd = new Date(currentGroupStart.getTime() + durationInMinutes * 60 * 1000);
+      }
+  
+      sum += currentValue;
+      count++;
+    }
+  
+    if (count > 0) {
+      groupedData.push(sum / count);
+      groupedTimestamps.push(new Date(currentGroupStart));
+    } else {
+      groupedData.push(null);
+      groupedTimestamps.push(new Date(currentGroupStart));
+    }
+  
+    return { timestamps: groupedTimestamps, data: groupedData };
+  }
+
+  const filterTimeStamps = (timeStamp, startDate, endDate) => {
+    const filteredTimeStamps = timeStamp.filter((timestamp) => {
+      const timestampDate = new Date(timestamp).toISOString().split(".")[0] + "Z";
+      return timestampDate >= startDate && timestampDate <= endDate;
     });
+    
     return filteredTimeStamps;
   };
+
 
   const filterDataByTimeStamps = (
     timeStamp,
@@ -361,18 +458,39 @@ const Graphs = () => {
     return filteredDataArray;
   };
 
-  const getFormattedLabels = (labels) => {
+  const getFormattedLabels = (labels, timeDifferenceInHours) => {
     const uniqueLabels = Array.from(new Set(labels));
 
     const formattedLabels = uniqueLabels.map((timestamp) => {
       const date = new Date(timestamp);
-      return date
-        .toLocaleString("en-US", {
-          hour: "numeric",
-          minute: "numeric",
-          hour12: false,
-        })
-        .replace(",", "");
+      if(timeDifferenceInHours <= 24) {
+        return date
+          .toLocaleString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: false,
+          })
+          .replace(",", "");
+        }
+        else if(timeDifferenceInHours > 24 && timeDifferenceInHours <= 24 * 7){
+          return date
+          .toLocaleString("en-US", {
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: false,
+          })
+          .replace(",", "");
+        }
+        else {
+          return date
+          .toLocaleDateString("en-US", {
+             month: "numeric", 
+             day: "numeric" 
+            });
+          
+        }
     });
 
     return formattedLabels;
@@ -381,25 +499,18 @@ const Graphs = () => {
   const handleSelectChange = (value) => {
       setIsRealTime(value === 'real-time' ? true : false);
       setIsCustom(value === 'Custom' ? true : false )
-
-      if(value ==='Last-Week') {
-        //setStartDate(); set start date 1 week from now
-      }
-      else if(value ==='Last-Month'){
-        //setStartDate();  set start date 1 month from now
-      }
    
-    setLowestCpuSupplier("");
-    setLowestMemorySupplier("");
-    setHighestInTrafficSupplier("");
-    setHighestOutTrafficSupplier("");
+      setLowestCpuSupplier("");
+      setLowestMemorySupplier("");
+      setHighestInTrafficSupplier("");
+      setHighestOutTrafficSupplier("");
   };
 
   const handleDateChange = (start,end) => {
     setStartDate(start.toISOString().split(".")[0] + "Z");
     setEndDate(end.toISOString().split(".")[0] + "Z");
+    console.log('handleDateChange');
 
-    // console.log(startDate);
   };
 
   const colors = ["#5664d1", "#ad5769", "#3d9174"];
@@ -473,7 +584,7 @@ const Graphs = () => {
             weight: "bold",
           },
           color: "black",
-          maxTicksLimit: 10,
+          maxTicksLimit: Math.min(10,filteredLabels.length)
         },
       },
       y: {
@@ -620,3 +731,23 @@ const Graphs = () => {
 };
 
 export default Graphs;
+
+/* console.log(filteredCpuData[supplier]);
+        filteredMemoryData[supplier] = filterDataByTimeStamps(
+          timeStamp,
+          fetchedMemoryData,
+          filteredTimeStamps,
+          supplier
+        );
+        filteredInTrafficData[supplier] = filterDataByTimeStamps(
+          timeStamp,
+          fetchedInTrafficData,
+          filteredTimeStamps,
+          supplier
+        );
+        filteredOutTrafficData[supplier] = filterDataByTimeStamps(
+          timeStamp,
+          fetchedOutTrafficData,
+          filteredTimeStamps,
+          supplier
+        );*/
