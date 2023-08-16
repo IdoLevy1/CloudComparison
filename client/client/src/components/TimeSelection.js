@@ -8,30 +8,37 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime, isCustom }) =
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedValue, setSelectedValue] = useState('real-time');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const handleSelectChange = (event) => {
     const value = event.target.value;
     setSelectedValue(value);
     onSelectChange(value);
-
     if(value ==='Last-Week') {
       const now = new Date();
       const oneWeekAgo = new Date(now.getTime()  - 7 * 24 * 60 * 60 * 1000);
       onDateChange(oneWeekAgo, now);
     }
-    else if(value ==='Last-Month'){
+    else if(value ==='Last-Month') {
       const now = new Date();
       const oneMonthAgo = new Date(now);
       oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
       onDateChange(oneMonthAgo, now);
       }
   };
+  const handleDateChange = (date, type) =>{
 
-  const handleSubmit = () => {
-    if (startDate && endDate) { // add endDate > StartDate chec
-      onDateChange(startDate, endDate);
-    }
-  };
+      if(type === 'start'){
+        setStartDate(date)
+      }
+      else if(type === 'end'){
+        setEndDate(date);
+      }
+
+      if(startDate && endDate && endDate > startDate)
+        setIsButtonDisabled(false);
+
+  }
 
   return (
     <div className="selection-container">
@@ -60,7 +67,7 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime, isCustom }) =
             <label>Start Date:</label>
             <DatePicker
               selected={startDate}
-              onChange={(date) => setStartDate(date)}
+              onChange={(date) => handleDateChange(date,'start')}
               showTimeSelect
               timeFormat="HH:mm"
               timeIntervals={15}
@@ -73,7 +80,7 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime, isCustom }) =
             <label>End Date:</label>
             <DatePicker
               selected={endDate}
-              onChange={(date) => setEndDate(date)}
+              onChange={(date) => handleDateChange(date,'end')}
               showTimeSelect
               timeFormat="HH:mm"
               timeIntervals={15}
@@ -84,7 +91,7 @@ const TimeSelection = ({ onSelectChange, onDateChange, isRealTime, isCustom }) =
               className="date-picker"
             />
           </div>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button onClick={()=>onDateChange(startDate, endDate)} disabled={isButtonDisabled}>Submit</Button>
         </div>
       )}
     </div>
