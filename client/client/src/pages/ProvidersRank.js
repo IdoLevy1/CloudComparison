@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext } from "react";
 import "../styles/ProvidersRank.css";
 import BannerImage from "../assets/graphsBack.png";
 import DataContext from "../DataContext";

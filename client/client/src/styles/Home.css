@@ -10,9 +10,6 @@
 }
 
 .headerContainer {
-  /* width: auto; */
-  /* margin-left: 500px; */
-  /* align-items: right; */
   margin-bottom: 30px;
 }
 
@@ -21,7 +18,7 @@
   color: rgb(197, 206, 207);
   text-shadow: 2px 8px 4px rgba(0, 0, 0, 0.3);
   font-weight: 600;
-  margin-left: 500px;
+  margin-left: 450px;
   font-family: Tahoma, Verdana, Segoe, sans-serif;
 }
 
@@ -30,8 +27,8 @@
   font-size: 32px;
   font-weight: lighter;
   color: rgb(197, 206, 207);
-  margin-left: 500px;
-  margin-bottom: 40px;
+  margin-left: 450px;
+  margin-bottom: 50px;
 }
 
 .headerContainer button {
@@ -50,7 +47,7 @@
   color: white;
   text-decoration: none;
   font-size: 20px;
-  margin-left: 750px;
+  margin-left: 700px;
 }
 
 .headerContainer button:hover {
@@ -59,59 +56,15 @@
   transition: 0.3s ease-in;
 }
 
-/* @media only screen and (max-width: 650px) {
-  .home {
-    justify-content: center;
-    align-items: center;
-  }
-
-  .headerContainer {
-    margin-left: 0px;
-    border-radius: 10px;
-    padding: 10px;
-    width: 80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background-color: #121619;
-    color: white;
-  }
-
-  .headerContainer h1 {
-    font-size: 40px;
-    height: 30px;
-    color: white;
-    margin-bottom: 5px;
-  }
-
-  .headerContainer p {
-    font-size: 30px;
-    color: white;
-    margin-bottom: 5px;
-  }
-
-  .headerContainer button {
-    background-color: white;
-    color: #9aa4ad;
-    margin-bottom: 30px;
-  }
-
-  .headerContainer button:hover {
-    background-color: rgb(225, 225, 225);
-    color: #626e76;
-  }
-} */
-
 @media only screen and (min-width: 1500px) {
   .headerContainer h1 {
     font-size: 100px;
-    margin-left: 770px;
+    margin-left: 720px;
   }
 
   .headerContainer p {
     font-size: 32px;
-    margin-left: 770px;
+    margin-left: 720px;
   }
   .headerContainer button {
     margin-left: 1150px;
