@@ -36,7 +36,8 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
-Deployment/
+Deployment/StressTests/*.exe
+Deployment/VirtualMachines.json
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
