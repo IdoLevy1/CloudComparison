@@ -50,8 +50,7 @@ const Graphs = () => {
   const [lowestCpuSupplier, setLowestCpuSupplier] = useState("");
   const [lowestMemorySupplier, setLowestMemorySupplier] = useState("");
   const [highestInTrafficSupplier, setHighestInTrafficSupplier] = useState("");
-  const [highestOutTrafficSupplier, setHighestOutTrafficSupplier] =
-    useState("");
+  const [highestOutTrafficSupplier, setHighestOutTrafficSupplier] = useState("");
   const firstTimeRef = useRef(true);
   const [allSuppliersProcessed, setAllSuppliersProcessed] = useState(0);
 
@@ -281,6 +280,7 @@ const Graphs = () => {
   };
 
   useEffect(() => {
+    console.log(isRealTime, isCustom)
     if (!isRealTime && startDate && endDate) {
       const labels = [];
       const timeDifferenceInHours = calcTimeDifferenceInHours(
@@ -388,7 +388,9 @@ const Graphs = () => {
   const calcGroupedDuration = (timeDifferenceInHours) => {
     let durationInMinutes = 1;
 
-    if (timeDifferenceInHours <= 5) {
+    if (timeDifferenceInHours <= 1) {
+      durationInMinutes = 10;
+    } else if (timeDifferenceInHours <= 5) {
       durationInMinutes = 30;
     } else if (timeDifferenceInHours <= 24) {
       durationInMinutes = 60;
@@ -532,10 +534,10 @@ const Graphs = () => {
     console.log("handleDateChange");
   };
 
-  useEffect(() => {
-    setStartDate("");
-    setEndDate("");
-  }, [isRealTime]);
+  // useEffect(() => {
+  //   setStartDate("");
+  //   setEndDate("");
+  // }, [isRealTime]);
 
   const colors = ["#5664d1", "#ad5769", "#3d9174"];
 

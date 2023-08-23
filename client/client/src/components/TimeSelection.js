@@ -19,17 +19,28 @@ const TimeSelection = ({
     const value = event.target.value;
     setSelectedValue(value);
     onSelectChange(value);
+
+    if(value === 'Custom' || value === 'Real-time') {
+      setStartDate("");
+      setEndDate("");
+      setIsButtonDisabled(true);
+    }
     if (value === "Last-Week") {
       const now = new Date();
       const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      setStartDate(now.toISOString().split(".")[0] + "Z");
+      setEndDate(oneWeekAgo.toISOString().split(".")[0] + "Z");
       onDateChange(oneWeekAgo, now);
     } else if (value === "Last-Month") {
       const now = new Date();
       const oneMonthAgo = new Date(now);
       oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      setStartDate(now.toISOString().split(".")[0] + "Z");
+      setEndDate(oneMonthAgo.toISOString().split(".")[0] + "Z");
       onDateChange(oneMonthAgo, now);
     }
   };
+  
   const handleDateChange = (date, type) => {
     if (type === "start") {
       setStartDate(date);
@@ -37,7 +48,12 @@ const TimeSelection = ({
       setEndDate(date);
     }
     console.log(startDate, endDate);
-    if (startDate && endDate && endDate > startDate) setIsButtonDisabled(false);
+    if (startDate && endDate) {
+      let startTimestamp = new Date(startDate).getTime();
+      let endTimestamp = new Date(endDate).getTime();
+      setIsButtonDisabled(endTimestamp > startTimestamp ? false : true)
+      console.log(isButtonDisabled)
+    }
   };
 
   return (
