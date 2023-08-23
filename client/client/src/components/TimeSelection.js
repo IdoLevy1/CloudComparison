@@ -12,7 +12,7 @@ const TimeSelection = ({
 }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [selectedValue, setSelectedValue] = useState("real-time");
+  const [selectedValue, setSelectedValue] = useState("Real-time");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const handleSelectChange = (event) => {
@@ -40,7 +40,7 @@ const TimeSelection = ({
       onDateChange(oneMonthAgo, now);
     }
   };
-  
+
   const handleDateChange = (date, type) => {
     if (type === "start") {
       setStartDate(date);
@@ -72,7 +72,7 @@ const TimeSelection = ({
         onChange={handleSelectChange}
         className="selectState"
       >
-        <MenuItem value="real-time">Real-time</MenuItem>
+        <MenuItem value="Real-time">Real-time</MenuItem>
         <MenuItem value="Last-Week">Last Week</MenuItem>
         <MenuItem value="Last-Month">Last Month</MenuItem>
         <MenuItem value="Custom">Custom</MenuItem>
