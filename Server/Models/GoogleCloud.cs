@@ -31,7 +31,7 @@ namespace Server.Models
             string MachineType,
             string Location)
         {
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", JsonFileLocation, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", JsonFileLocation);
             var metricClient = MetricServiceClient.Create();
             var interval = new TimeInterval { EndTime = ParseFromString(EndTime), StartTime = ParseFromString(StartTime) };
 
