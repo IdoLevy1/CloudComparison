@@ -20,7 +20,7 @@ const TimeSelection = ({
     setSelectedValue(value);
     onSelectChange(value);
 
-    if(value === 'Custom' || value === 'Real-time') {
+    if (value === "Custom" || value === "Real-time") {
       setStartDate("");
       setEndDate("");
       setIsButtonDisabled(true);
@@ -51,8 +51,8 @@ const TimeSelection = ({
     if (startDate && endDate) {
       let startTimestamp = new Date(startDate).getTime();
       let endTimestamp = new Date(endDate).getTime();
-      setIsButtonDisabled(endTimestamp > startTimestamp ? false : true)
-      console.log(isButtonDisabled)
+      setIsButtonDisabled(endTimestamp > startTimestamp ? false : true);
+      console.log(isButtonDisabled);
     }
   };
 
@@ -87,8 +87,7 @@ const TimeSelection = ({
               onChange={(date) => handleDateChange(date, "start")}
               timeFormat="HH:mm"
               timeIntervals={15}
-              // timeCaption="Time"
-              dateFormat="yyyy/MM/dd HH:mm"
+              dateFormat="dd/MM/yyyy, HH:mm"
               minDate={new Date(2023, 4, 15)}
               maxDate={new Date()}
               className="date-picker"
@@ -100,8 +99,7 @@ const TimeSelection = ({
               onChange={(date) => handleDateChange(date, "end")}
               timeFormat="HH:mm"
               timeIntervals={15}
-              timeCaption="Time"
-              dateFormat="yyyy/MM/dd HH:mm"
+              dateFormat="dd/MM/yyyy, HH:mm"
               minDate={new Date(2023, 4, 15)}
               maxDate={new Date()}
               className="date-picker"

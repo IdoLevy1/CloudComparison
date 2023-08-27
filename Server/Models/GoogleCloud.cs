@@ -31,7 +31,7 @@ namespace Server.Models
             string MachineType,
             string Location)
         {
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", JsonFileLocation);
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", JsonFileLocation, EnvironmentVariableTarget.User);
             var metricClient = MetricServiceClient.Create();
             var interval = new TimeInterval { EndTime = ParseFromString(EndTime), StartTime = ParseFromString(StartTime) };
 
@@ -51,7 +51,7 @@ namespace Server.Models
             Logger.Info($"{MachineType} {Location}: PercentageCPU = {metrics.PercentageCPU}, PercentageMemory = {metrics.PercentageMemory}, IncomingTraffic = {metrics.IncomingTraffic}, OutcomingTraffic = {metrics.OutcomingTraffic}");
             DB.InsertItem(GoogleCloudName + MachineType + Location, metrics);
         }
-
+        
         public void InsertDummyInfoToDB(string StartTime, string MachineType, string Location)
         {
             VirtualMachineMetricsModel metrics = new VirtualMachineMetricsModel

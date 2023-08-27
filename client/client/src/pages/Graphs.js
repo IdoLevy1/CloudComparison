@@ -50,7 +50,8 @@ const Graphs = () => {
   const [lowestCpuSupplier, setLowestCpuSupplier] = useState("");
   const [lowestMemorySupplier, setLowestMemorySupplier] = useState("");
   const [highestInTrafficSupplier, setHighestInTrafficSupplier] = useState("");
-  const [highestOutTrafficSupplier, setHighestOutTrafficSupplier] = useState("");
+  const [highestOutTrafficSupplier, setHighestOutTrafficSupplier] =
+    useState("");
   const firstTimeRef = useRef(true);
   const [allSuppliersProcessed, setAllSuppliersProcessed] = useState(0);
 
@@ -212,13 +213,13 @@ const Graphs = () => {
   };
 
   const fetchDataHistory = async () => {
-    const fetchedCpuDataCopy = { ...fetchedCpuData };
-    const fetchedMemoryDataCopy = { ...fetchedMemoryData };
-    const fetchedInTrafficDataCopy = { ...fetchedInTrafficData };
-    const fetchedOutTrafficDataCopy = { ...fetchedOutTrafficData };
+    const newFetchedCpuData = {};
+    const newFetchedMemoryData = {};
+    const newFetchedInTrafficData = {};
+    const newFetchedOutTrafficData = {};
     setAllSuppliersProcessed(0);
 
-    for (const supplier of suppliers) {
+    const fetchPromises = suppliers.map(async (supplier) => {
       setAllSuppliersProcessed((prev) => prev + 1);
       const supplierWithCloud = supplier + "Cloud";
       let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromDB?MachineType=${type}&Location=${location}`;
@@ -233,34 +234,36 @@ const Graphs = () => {
         const inTraffic = json.map((obj) => obj.incomingTraffic);
         const outTraffic = json.map((obj) => obj.outcomingTraffic);
 
-        fetchedCpuDataCopy[supplier] = {
+        newFetchedCpuData[supplier] = {
           timeStamp: timeStamp,
           data: cpuPercentage,
         };
 
-        fetchedMemoryDataCopy[supplier] = {
+        newFetchedMemoryData[supplier] = {
           timeStamp: timeStamp,
           data: memoryPercentage,
         };
 
-        fetchedInTrafficDataCopy[supplier] = {
+        newFetchedInTrafficData[supplier] = {
           timeStamp: timeStamp,
           data: inTraffic,
         };
 
-        fetchedOutTrafficDataCopy[supplier] = {
+        newFetchedOutTrafficData[supplier] = {
           timeStamp: timeStamp,
           data: outTraffic,
         };
-        setFetchedCpuData(fetchedCpuDataCopy);
-        setFetchedMemoryData(fetchedMemoryDataCopy);
-        setFetchedInTrafficData(fetchedInTrafficDataCopy);
-        setFetchedOutTrafficData(fetchedOutTrafficDataCopy);
-        //console.log(fetchedCpuDataCopy);
       } catch (error) {
         console.error(`Failed to fetch data for ${supplier}:`, error);
       }
-    }
+    });
+    await Promise.all(fetchPromises);
+
+    setFetchedCpuData(newFetchedCpuData);
+    setFetchedMemoryData(newFetchedMemoryData);
+    setFetchedInTrafficData(newFetchedInTrafficData);
+    setFetchedOutTrafficData(newFetchedOutTrafficData);
+    //console.log(fetchedCpuDataCopy);
   };
 
   useEffect(() => {
@@ -280,7 +283,7 @@ const Graphs = () => {
   };
 
   useEffect(() => {
-    console.log(isRealTime, isCustom)
+    console.log(isRealTime, isCustom);
     if (!isRealTime && startDate && endDate) {
       const labels = [];
       const timeDifferenceInHours = calcTimeDifferenceInHours(
@@ -519,7 +522,7 @@ const Graphs = () => {
   };
 
   const handleSelectChange = (value) => {
-    setIsRealTime(value === "real-time" ? true : false);
+    setIsRealTime(value === "Real-time" ? true : false);
     setIsCustom(value === "Custom" ? true : false);
 
     setLowestCpuSupplier("");

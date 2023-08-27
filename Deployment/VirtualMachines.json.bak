@@ -1,0 +1,233 @@
+{
+	"AzureVirtualMachine": [
+		{
+			"SubscriptionId": "451d25bb-26a4-4bd7-98aa-e3af25ca0dbb",
+			"ResourceGroupName": "Sadna",
+			"VirtualMachineName": "Maya",
+			"MachineType": "2cpu-4GB",
+			"Location": "Virginia",
+			"MemorySize": 4.0
+		},
+		{
+			"SubscriptionId": "7ac18b13-bc5e-45c6-ab35-2df161731cd8",
+			"ResourceGroupName": "CloudsCompare",
+			"VirtualMachineName": "Virginia-4cpu-16GB",
+			"MachineType": "4cpu-16GB",
+			"Location": "Virginia",
+			"MemorySize": 16.0
+		},
+		{
+			"SubscriptionId": "7ac18b13-bc5e-45c6-ab35-2df161731cd8",
+			"ResourceGroupName": "CloudsCompare",
+			"VirtualMachineName": "Virginia-8cpu-32GB",
+			"MachineType": "8cpu-32GB",
+			"Location": "Virginia",
+			"MemorySize": 32.0
+		},
+		{
+			"SubscriptionId": "7ac18b13-bc5e-45c6-ab35-2df161731cd8",
+			"ResourceGroupName": "CloudsCompare",
+			"VirtualMachineName": "UK-2cpu-4GB",
+			"MachineType": "2cpu-4GB",
+			"Location": "UK",
+			"MemorySize": 4.0
+		},
+		{
+			"SubscriptionId": "7ac18b13-bc5e-45c6-ab35-2df161731cd8",
+			"ResourceGroupName": "CloudsCompare",
+			"VirtualMachineName": "UK-4cpu-16GB",
+			"MachineType": "4cpu-16GB",
+			"Location": "UK",
+			"MemorySize": 16.0
+		},
+		{
+			"SubscriptionId": "7ac18b13-bc5e-45c6-ab35-2df161731cd8",
+			"ResourceGroupName": "CloudsCompare",
+			"VirtualMachineName": "UK-8cpu-32GB",
+			"MachineType": "8cpu-32GB",
+			"Location": "UK",
+			"MemorySize": 32.0
+		},
+		{
+			"SubscriptionId": "7ac18b13-bc5e-45c6-ab35-2df161731cd8",
+			"ResourceGroupName": "CloudsCompare",
+			"VirtualMachineName": "Japan-2cpu-4GB",
+			"MachineType": "2cpu-4GB",
+			"Location": "Japan",
+			"MemorySize": 4.0
+		},
+		{
+			"SubscriptionId": "7ac18b13-bc5e-45c6-ab35-2df161731cd8",
+			"ResourceGroupName": "CloudsCompare",
+			"VirtualMachineName": "Japan-4cpu-16GB",
+			"MachineType": "4cpu-16GB",
+			"Location": "Japan",
+			"MemorySize": 16.0
+		},
+		{
+			"SubscriptionId": "7ac18b13-bc5e-45c6-ab35-2df161731cd8",
+			"ResourceGroupName": "CloudsCompare",
+			"VirtualMachineName": "Japan-8cpu-32GB",
+			"MachineType": "8cpu-32GB",
+			"Location": "Japan",
+			"MemorySize": 32.0
+		}
+	],
+	"GoogleVirtualMachine": [
+		{
+			"ProjectId": "sadna-396717",
+			"InstanceId": "5493933936931850872",
+			"JsonFileLocation": "C:\\Temp\\optimum-tea-396714-6c6b202fedbf.json",
+			"MachineType": "2cpu-4GB",
+			"Location": "Virginia",
+			"MemorySize": 4.0
+		},
+		{
+			"ProjectId": "cloudscomparison",
+			"InstanceId": "000000000000000000",
+			"JsonFileLocation": "C:\\Temp\\optimum-tea-396714-6c6b202fedbf.json",
+			"MachineType": "4cpu-16GB",
+			"Location": "Virginia",
+			"MemorySize": 16.0
+		},
+		{
+			"ProjectId": "cloudscomparison",
+			"InstanceId": "000000000000000000",
+			"JsonFileLocation": "C:\\Temp\\optimum-tea-396714-6c6b202fedbf.json",
+			"MachineType": "8cpu-32GB",
+			"Location": "Virginia",
+			"MemorySize": 32.0
+		},
+		{
+			"ProjectId": "cloudscomparison",
+			"InstanceId": "3902638971700610859",
+			"JsonFileLocation": "C:\\Temp\\optimum-tea-396714-6c6b202fedbf.json",
+			"MachineType": "2cpu-4GB",
+			"Location": "UK",
+			"MemorySize": 4.0
+		},
+		{
+			"ProjectId": "cloudscomparison",
+			"InstanceId": "000000000000000000",
+			"JsonFileLocation": "C:\\Temp\\optimum-tea-396714-6c6b202fedbf.json",
+			"MachineType": "4cpu-16GB",
+			"Location": "UK",
+			"MemorySize": 16.0
+		},
+		{
+			"ProjectId": "cloudscomparison",
+			"InstanceId": "000000000000000000",
+			"JsonFileLocation": "C:\\Temp\\optimum-tea-396714-6c6b202fedbf.json",
+			"MachineType": "8cpu-32GB",
+			"Location": "UK",
+			"MemorySize": 32.0
+		},
+		{
+			"ProjectId": "cloudscomparison",
+			"InstanceId": "8150011527480466011",
+			"JsonFileLocation": "C:\\Temp\\optimum-tea-396714-6c6b202fedbf.json",
+			"MachineType": "2cpu-4GB",
+			"Location": "Japan",
+			"MemorySize": 4.0
+		},
+		{
+			"ProjectId": "cloudscomparison",
+			"InstanceId": "000000000000000000",
+			"JsonFileLocation": "C:\\Temp\\optimum-tea-396714-6c6b202fedbf.json",
+			"MachineType": "4cpu-16GB",
+			"Location": "Japan",
+			"MemorySize": 16.0
+		},
+		{
+			"ProjectId": "cloudscomparison",
+			"InstanceId": "000000000000000000",
+			"JsonFileLocation": "C:\\Temp\\optimum-tea-396714-6c6b202fedbf.json",
+			"MachineType": "8cpu-32GB",
+			"Location": "Japan",
+			"MemorySize": 32.0
+		}
+	],
+	"AmazonVirtualMachine": [
+		{
+			"AccessKey": "AKIAVQ5JETBLGH3D6EKH",
+			"SecretKey": "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",
+			"InstanceId": "i-0527ca6763fca9026",
+			"Region": "us-east-1",
+			"MachineType": "2cpu-4GB",
+			"Location": "Virginia",
+			"MemorySize": 4.0
+		},
+		{
+			"AccessKey": "AKIAU6VHTRUZDHRNV7P3",
+			"SecretKey": "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",
+			"InstanceId": "000000000000000000",
+			"Region": "us-east-1",
+			"MachineType": "4cpu-16GB",
+			"Location": "Virginia",
+			"MemorySize": 16.0
+		},
+		{
+			"AccessKey": "AKIAU6VHTRUZDHRNV7P3",
+			"SecretKey": "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",
+			"InstanceId": "000000000000000000",
+			"Region": "us-east-1",
+			"MachineType": "8cpu-32GB",
+			"Location": "Virginia",
+			"MemorySize": 32.0
+		},
+		{
+			"AccessKey": "AKIAU6VHTRUZDHRNV7P3",
+			"SecretKey": "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",
+			"InstanceId": "i-0de24ae1568efb8d4",
+			"Region": "eu-west-2",
+			"MachineType": "2cpu-4GB",
+			"Location": "UK",
+			"MemorySize": 4.0
+		},
+		{
+			"AccessKey": "AKIAU6VHTRUZDHRNV7P3",
+			"SecretKey": "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",
+			"InstanceId": "000000000000000000",
+			"Region": "eu-west-2",
+			"MachineType": "4cpu-16GB",
+			"Location": "UK",
+			"MemorySize": 16.0
+		},
+		{
+			"AccessKey": "AKIAU6VHTRUZDHRNV7P3",
+			"SecretKey": "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",
+			"InstanceId": "000000000000000000",
+			"Region": "eu-west-2",
+			"MachineType": "8cpu-32GB",
+			"Location": "UK",
+			"MemorySize": 32.0
+		},
+		{
+			"AccessKey": "AKIAU6VHTRUZDHRNV7P3",
+			"SecretKey": "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",
+			"InstanceId": "i-0610016ec103139c2",
+			"Region": "ap-northeast-1",
+			"MachineType": "2cpu-4GB",
+			"Location": "Japan",
+			"MemorySize": 4.0
+		},
+		{
+			"AccessKey": "AKIAU6VHTRUZDHRNV7P3",
+			"SecretKey": "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",
+			"InstanceId": "000000000000000000",
+			"Region": "ap-northeast-1",
+			"MachineType": "4cpu-16GB",
+			"Location": "Japan",
+			"MemorySize": 16.0
+		},
+		{
+			"AccessKey": "AKIAU6VHTRUZDHRNV7P3",
+			"SecretKey": "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",
+			"InstanceId": "000000000000000000",
+			"Region": "ap-northeast-1",
+			"MachineType": "8cpu-32GB",
+			"Location": "Japan",
+			"MemorySize": 32.0
+		}
+	]
+}
