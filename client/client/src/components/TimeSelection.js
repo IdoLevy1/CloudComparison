@@ -55,6 +55,11 @@ const TimeSelection = ({
       console.log(isButtonDisabled);
     }
   };
+  
+  const handleSubmit = () =>{
+    onDateChange(startDate, endDate);
+    setIsButtonDisabled(true);;
+  }
 
   return (
     <div className="selection-container">
@@ -106,7 +111,7 @@ const TimeSelection = ({
             />
           </div>
           <Button
-            onClick={() => onDateChange(startDate, endDate)}
+            onClick={handleSubmit}
             disabled={isButtonDisabled}
           >
             Submit
