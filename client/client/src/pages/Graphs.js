@@ -85,10 +85,9 @@ const Graphs = () => {
 
   const fetchDataRealTime = async () => {
     let isoTimestamp = setIsoTimestamp();
-    console.log(isoTimestamp, firstTimeRef);
-    setAllSuppliersProcessed(0);
-    for (const supplier of suppliers) {
-      setAllSuppliersProcessed((prev) => prev + 1);
+    // setAllSuppliersProcessed(0);
+    const fetchPromises = suppliers.map(async (supplier) => {
+      // setAllSuppliersProcessed((prev) => prev + 1);
       const supplierWithCloud = supplier + "Cloud";
       let url = `http://localhost:8496/${supplierWithCloud}/GetMetricsFromTimeStamp?MachineType=${type}&Location=${location}&TimeStamp=${isoTimestamp}`;
 
@@ -158,18 +157,21 @@ const Graphs = () => {
       } catch (error) {
         console.error(`Failed to fetch data for ${supplier}:`, error);
       }
-    }
+    });
+
+    await Promise.all(fetchPromises);
+  };
+
+  const updatePerformanceMetrics = () => {
+    setLowestCpuSupplier(findLowestMetric(filteredCpuData));
+    setLowestMemorySupplier(findLowestMetric(filteredMemoryData));
+    setHighestInTrafficSupplier(findHighestMetric(filteredInTrafficData));
+    setHighestOutTrafficSupplier(findHighestMetric(filteredOutTrafficData));
   };
 
   useEffect(() => {
-    if (allSuppliersProcessed === suppliers.length) {
-      setLowestCpuSupplier(findLowestMetric(filteredCpuData));
-      setLowestMemorySupplier(findLowestMetric(filteredMemoryData));
-      setHighestInTrafficSupplier(findHighestMetric(filteredInTrafficData));
-      setHighestOutTrafficSupplier(findHighestMetric(filteredOutTrafficData));
-    }
+    updatePerformanceMetrics();
   }, [
-    allSuppliersProcessed,
     filteredCpuData,
     filteredMemoryData,
     filteredInTrafficData,
@@ -263,7 +265,6 @@ const Graphs = () => {
     setFetchedMemoryData(newFetchedMemoryData);
     setFetchedInTrafficData(newFetchedInTrafficData);
     setFetchedOutTrafficData(newFetchedOutTrafficData);
-    //console.log(fetchedCpuDataCopy);
   };
 
   useEffect(() => {
@@ -366,10 +367,9 @@ const Graphs = () => {
 
       const formattedLabels = getFormattedLabels(labels, timeDifferenceInHours);
       setFilteredLabels(formattedLabels);
+      updatePerformanceMetrics();
     }
   }, [
-    // isRealTime,
-    // isCustom,
     startDate,
     endDate,
     fetchedCpuData,
@@ -696,6 +696,10 @@ const Graphs = () => {
     console.log(filteredMemoryData);
   }, [filteredMemoryData]);
 
+  useEffect(() => {
+    console.log(lowestCpuSupplier);
+  }, [lowestCpuSupplier]);
+
   return (
     <div className="graphs" style={{ backgroundImage: `url(${BannerImage})` }}>
       <h2>Results</h2>
@@ -761,23 +765,3 @@ const Graphs = () => {
 };
 
 export default Graphs;
-
-/* console.log(filteredCpuData[supplier]);
-        filteredMemoryData[supplier] = filterDataByTimeStamps(
-          timeStamp,
-          fetchedMemoryData,
-          filteredTimeStamps,
-          supplier
-        );
-        filteredInTrafficData[supplier] = filterDataByTimeStamps(
-          timeStamp,
-          fetchedInTrafficData,
-          filteredTimeStamps,
-          supplier
-        );
-        filteredOutTrafficData[supplier] = filterDataByTimeStamps(
-          timeStamp,
-          fetchedOutTrafficData,
-          filteredTimeStamps,
-          supplier
-        );*/
